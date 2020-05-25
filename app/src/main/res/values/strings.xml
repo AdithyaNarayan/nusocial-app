@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">NUSocial</string>
+    <string name="app_intro">Your social and academic life in a single package</string>
+    <string name="join">JOIN</string>
+    <string name="title_activity_splash_test">Splash Activity</string>
+    <string name="logo">Logo</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="cont">Continue</string>
+    <string name="username">username</string>
+    <string name="password">password</string>
+    <string name="email">email</string>
+    <string name="name">name</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="login_with_nusnet">Login with NUSNET</string>
+    <string name="cancel">Cancel</string>
+</resources>

@@ -1,0 +1,14 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+    <style name="BottomButton">
+        <item name="cornerSizeTopLeft">64dp</item>
+    </style>
+    <style name="SideButton">
+        <item name="cornerSizeTopRight">32dp</item>
+        <item name="cornerSizeBottomRight">32dp</item>
+    </style>
+</resources>
