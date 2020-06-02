@@ -5,9 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.teamnusocial.nusocial.HomeActivity
 import com.teamnusocial.nusocial.R
-import com.teamnusocial.nusocial.ui.MainActivity
-import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
 import kotlinx.android.synthetic.main.activity_splash.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -28,7 +27,7 @@ class SplashActivity : AppCompatActivity(), KodeinAware {
         // Move to main activity if already signed in
         viewModel.isSignedIn().observe(this, Observer {
             if (it) {
-                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                startActivity(Intent(this@SplashActivity, HomeActivity::class.java))
             }
         })
 

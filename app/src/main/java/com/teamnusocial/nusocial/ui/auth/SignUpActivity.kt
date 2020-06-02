@@ -9,8 +9,8 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
+import com.teamnusocial.nusocial.HomeActivity
 import com.teamnusocial.nusocial.R
-import com.teamnusocial.nusocial.ui.MainActivity
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -93,7 +93,7 @@ class SignUpActivity : AppCompatActivity(), KodeinAware {
                     if (it.isSuccessful) {
                         // move to next activity
                         Log.d("AUTH", "Create User Success")
-                        startActivity(Intent(this@SignUpActivity, MainActivity::class.java))
+                        startActivity(Intent(this@SignUpActivity, HomeActivity::class.java))
                     } else {
                         // display an error message to the user.
                         Log.d("AUTH", it.exception?.message.toString())

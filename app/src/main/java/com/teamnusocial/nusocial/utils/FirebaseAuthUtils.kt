@@ -1,10 +1,6 @@
 package com.teamnusocial.nusocial.utils
 
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 
 class FirebaseAuthUtils {
 

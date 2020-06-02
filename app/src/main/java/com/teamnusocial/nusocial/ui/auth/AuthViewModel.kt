@@ -1,6 +1,5 @@
 package com.teamnusocial.nusocial.ui.auth
 
-import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.teamnusocial.nusocial.data.repository.AuthUserRepository

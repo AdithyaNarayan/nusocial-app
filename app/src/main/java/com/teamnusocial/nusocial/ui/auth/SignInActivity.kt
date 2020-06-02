@@ -16,10 +16,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import com.teamnusocial.nusocial.HomeActivity
 import com.teamnusocial.nusocial.R
-import com.teamnusocial.nusocial.ui.MainActivity
 import kotlinx.android.synthetic.main.activity_sign_in.*
-import kotlinx.android.synthetic.main.activity_sign_up.*
 import kotlinx.android.synthetic.main.layout_forgot_password.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -115,7 +114,7 @@ class SignInActivity : AppCompatActivity(), KodeinAware {
                     if (it.isSuccessful) {
                         // move to next activity
                         Log.d("AUTH", "Sign In User Success")
-                        startActivity(Intent(this@SignInActivity, MainActivity::class.java))
+                        startActivity(Intent(this@SignInActivity, HomeActivity::class.java))
                     } else {
                         // display an error message to the user.
                         Log.d("AUTH", it.exception?.message.toString())
