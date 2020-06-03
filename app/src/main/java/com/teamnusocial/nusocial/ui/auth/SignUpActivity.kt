@@ -9,9 +9,15 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.okhttp.Dispatcher
 import com.teamnusocial.nusocial.HomeActivity
 import com.teamnusocial.nusocial.R
+import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
@@ -93,6 +99,9 @@ class SignUpActivity : AppCompatActivity(), KodeinAware {
                     if (it.isSuccessful) {
                         // move to next activity
                         Log.d("AUTH", "Create User Success")
+                        CoroutineScope(Dispatchers.IO).launch {
+                            FirestoreUtils().initializeUser(it.result?.user?.uid!!)
+                        }
                         startActivity(Intent(this@SignUpActivity, HomeActivity::class.java))
                     } else {
                         // display an error message to the user.

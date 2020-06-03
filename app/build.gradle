@@ -82,4 +82,8 @@ dependencies {
     // Fragments
     implementation "androidx.fragment:fragment-ktx:1.2.4"
 
+    // Google Maps API
+    implementation "com.google.maps.android:android-maps-utils:1.3.3"
+    implementation "com.google.android.gms:play-services-location:17.0.0"
+    
 }
