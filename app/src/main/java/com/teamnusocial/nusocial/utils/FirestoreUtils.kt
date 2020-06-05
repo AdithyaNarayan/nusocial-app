@@ -1,5 +1,6 @@
 package com.teamnusocial.nusocial.utils
 
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.FirebaseFirestore
 import com.teamnusocial.nusocial.data.model.Gender
 import com.teamnusocial.nusocial.data.model.User
@@ -17,10 +18,14 @@ class FirestoreUtils {
                 arrayListOf(),
                 1,
                 "CS",
-                null,
+                LatLng(0.0, 0.0),
                 arrayListOf(),
                 "hello"
             )
         )
+    }
+
+    suspend fun getAllUsers() = coroutineScope {
+        firestoreInstance.collection("users").get()
     }
 }

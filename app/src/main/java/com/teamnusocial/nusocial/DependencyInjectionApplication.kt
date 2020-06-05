@@ -2,9 +2,11 @@ package com.teamnusocial.nusocial
 
 import android.app.Application
 import com.teamnusocial.nusocial.data.repository.AuthUserRepository
-import com.teamnusocial.nusocial.ui.auth.AuthViewModel
+import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.auth.AuthViewModelFactory
+import com.teamnusocial.nusocial.ui.broadcast.BroadcastViewModelFactory
 import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
+import com.teamnusocial.nusocial.utils.FirestoreUtils
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
@@ -21,5 +23,11 @@ class DependencyInjectionApplication : Application(), KodeinAware {
         bind() from singleton { FirebaseAuthUtils() }
         bind() from singleton { AuthUserRepository(instance()) }
         bind() from provider { AuthViewModelFactory(instance()) }
+
+        // broadcast dependency tree
+        bind() from singleton { FirestoreUtils() }
+        bind() from singleton { UserRepository(instance()) }
+        bind() from provider { BroadcastViewModelFactory(instance()) }
+
     }
 }
