@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.teamnusocial.nusocial.R
+import com.teamnusocial.nusocial.utils.KnuthShuffle
 
 
 class BuddyMatchFragment : Fragment() {
@@ -42,6 +43,7 @@ class BuddyMatchFragment : Fragment() {
         var cardView = root.findViewById<CardView>(R.id.matched_modules_buddymatch)
         var linearLayoutVertical = LinearLayout(context)
         linearLayoutVertical.orientation = LinearLayout.VERTICAL
+        //var shuffleColor = KnuthShuffle(10).shuffle()
         for(y in 0..2) {
             var linearLayoutHorizontal = LinearLayout(context)
             linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
@@ -59,4 +61,5 @@ class BuddyMatchFragment : Fragment() {
         }
         return root
     }
+
 }

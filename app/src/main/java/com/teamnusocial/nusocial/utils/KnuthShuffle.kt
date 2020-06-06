@@ -12,4 +12,11 @@ class KnuthShuffle(val numberOfElements: Int) {
         }
         return result
     }
+    fun getColorFromInt(id: Int): String {
+        when (id) {
+            1 -> return "red"
+            2 -> return "blue"
+            else -> return "white"
+        }
+    }
 }
