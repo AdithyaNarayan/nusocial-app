@@ -7,39 +7,61 @@
     tools:context=".ui.buddymatch.BuddyProfileActivity"
     android:background="@drawable/background">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="325dp"
+    <Button
+        android:id="@+id/match_button_more_info"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="1260dp"
+        android:text="Match !"
+        android:translationZ="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/toolbarMoreInfo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/main_container_more_info"
+        android:layout_width="369dp"
+        android:layout_height="427dp"
         android:background="#3F51B5"
         android:backgroundTint="#3F51B5"
         android:padding="8dp"
+        android:translationZ="-1dp"
         app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/more_info_image"
-        app:layout_constraintVertical_bias="0.048">
+        app:layout_constraintVertical_bias="0.25">
 
         <TextView
             android:id="@+id/about_info_more_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="326dp"
+            android:layout_height="281dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginBottom="8dp"
+            android:scrollbars="vertical"
+            android:text="For starters, lorem ipsum isn’t just some wacky text-thingy with no meaning whatsoever. These words have been derived from the Latin phrase ‘dolorem ipsum’ which translates to ‘pain itself’. Lorem Ipsum is a placeholder text used to illustrate graphic features by publishers and graphic designers.  It is a pseudo-Latin text used instead of English in web design, typography, layout and printing to emphasize elements of design over content. It is also called the text (or filler) of the placeholder. It’s a handy tool for mock-ups. This helps define a text or presentation’s visual elements, such as typography, font, or format.  The classical author and philosopher Cicero’s Lorem ipsum is mostly part of a Latin text. We changed the words and letters by adding or removing them, so it deliberately makes the content nonsensical; it is no longer genuine, correct, or understandable Latin.  While the lorem ipsum is still similar to classical Latin, it has no sense whatsoever in fact. Since the text of Cicero does not include the letters K, W, or Z, foreign to Latin, these and others are frequently randomly inserted to imitate the typographic appearance of European languages, just as digraphs are not present in the original." />
 
         <TextView
             android:id="@+id/about_more_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="50dp"
-            android:text="About Me" />
+            android:layout_marginTop="75dp"
+            android:text="About Me"
+            android:textSize="18dp" />
 
         <TextView
-            android:id="@+id/matched_modules_more_info"
+            android:id="@+id/interests_more_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="25dp"
-            android:text="Matched modules" />
+            android:text="Interests"
+            android:textSize="18dp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/name_more_info"
@@ -48,21 +70,30 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="5dp"
             android:text="Dao Ngoc Hieu"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/interest_container_more_info"
+            android:layout_width="322dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="50dp"
+            android:backgroundTint="#3F51B5"
+            app:cardElevation="0dp" />
     </androidx.cardview.widget.CardView>
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarMoreInfo"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:title="More Info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:title="More Info"
-        app:theme="@style/ToolBarStyle"
-        android:background="@color/white"
-      />
+        app:theme="@style/ToolBarStyle" />
 
     <ImageView
         android:id="@+id/more_info_image"

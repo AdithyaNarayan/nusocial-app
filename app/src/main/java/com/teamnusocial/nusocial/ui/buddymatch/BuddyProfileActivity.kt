@@ -1,11 +1,19 @@
 package com.teamnusocial.nusocial.ui.buddymatch
 
+import android.app.ActionBar
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
+import android.view.View
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
+import androidx.core.view.marginLeft
+import androidx.core.view.marginRight
 import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
 import kotlinx.android.synthetic.main.activity_buddy_profile.*
+import java.util.zip.Inflater
 
 class BuddyProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,5 +30,18 @@ class BuddyProfileActivity : AppCompatActivity() {
             .transform(MaskTransformation(this, R.drawable.more_info_img_frame))
             .fit()
             .into(more_info_image)
+        about_info_more_info.movementMethod = ScrollingMovementMethod()
+        var cardView = findViewById<CardView>(R.id.interest_container_more_info)
+           val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+           params.setMargins(0,0,10,0)
+            var linearLayoutHorizontal = LinearLayout(this)
+            linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
+            for (x in 0..3) {
+                val module: View = this.layoutInflater.inflate(R.layout.matched_module_child,null)
+                module.layoutParams = params
+                linearLayoutHorizontal.addView(module)
+            }
+
+        cardView.addView(linearLayoutHorizontal)
     }
 }

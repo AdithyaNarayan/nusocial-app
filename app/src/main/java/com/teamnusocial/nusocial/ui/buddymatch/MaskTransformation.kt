@@ -19,19 +19,9 @@ class MaskTransformation(
     override fun transform(source: Bitmap): Bitmap {
         val width = source.width
         val height = source.height
-        val borderWidth = 400
 
         val output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(output)
-
-        //Draw a full size, red squircle
-        /*val paint = Paint()
-        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-        paint.color = Color.RED
-        val mask = ContextCompat.getDrawable(context, maskID)!!
-        mask.setBounds(0, 0, width, height)
-        mask.draw(canvas)
-        canvas.drawPaint(paint)*/
 
         //Draw a masked, scaled down bitmap of the photo on top
         val maskingPaint = Paint()
