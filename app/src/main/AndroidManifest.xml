@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.teamnusocial.nusocial">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:name=".DependencyInjectionApplication"
         android:icon="@mipmap/ic_launcher"
@@ -9,10 +13,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+<<<<<<< HEAD
         <activity
             android:name=".ui.buddymatch.BuddyProfileActivity"
             android:parentActivityName=".HomeActivity">
         </activity>
+=======
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_api_key" />
+
+>>>>>>> 686ba756b24167f624bedf129553d273f75b5eca
         <activity android:name=".HomeActivity" />
         <activity android:name=".ui.auth.SignUpActivity" />
         <activity android:name=".ui.auth.SignInActivity" />
@@ -23,6 +37,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".ui.broadcast.LocationTrackingService" />
     </application>
 
 </manifest>

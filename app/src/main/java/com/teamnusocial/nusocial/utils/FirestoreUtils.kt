@@ -1,5 +1,7 @@
+
 package com.teamnusocial.nusocial.utils
 
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.teamnusocial.nusocial.data.model.Gender
@@ -13,24 +15,10 @@ class FirestoreUtils {
 
     private val firebaseAuth = FirebaseAuth.getInstance()
 
-    suspend fun initializeUser(userID: String) = coroutineScope {
-        firestoreInstance.collection("users").document(userID).set(
-            User(
-                "n0b0n",
-                Gender.MALE,
-                arrayListOf(),
-                1,
-                "CS",
-                LocationLatLng(0.0, 0.0),
-                arrayListOf(),
-                "hello"
-            )
-        )
-    }
-
-    fun getCurrentUser() = firebaseAuth.currentUser.to(User::class.java)
-
     suspend fun getAllUsers() = coroutineScope {
-        firestoreInstance.collection("users").get()
+        firestoreInstance.collection("users")
     }
+
+    fun getCurrentUser() = firebaseAuth.currentUser
+
 }

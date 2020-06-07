@@ -15,4 +15,7 @@ class AuthUserRepository(private val authUtils: FirebaseAuthUtils) {
     fun signInUser(email: String, password: String) = authUtils.signInUser(email, password)
 
     fun forgotPassword(email: String) = authUtils.forgotPassword(email)
+
+    suspend fun initializeUser(userID: String, name: String) =
+        authUtils.initializeUser(userID, name)
 }

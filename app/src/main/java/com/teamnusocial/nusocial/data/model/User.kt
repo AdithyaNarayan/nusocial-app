@@ -1,3 +1,4 @@
+
 package com.teamnusocial.nusocial.data.model
 
 import android.os.Parcelable
@@ -30,4 +31,5 @@ data class User(
         arrayListOf(),
         "hello"
     )
+
 }

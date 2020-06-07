@@ -1,3 +1,4 @@
+
 package com.teamnusocial.nusocial.data.model
 
 import java.time.LocalTime

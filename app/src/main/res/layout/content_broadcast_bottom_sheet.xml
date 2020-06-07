@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/broadcastBottomSheetLayout"
+    android:layout_width="match_parent"
+    android:layout_height="500dp"
+    android:background="@android:color/holo_blue_dark"
+    android:padding="16dp"
+    app:behavior_peekHeight="60dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:text="Broadcast settings and posting goes here. Will update after finishing with realtime location."
+        android:textSize="16sp" />
+</RelativeLayout>

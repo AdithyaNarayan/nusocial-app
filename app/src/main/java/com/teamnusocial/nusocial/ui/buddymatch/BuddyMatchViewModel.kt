@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.teamnusocial.nusocial.ui.buddymatch
 
 import androidx.lifecycle.LiveData
@@ -28,3 +29,18 @@ class BuddyMatchViewModel : ViewModel() {
 private fun <T> MutableLiveData<T>.notifyListener() {
     this.value = this.value
 }
+=======
+package com.teamnusocial.nusocial.ui.buddymatch
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+
+class BuddyMatchViewModel : ViewModel() {
+
+    private val _text = MutableLiveData<String>().apply {
+        value = "This is dashboard Fragment"
+    }
+    val text: LiveData<String> = _text
+}
+>>>>>>> 686ba756b24167f624bedf129553d273f75b5eca
