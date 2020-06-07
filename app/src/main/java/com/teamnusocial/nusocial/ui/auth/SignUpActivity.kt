@@ -98,7 +98,10 @@ class SignUpActivity : AppCompatActivity(), KodeinAware {
                         // setup user and move to next activity
                         Log.d("AUTH", "Create User Success")
                         CoroutineScope(Dispatchers.IO).launch {
-                            FirestoreUtils().initializeUser(it.result?.user?.uid!!)
+                            viewModel.initializeUser(
+                                it.result?.user!!.uid,
+                                nameSignUpEditText.text.toString()
+                            )
                         }
                         startActivity(Intent(this@SignUpActivity, HomeActivity::class.java))
                     } else {

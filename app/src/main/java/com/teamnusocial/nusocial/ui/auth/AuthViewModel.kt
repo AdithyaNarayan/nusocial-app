@@ -17,4 +17,7 @@ class AuthViewModel(private var repository: AuthUserRepository) : ViewModel() {
     fun signInUser(email: String, password: String) = repository.signInUser(email, password)
 
     fun forgotPassword(email: String) = repository.forgotPassword(email)
+
+    suspend fun initializeUser(userID: String, name: String) =
+        repository.initializeUser(userID, name)
 }
