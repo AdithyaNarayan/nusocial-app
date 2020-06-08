@@ -87,33 +87,37 @@ class BuddyMatchFragment : Fragment() {
         major_buddymatch.text = currUser.courseOfStudy
         curr_year_buddymatch.text = "Year " + currUser.yearOfStudy.toString()
         val numberOfMatchedModules = currUser.modules.size
-        val numberOfRows = numberOfMatchedModules / 4 + 1
+        var numberOfRows = numberOfMatchedModules / 4
+        numberOfRows += if(numberOfMatchedModules % 4 > 0) 1 else 0
         /****/
 
         /**matched modules**/
-        var cardView = root.findViewById<CardView>(R.id.matched_modules_buddymatch)
-        var linearLayoutVertical = LinearLayout(context)
-        var id: Int = 0
-        linearLayoutVertical.orientation = LinearLayout.VERTICAL
-        for (y in 1..numberOfRows) {
+        if(numberOfRows >= 1) {
+            var cardView = root.findViewById<CardView>(R.id.matched_modules_buddymatch)
+            var linearLayoutVertical = LinearLayout(context)
+            var id: Int = 0
+            linearLayoutVertical.orientation = LinearLayout.VERTICAL
+            for (y in 1..numberOfRows) {
+                var linearLayoutHorizontal = LinearLayout(context)
+                linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
+                for (x in 0..3) {
+                    val module: View =
+                        inflater.inflate(R.layout.matched_module_child, container, false)
+                    module.module_name.text = currUser.modules[id++].moduleCode
+                    linearLayoutHorizontal.addView(module)
+                }
+                linearLayoutVertical.addView(linearLayoutHorizontal)
+            }
             var linearLayoutHorizontal = LinearLayout(context)
             linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
-            for (x in 0..3) {
+            for (x in 1..numberOfMatchedModules % 4) {
                 val module: View = inflater.inflate(R.layout.matched_module_child, container, false)
                 module.module_name.text = currUser.modules[id++].moduleCode
                 linearLayoutHorizontal.addView(module)
             }
             linearLayoutVertical.addView(linearLayoutHorizontal)
+            cardView.addView(linearLayoutVertical)
         }
-        var linearLayoutHorizontal = LinearLayout(context)
-        linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
-        for (x in 1..numberOfMatchedModules % 4) {
-            val module: View = inflater.inflate(R.layout.matched_module_child, container, false)
-            module.module_name.text = currUser.modules[id++].moduleCode
-            linearLayoutHorizontal.addView(module)
-        }
-        linearLayoutVertical.addView(linearLayoutHorizontal)
-        cardView.addView(linearLayoutVertical)
         /****/
 
         /**go to profile**/

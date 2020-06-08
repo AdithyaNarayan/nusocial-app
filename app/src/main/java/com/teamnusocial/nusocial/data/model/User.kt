@@ -1,11 +1,8 @@
-
 package com.teamnusocial.nusocial.data.model
 
 import android.os.Parcelable
-import com.google.type.LatLng
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
-
 
 enum class Gender {
     MALE, FEMALE, OTHERS
@@ -14,22 +11,23 @@ enum class Gender {
 data class User(
     public val name: String,
     public val gender: Gender,
+    public val profilePicturePath: String,
     public val modules: @RawValue List<Module>,
     public val yearOfStudy: Int,
     public val courseOfStudy: String,
     public val location: @RawValue LocationLatLng,
     public val buddies: List<String>, // store uid of buddies
     public val about: String
-): Parcelable {
+) : Parcelable{
     constructor() : this(
-        "n0b0n",
+        "",
         Gender.MALE,
-        arrayListOf(),
+        "",
+        listOf(),
         1,
-        "CS",
+        "",
         LocationLatLng(0.0, 0.0),
-        arrayListOf(),
-        "hello"
+        listOf(),
+        ""
     )
-
 }
