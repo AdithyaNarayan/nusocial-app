@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -23,7 +21,6 @@ import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.android.synthetic.main.fragment_buddymatch.*
 import kotlinx.android.synthetic.main.matched_module_child.view.*
 import kotlinx.coroutines.*
-import java.lang.Math.abs
 
 
 class BuddyMatchFragment : Fragment() {
@@ -32,20 +29,23 @@ class BuddyMatchFragment : Fragment() {
     private lateinit var snapHelper: LinearSnapHelper
     private lateinit var root: View
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         buddyMatchViewModel =
             ViewModelProvider(requireActivity()).get(BuddyMatchViewModel::class.java)
         lifecycleScope.launch {
             buddyMatchViewModel.updateMatchedUsers(UserRepository(FirestoreUtils()).getUsers())
         }
+    }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         buddyMatchViewModel.matchedUsers.observe(viewLifecycleOwner, Observer {
             if (it.size > 0) {
-                populateMatchedUsers(it, inflater, container)
+                populateMatchedUsers(it,inflater, container)
             }
         })
         root = inflater.inflate(R.layout.fragment_buddymatch, container, false)
@@ -54,10 +54,6 @@ class BuddyMatchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var adapter = Adapter(buddyMatchViewModel.images.value!!)
-        buddyMatchViewModel.images.observe(viewLifecycleOwner, Observer<ArrayList<String>> { urls ->
-            adapter = Adapter(urls)
-        })
         swipeView = match_swipe as RecyclerView
         snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(swipeView)
@@ -65,7 +61,6 @@ class BuddyMatchFragment : Fragment() {
         layoutManager.orientation = LinearLayoutManager.HORIZONTAL
         layoutManager.scrollToPositionWithOffset(Int.MAX_VALUE / 2, swipeView.width / 2 + 185)
         swipeView.layoutManager = layoutManager
-        swipeView.adapter = adapter
     }
     fun onScrollListener(currPos: Int, allUsers: MutableList<User>) {
         val currUser = allUsers[currPos]
@@ -80,6 +75,14 @@ class BuddyMatchFragment : Fragment() {
     }
 
     fun populateMatchedUsers(allUsers: MutableList<User>, inflater: LayoutInflater, container: ViewGroup?) {
+        /**image swipe view**/
+        for(user in allUsers) {
+            buddyMatchViewModel.images.add(user.profilePicturePath)
+        }
+        var adapter = Adapter(buddyMatchViewModel.images)
+        swipeView.adapter = adapter
+        /****/
+
         /**starting match**/
         var currPos = (Int.MAX_VALUE / 2) % allUsers.size
         var currUser = allUsers[currPos]

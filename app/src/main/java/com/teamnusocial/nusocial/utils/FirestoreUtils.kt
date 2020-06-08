@@ -20,5 +20,13 @@ class FirestoreUtils {
     }
 
     fun getCurrentUser() = firebaseAuth.currentUser
+    suspend fun getCurrentUserAsUser() = coroutineScope {
+        var user: User = User()
+        coroutineScope {
+            user = firestoreInstance.collection("users").document(getCurrentUser()!!.uid)
+                .get().result?.toObject(User::class.java)!!
+        }
+        user
+    }
 
 }
