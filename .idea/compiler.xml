@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+<<<<<<< HEAD
     <bytecodeTargetLevel target="1.8">
       <module name="NUSocial.app" target="1.8" />
     </bytecodeTargetLevel>
+=======
+    <bytecodeTargetLevel target="1.8" />
+>>>>>>> fd8b381d441fd1523b1e851cad49cdae9c2d6fb6
   </component>
 </project>

@@ -11,9 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import android.widget.SeekBar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
@@ -22,10 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -60,6 +59,8 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
     private lateinit var marker: Marker
     private lateinit var markerOptions: MarkerOptions
     private lateinit var cameraPosition: CameraPosition
+    private lateinit var circle: Circle
+    private lateinit var circleOptions: CircleOptions
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -98,9 +99,13 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
             override fun onStateChanged(view: View, state: Int) {
                 when (state) {
                     BottomSheetBehavior.STATE_EXPANDED -> {
+                        broadcastArrow.background =
+                            requireContext().getDrawable(R.drawable.ic_baseline_keyboard_arrow_down_24)
                         Log.d("BROADCAST", "Bottom Sheet Expanded")
                     }
                     BottomSheetBehavior.STATE_COLLAPSED -> {
+                        broadcastArrow.background =
+                            requireContext().getDrawable(R.drawable.ic_baseline_keyboard_arrow_up_24)
                         Log.d("BROADCAST", "Bottom Sheet Collapsed")
                     }
                 }
@@ -115,25 +120,69 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
                 sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
-        val mapFragment =
-            childFragmentManager.findFragmentById(R.id.broadcastMap) as SupportMapFragment
 
-        mapFragment.getMapAsync(this)
+        CoroutineScope(Dispatchers.IO).launch {
+            broadcastViewModel.updateCurrentLocation()
+        }
+        broadcastViewModel.currentUserLocation.observe(requireActivity(), Observer {
+            if (it.latitude != 0.0 && it.longitude != 0.0) {
+                val mapFragment =
+                    childFragmentManager.findFragmentById(R.id.broadcastMap) as SupportMapFragment
 
-        markerOptions = MarkerOptions()
-        val latLng = LatLng(1.3521, 103.8198)
-        markerOptions.position(latLng)
-        cameraPosition = CameraPosition.Builder()
-            .target(latLng)
-            .zoom(17f)
-            .build()
+                mapFragment.getMapAsync(this)
+                if (this::marker.isInitialized) {
+                    marker.remove()
+                }
+                markerOptions = MarkerOptions()
+                markerOptions.position(it)
+                cameraPosition = CameraPosition.Builder()
+                    .target(it)
+                    .zoom(17f)
+                    .build()
+                updateRadiusOnMap(it, broadcastViewModel.broadcastRadius.value!!)
+            }
+        })
 
         updateLocation()
+
+        broadcastSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                broadcastViewModel.updateRadius(progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+        })
+
+        broadcastViewModel.broadcastRadius.observe(requireActivity(), Observer {
+            broadCastRadiusTextView.text =
+                if (it > 999) ((it / 1000).toString() + " km") else ("$it m")
+            updateRadiusOnMap(broadcastViewModel.currentUserLocation.value!!, it)
+        })
+    }
+
+    private fun updateRadiusOnMap(center: LatLng, radius: Int) {
+        circleOptions = CircleOptions()
+            .center(center)
+            .radius(radius.toDouble())
+            .strokeWidth(1.0f)
+            .strokeColor(ContextCompat.getColor(context!!, R.color.orange))
+            .fillColor(ContextCompat.getColor(context!!, R.color.blue))
+        if (this::circle.isInitialized) {
+            circle.remove()
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
         this.googleMap = googleMap!!
         marker = googleMap.addMarker(markerOptions)
+        circle = googleMap.addCircle(circleOptions)
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
     }
 

@@ -45,6 +45,7 @@ class BuddyMatchFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         buddyMatchViewModel.matchedUsers.observe(viewLifecycleOwner, Observer {
             if (it.size > 0) {
                 populateMatchedUsers(it, inflater, container)
@@ -131,7 +132,6 @@ class BuddyMatchFragment : Fragment() {
             startActivity(intent)
         }
     }
-
     fun populateMatchedUsers(
         allUsers: MutableList<User>,
         inflater: LayoutInflater,
@@ -144,7 +144,6 @@ class BuddyMatchFragment : Fragment() {
         var adapter = Adapter(buddyMatchViewModel.images)
         swipeView.adapter = adapter
         /****/
-
         /**starting match**/
         var currPos = (Int.MAX_VALUE / 2) % allUsers.size
         var currUser = allUsers[currPos]
@@ -152,7 +151,8 @@ class BuddyMatchFragment : Fragment() {
         major_buddymatch.text = currUser.courseOfStudy
         curr_year_buddymatch.text = "Year " + currUser.yearOfStudy.toString()
         val numberOfMatchedModules = currUser.modules.size
-        Log.d("Test", "Here " + numberOfMatchedModules)
+
+
         var numberOfRows = numberOfMatchedModules / 4
         numberOfRows += if (numberOfMatchedModules % 4 > 0) 1 else 0
         /****/
@@ -174,7 +174,6 @@ class BuddyMatchFragment : Fragment() {
                 }
                 linearLayoutVertical.addView(linearLayoutHorizontal)
             }
-
             var linearLayoutHorizontal = LinearLayout(context)
             linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
             for (x in 1..numberOfMatchedModules % 4) {
@@ -216,6 +215,7 @@ class BuddyMatchFragment : Fragment() {
                     inflater,
                     container
                 )
+
             }
         })
     }

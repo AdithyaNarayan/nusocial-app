@@ -1,4 +1,3 @@
-
 package com.teamnusocial.nusocial.utils
 
 import com.google.android.gms.maps.model.LatLng
@@ -9,7 +8,6 @@ import com.google.firebase.firestore.SetOptions
 import com.teamnusocial.nusocial.data.model.*
 import kotlinx.coroutines.coroutineScope
 
-
 class FirestoreUtils {
     private val firestoreInstance = FirebaseFirestore.getInstance()
 
@@ -18,7 +16,7 @@ class FirestoreUtils {
     suspend fun getAllUsers() =
         coroutineScope {
             firestoreInstance.collection("users")
-    }
+        }
 
     suspend fun getOneUser(userID: String) = coroutineScope {
         var user: User = User()
@@ -37,6 +35,14 @@ class FirestoreUtils {
                 .get().result?.toObject(User::class.java)!!
         }
         user
+
     }
+
+    suspend fun getCurrentUserAsDocument() = coroutineScope {
+        return@coroutineScope firestoreInstance
+            .collection("users")
+            .document(getCurrentUser()!!.uid)
+    }
+
 
 }

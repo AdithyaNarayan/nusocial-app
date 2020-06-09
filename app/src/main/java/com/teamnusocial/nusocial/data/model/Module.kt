@@ -8,9 +8,7 @@ data class Module(
     val moduleName: String,
     val classes: List<Classes>
 ) {
-    constructor() : this(
-        "",
-        "",
-         listOf()
-    )
+
+    constructor() : this("", "", listOf())
+
 }

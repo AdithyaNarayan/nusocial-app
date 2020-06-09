@@ -21,4 +21,9 @@
     <string name="title_messages">Messages</string>
     <string name="title_you">You</string>
     <string name="google_maps_api_key">AIzaSyAZDpm4qs8X27jY_Y4ef1p-BGH-TNSRZJI</string>
+
+    <string name="user_full_name">User Full Name</string>
+    <string name="send">Send</string>
+    <string name="please_enter_your_broadcast_message_here">Please enter your broadcast message here</string>
+
 </resources>

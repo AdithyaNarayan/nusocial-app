@@ -21,7 +21,6 @@ class UserRepository(private val utils: FirestoreUtils) {
                 Log.d("USER", it.exception!!.message.toString())
             }
         }.await()
-
         userList
     }
 
@@ -37,5 +36,8 @@ class UserRepository(private val utils: FirestoreUtils) {
                 )
             )
     }
+
+
+    suspend fun getCurrentUserAsDocument() = utils.getCurrentUserAsDocument()
 
 }

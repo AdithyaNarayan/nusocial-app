@@ -7,11 +7,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
-
 enum class Gender {
     MALE, FEMALE, OTHERS
 }
-
 data class User(
     public val uid: String,
     public val name: String,
@@ -36,6 +34,7 @@ data class User(
         listOf(),
         ""
     )
+
     fun compareWithYou(another: User?): Double {
         var matchedModules: Int = 0
         var matchedCourse: Int

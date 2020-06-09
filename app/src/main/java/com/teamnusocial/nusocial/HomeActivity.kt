@@ -31,6 +31,11 @@ class HomeActivity : AppCompatActivity() {
         )
         setupWithNavController(topBar, navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        if (savedInstanceState == null) {
+
+        }
+
     }
 
 }
