@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/broadcastBottomSheetLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/orange"
+    app:behavior_peekHeight="40dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <ImageView
+        android:id="@+id/broadcastArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/ic_baseline_keyboard_arrow_up_24"
+        android:contentDescription="Up arrow"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/broadcastHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="12dp"
+        android:layout_toEndOf="@+id/broadcastArrow"
+        android:fontFamily="@font/bold"
+        android:text="@string/title_broadcast"
+        android:textColor="@color/black"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/broadCastRadiusTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/broadcastHeading"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="90dp"
+        android:layout_marginTop="8dp"
+        android:text="1km"
+        android:textColor="@color/black" />
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/broadcastHeading"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="-24dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/blue"
+        android:fontFamily="@font/bold"
+        android:shadowColor="@color/blue"
+        android:text="@string/send"
+        app:cornerRadius="16dp" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/broadcastMessageText"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:layout_below="@+id/broadCastRadiusTextView"
+        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/rounded_edit_text"
+        android:fontFamily="@font/regular"
+        android:gravity="top|start"
+        android:hint="@string/please_enter_your_broadcast_message_here"
+        android:inputType="textMultiLine"
+        android:lines="8"
+        android:maxLines="10"
+        android:minLines="4"
+        android:padding="8dp"
+        android:scrollbars="vertical"
+        android:textColor="@color/black"
+        android:textColorHint="#74768f" />
+
+    <SeekBar
+        android:id="@+id/broadcastSlider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/broadcastMessageText"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="24dp"
+        android:max="7"
+        android:progress="1"
+        android:theme="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:thumb="@drawable/ic_baseline_person_pin_circle_24" />
+
+</RelativeLayout>
