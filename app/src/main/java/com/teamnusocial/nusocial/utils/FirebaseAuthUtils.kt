@@ -25,6 +25,7 @@ class FirebaseAuthUtils {
     suspend fun initializeUser(userID: String, name: String) = coroutineScope {
         firestoreInstance.collection("users").document(userID).set(
             User(
+                userID,
                 name,
                 Gender.MALE,
                 "",

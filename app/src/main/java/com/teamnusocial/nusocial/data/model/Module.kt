@@ -7,4 +7,10 @@ data class Module(
     val moduleCode: String,
     val moduleName: String,
     val classes: List<Classes>
-)
+) {
+    constructor() : this(
+        "",
+        "",
+         listOf()
+    )
+}

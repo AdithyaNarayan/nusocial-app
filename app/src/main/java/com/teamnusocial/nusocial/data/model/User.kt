@@ -3,28 +3,29 @@ package com.teamnusocial.nusocial.data.model
 import android.os.Parcelable
 import com.squareup.okhttp.Dispatcher
 import com.teamnusocial.nusocial.utils.FirestoreUtils
-import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 
 enum class Gender {
     MALE, FEMALE, OTHERS
 }
-@Parcelize
+
 data class User(
+    public val uid: String,
     public val name: String,
     public val gender: Gender,
     public val profilePicturePath: String,
-    public val modules: @RawValue List<Module>,
+    public val modules: List<Module>,
     public val yearOfStudy: Int,
     public val courseOfStudy: String,
-    public val location: @RawValue LocationLatLng,
+    public val location: LocationLatLng,
     public val buddies: List<String>, // store uid of buddies
     public val about: String
-) : Parcelable, Comparable<User> {
+) : Comparable<User> {
     constructor() : this(
+        "",
         "",
         Gender.MALE,
         "https://i7.pngflow.com/pngimage/455/105/png-anonymity-computer-icons-anonymous-user-anonymous-purple-violet-logo-smiley-clipart.png",
@@ -42,7 +43,7 @@ data class User(
         var matchedGender: Int
         var you: User = User()
 
-        CoroutineScope(IO).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             you = FirestoreUtils().getCurrentUserAsUser()
         }
 

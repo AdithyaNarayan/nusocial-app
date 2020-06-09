@@ -21,6 +21,7 @@ class UserRepository(private val utils: FirestoreUtils) {
                 Log.d("USER", it.exception!!.message.toString())
             }
         }.await()
+
         userList
     }
 

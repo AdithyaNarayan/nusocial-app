@@ -2,6 +2,7 @@ package com.teamnusocial.nusocial.ui.buddymatch
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ class BuddyMatchFragment : Fragment() {
     private lateinit var buddyMatchViewModel: BuddyMatchViewModel
     private lateinit var snapHelper: LinearSnapHelper
     private lateinit var root: View
+    private lateinit var linearLayoutVertical: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +47,7 @@ class BuddyMatchFragment : Fragment() {
     ): View? {
         buddyMatchViewModel.matchedUsers.observe(viewLifecycleOwner, Observer {
             if (it.size > 0) {
-                populateMatchedUsers(it,inflater, container)
+                populateMatchedUsers(it, inflater, container)
             }
         })
         root = inflater.inflate(R.layout.fragment_buddymatch, container, false)
@@ -62,21 +64,81 @@ class BuddyMatchFragment : Fragment() {
         layoutManager.scrollToPositionWithOffset(Int.MAX_VALUE / 2, swipeView.width / 2 + 185)
         swipeView.layoutManager = layoutManager
     }
-    fun onScrollListener(currPos: Int, allUsers: MutableList<User>) {
+
+    fun onScrollListener(
+        currPos: Int,
+        allUsers: MutableList<User>,
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) {
         val currUser = allUsers[currPos]
         name_buddymatch.text = currUser.name
         major_buddymatch.text = currUser.courseOfStudy
         curr_year_buddymatch.text = "Year " + currUser.yearOfStudy.toString()
+        val numberOfMatchedModules = currUser.modules.size
+        var numberOfRows = numberOfMatchedModules / 4
+        numberOfRows += if (numberOfMatchedModules % 4 > 0) 1 else 0
+        /****/
+
+        /**matched modules**/
+
+        var cardView = root.findViewById<CardView>(R.id.matched_modules_buddymatch)
+        if (this::linearLayoutVertical.isInitialized) {
+            cardView.removeAllViews()
+        }
+        linearLayoutVertical = LinearLayout(context)
+        linearLayoutVertical.removeAllViewsInLayout()
+        var id: Int = 0
+        linearLayoutVertical.orientation = LinearLayout.VERTICAL
+        if (numberOfRows > 1 || numberOfMatchedModules == 4) {
+            for (y in 1..numberOfRows) {
+                var linearLayoutHorizontal = LinearLayout(context)
+                linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
+                for (x in 0..3) {
+                    val module: View =
+                        inflater.inflate(R.layout.matched_module_child, container, false)
+                    module.module_name.text = currUser.modules[id++].moduleCode
+                    linearLayoutHorizontal.addView(module)
+                }
+                linearLayoutVertical.addView(linearLayoutHorizontal)
+            }
+
+            var linearLayoutHorizontal = LinearLayout(context)
+            linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
+            for (x in 1..numberOfMatchedModules % 4) {
+                val module: View = inflater.inflate(R.layout.matched_module_child, container, false)
+                module.module_name.text = currUser.modules[id++].moduleCode
+                linearLayoutHorizontal.addView(module)
+            }
+            linearLayoutVertical.addView(linearLayoutHorizontal)
+        } else if (numberOfMatchedModules < 4) {
+            var linearLayoutHorizontal = LinearLayout(context)
+            linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
+            for (x in 1..numberOfMatchedModules) {
+                val module: View = inflater.inflate(R.layout.matched_module_child, container, false)
+                module.module_name.text = currUser.modules[id++].moduleCode
+                linearLayoutHorizontal.addView(module)
+            }
+            linearLayoutVertical.addView(linearLayoutHorizontal)
+        }
+        cardView.addView(linearLayoutVertical)
+        /****/
         more_info_buddymatch.setOnClickListener {
             val intent = Intent(context, BuddyProfileActivity::class.java)
-            intent.putExtra("USER", currUser)
+            intent.putExtra("USER_IMG", currUser.profilePicturePath)
+            intent.putExtra("USER_NAME", currUser.name)
+            intent.putExtra("USER_ABOUT", currUser.about)
             startActivity(intent)
         }
     }
 
-    fun populateMatchedUsers(allUsers: MutableList<User>, inflater: LayoutInflater, container: ViewGroup?) {
+    fun populateMatchedUsers(
+        allUsers: MutableList<User>,
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) {
         /**image swipe view**/
-        for(user in allUsers) {
+        for (user in allUsers) {
             buddyMatchViewModel.images.add(user.profilePicturePath)
         }
         var adapter = Adapter(buddyMatchViewModel.images)
@@ -90,16 +152,17 @@ class BuddyMatchFragment : Fragment() {
         major_buddymatch.text = currUser.courseOfStudy
         curr_year_buddymatch.text = "Year " + currUser.yearOfStudy.toString()
         val numberOfMatchedModules = currUser.modules.size
+        Log.d("Test", "Here " + numberOfMatchedModules)
         var numberOfRows = numberOfMatchedModules / 4
-        numberOfRows += if(numberOfMatchedModules % 4 > 0) 1 else 0
+        numberOfRows += if (numberOfMatchedModules % 4 > 0) 1 else 0
         /****/
 
         /**matched modules**/
-        if(numberOfRows >= 1) {
-            var cardView = root.findViewById<CardView>(R.id.matched_modules_buddymatch)
-            var linearLayoutVertical = LinearLayout(context)
-            var id: Int = 0
-            linearLayoutVertical.orientation = LinearLayout.VERTICAL
+        var cardView = root.findViewById<CardView>(R.id.matched_modules_buddymatch)
+        var linearLayoutVertical = LinearLayout(context)
+        var id: Int = 0
+        linearLayoutVertical.orientation = LinearLayout.VERTICAL
+        if (numberOfRows > 1 || numberOfMatchedModules == 4) {
             for (y in 1..numberOfRows) {
                 var linearLayoutHorizontal = LinearLayout(context)
                 linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
@@ -111,6 +174,7 @@ class BuddyMatchFragment : Fragment() {
                 }
                 linearLayoutVertical.addView(linearLayoutHorizontal)
             }
+
             var linearLayoutHorizontal = LinearLayout(context)
             linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
             for (x in 1..numberOfMatchedModules % 4) {
@@ -119,14 +183,25 @@ class BuddyMatchFragment : Fragment() {
                 linearLayoutHorizontal.addView(module)
             }
             linearLayoutVertical.addView(linearLayoutHorizontal)
-            cardView.addView(linearLayoutVertical)
+        } else if (numberOfMatchedModules < 4) {
+            var linearLayoutHorizontal = LinearLayout(context)
+            linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
+            for (x in 1..numberOfMatchedModules) {
+                val module: View = inflater.inflate(R.layout.matched_module_child, container, false)
+                module.module_name.text = currUser.modules[id++].moduleCode
+                linearLayoutHorizontal.addView(module)
+            }
+            linearLayoutVertical.addView(linearLayoutHorizontal)
         }
+        cardView.addView(linearLayoutVertical)
         /****/
 
         /**go to profile**/
         more_info_buddymatch.setOnClickListener {
             val intent = Intent(context, BuddyProfileActivity::class.java)
-            intent.putExtra("USER", currUser)
+            intent.putExtra("USER_IMG", currUser.profilePicturePath)
+            intent.putExtra("USER_NAME", currUser.name)
+            intent.putExtra("USER_ABOUT", currUser.about)
             startActivity(intent)
         }
         /****/
@@ -135,7 +210,12 @@ class BuddyMatchFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val snapView = snapHelper.findSnapView(swipeView.layoutManager)
-                onScrollListener(swipeView.layoutManager!!.getPosition(snapView!!) % allUsers.size, allUsers)
+                onScrollListener(
+                    swipeView.layoutManager!!.getPosition(snapView!!) % allUsers.size,
+                    allUsers,
+                    inflater,
+                    container
+                )
             }
         })
     }
