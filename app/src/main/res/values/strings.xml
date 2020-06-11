@@ -25,5 +25,6 @@
     <string name="user_full_name">User Full Name</string>
     <string name="send">Send</string>
     <string name="please_enter_your_broadcast_message_here">Please enter your broadcast message here</string>
+    <string name="message">Message</string>
 
 </resources>

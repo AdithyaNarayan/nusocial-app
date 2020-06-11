@@ -1,7 +1,8 @@
 package com.teamnusocial.nusocial.ui.you
 
 import androidx.lifecycle.ViewModel
+import com.teamnusocial.nusocial.data.model.User
 
 class YouViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+    var you: User = User()
 }

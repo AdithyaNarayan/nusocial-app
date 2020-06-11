@@ -10,4 +10,6 @@
     <color name="purple">#9F21FF</color>
     <color name="red">#FF2E2E</color>
     <color name="black">#000000</color>
+    <color name="whiteTextColor">#fff</color>
+    <color name="primaryTextColor">#00a5ff</color>
 </resources>

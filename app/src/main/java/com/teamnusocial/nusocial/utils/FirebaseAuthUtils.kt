@@ -1,10 +1,12 @@
 package com.teamnusocial.nusocial.utils
 
+import android.content.Intent
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.teamnusocial.nusocial.data.model.Gender
 import com.teamnusocial.nusocial.data.model.LocationLatLng
 import com.teamnusocial.nusocial.data.model.User
+import com.teamnusocial.nusocial.ui.auth.SignInActivity
 import kotlinx.coroutines.coroutineScope
 
 class FirebaseAuthUtils {
@@ -22,6 +24,10 @@ class FirebaseAuthUtils {
 
     fun forgotPassword(email: String) = firebaseAuth.sendPasswordResetEmail(email)
 
+    fun logOut() {
+        firebaseAuth.signOut()
+    }
+
     suspend fun initializeUser(userID: String, name: String) = coroutineScope {
         firestoreInstance.collection("users").document(userID).set(
             User(
@@ -34,7 +40,8 @@ class FirebaseAuthUtils {
                 "",
                 LocationLatLng(0.0, 0.0),
                 arrayListOf(),
-                "Hey there! I'm using NUSocial!"
+                "Hey there! I'm using NUSocial!",
+                mutableListOf()
             )
         )
     }
