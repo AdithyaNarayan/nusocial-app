@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">NUSocial</string>
+    <string name="app_intro">Your social and academic life in a single package</string>
+    <string name="join">JOIN</string>
+    <string name="title_activity_splash_test">Splash Activity</string>
+    <string name="logo">Logo</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="cont">Continue</string>
+    <string name="username">username</string>
+    <string name="password">password</string>
+    <string name="email">email</string>
+    <string name="name">name</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="login_with_nusnet">Login with NUSNET</string>
+    <string name="cancel">Cancel</string>
+    <string name="title_activity_test">MainActivity</string>
+    <string name="title_buddymatch">BuddyMatch</string>
+    <string name="title_broadcast">Broadcast</string>
+    <string name="title_community">Community</string>
+    <string name="title_messages">Messages</string>
+    <string name="title_you">You</string>
+    <string name="google_maps_api_key">AIzaSyAZDpm4qs8X27jY_Y4ef1p-BGH-TNSRZJI</string>
+
+    <string name="user_full_name">User Full Name</string>
+    <string name="send">Send</string>
+    <string name="please_enter_your_broadcast_message_here">Please enter your broadcast message here</string>
+    <string name="time">time</string>
+    <string name="send_a_message">Send a Message</string>
+    <string name="you">You</string>
+
+</resources>
