@@ -1,11 +1,14 @@
 package com.teamnusocial.nusocial.utils
 
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.teamnusocial.nusocial.data.model.Gender
 import com.teamnusocial.nusocial.data.model.LocationLatLng
 import com.teamnusocial.nusocial.data.model.User
 import kotlinx.coroutines.coroutineScope
+import java.time.LocalDate
+import java.util.*
 
 class FirebaseAuthUtils {
     private val firebaseAuth = FirebaseAuth.getInstance()
@@ -34,7 +37,8 @@ class FirebaseAuthUtils {
                 "",
                 LocationLatLng(0.0, 0.0, ""),
                 arrayListOf(),
-                "Hey there! I'm using NUSocial!"
+                "Hey there! I'm using NUSocial!",
+                Timestamp(Date(0))
             )
         )
     }

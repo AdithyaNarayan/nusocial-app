@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.Timestamp
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.model.knn.Classifier
@@ -19,12 +20,13 @@ import com.teamnusocial.nusocial.data.repository.UserRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.net.URL
+import java.time.LocalDate
 
 
 class BroadcastViewModel(private val repository: UserRepository) : ViewModel() {
 
     init {
-        var classifier = Classifier()
+        val classifier = Classifier()
         CoroutineScope(Dispatchers.IO).launch {
             val currentUser = repository.getCurrentUserAsUser()
             classifier.populateDataPoints(repository.getUsers(), currentUser)
@@ -77,6 +79,21 @@ class BroadcastViewModel(private val repository: UserRepository) : ViewModel() {
     fun setProfileBitmap(bitmap: Bitmap) {
 
         profileImg.value = bitmap
+    }
+
+    suspend fun sendBroadcast(messageText: String) = coroutineScope {
+        repository.getCurrentUserAsDocument().update("lastBroadcasted", Timestamp.now())
+        repository.getUserAnd(getCurrentUserAsUser().uid) { currUser ->
+            closestNeighboursList.value!!.filter { otherUser ->
+                currUser.location.distanceTo(otherUser.location) < (broadcastRadius.value!! - 50)
+            }.forEach {
+                CoroutineScope(Dispatchers.IO).launch {
+                    repository.createChatWith(it.uid)
+                    repository.sendMessage(repository.getMessageID(currUser, it), messageText)
+                    repository.makeInvisibleTo(currUser.uid, repository.getMessageID(currUser, it))
+                }
+            }
+        }
     }
 }
 

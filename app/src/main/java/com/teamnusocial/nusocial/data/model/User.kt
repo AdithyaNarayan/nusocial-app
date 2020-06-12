@@ -1,6 +1,7 @@
 package com.teamnusocial.nusocial.data.model
 
 import android.os.Parcelable
+import com.google.firebase.Timestamp
 import com.squareup.okhttp.Dispatcher
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.utils.FirestoreUtils
@@ -8,6 +9,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.util.*
+
 enum class Gender {
     MALE, FEMALE, OTHERS
 }
@@ -21,7 +25,8 @@ data class User(
     public val courseOfStudy: String,
     public val location: LocationLatLng,
     public val buddies: List<String>, // store uid of buddies
-    public val about: String
+    public val about: String,
+    public val lastBroadcasted: Timestamp
 ) : Comparable<User> {
     constructor() : this(
         "",
@@ -33,7 +38,8 @@ data class User(
         "",
         LocationLatLng(0.0, 0.0, ""),
         listOf(),
-        ""
+        "",
+        Timestamp(Date(0))
     )
 
     fun compareWithYou(another: User?): Double {

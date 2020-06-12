@@ -3,7 +3,9 @@ package com.teamnusocial.nusocial.data.repository
 import android.location.Geocoder
 import android.location.Location
 import android.util.Log
+import com.google.firebase.Timestamp
 import com.teamnusocial.nusocial.data.model.LocationLatLng
+import com.teamnusocial.nusocial.data.model.TextMessage
 import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.coroutines.coroutineScope
@@ -67,5 +69,36 @@ class UserRepository(private val utils: FirestoreUtils) {
         user
     }
 
+    suspend fun getUserAnd(userID: String, onComplete: (User) -> Unit) {
+        utils.getUserAsDocument(userID).get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                onComplete(it.result!!.toObject(User::class.java)!!)
+            }
+        }
+    }
 
+    suspend fun createChatWith(userID: String) = utils.createChatWith(userID)
+
+    suspend fun sendMessage(messageID: String, messageText: String) = coroutineScope {
+        utils.getMessages(messageID).collection("messages")
+            .add(
+                TextMessage(
+                    messageText,
+                    Timestamp.now(),
+                    utils.getCurrentUser()!!.uid
+                )
+            )
+        utils.getMessages(messageID).collection("messages").addSnapshotListener { querySnapshot, exception ->
+            if(querySnapshot!!.documents.size > 1) {
+                utils.getMessages(messageID).update("invisible","")
+            }
+        }
+    }
+
+    suspend fun makeInvisibleTo(userID: String, messageID: String) = coroutineScope {
+        utils.getMessages(messageID).update("invisible", userID)
+    }
+
+    fun getMessageID(firstUser: User, secondUser: User) =
+        if (firstUser.uid > secondUser.uid) "${firstUser.uid}_${secondUser.uid}" else "${secondUser.uid}_${firstUser.uid}"
 }

@@ -10,8 +10,12 @@ import com.google.firebase.firestore.Query
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.TextMessage
 import com.teamnusocial.nusocial.data.model.User
+import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.android.synthetic.main.activity_message_chat.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MessageChatActivity : AppCompatActivity() {
     private lateinit var adapter: FirestoreRecyclerAdapter<TextMessage, MessageHolder>
@@ -24,15 +28,12 @@ class MessageChatActivity : AppCompatActivity() {
 
         val firestoreUtils = FirestoreUtils()
         sendMessageButton.setOnClickListener {
-            val message = sendMessageEditText.text
-            firestoreUtils.getMessages(messageID!!).collection("messages")
-                .add(
-                    TextMessage(
-                        message.toString(),
-                        Timestamp.now(),
-                        firestoreUtils.getCurrentUser()!!.uid
-                    )
+            CoroutineScope(Dispatchers.IO).launch {
+                UserRepository(FirestoreUtils()).sendMessage(
+                    messageID!!,
+                    sendMessageEditText.text.toString()
                 )
+            }
             sendMessageEditText.setText("")
         }
 

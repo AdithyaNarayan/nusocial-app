@@ -34,13 +34,10 @@ class FirestoreUtils {
             .document(userID)
     }
 
-    fun getUserAsDocumentSync(userID: String): DocumentReference {
-        return firestoreInstance.collection("users").document(userID)
-    }
-
     suspend fun getMessagesOfUser(user: Pair<String, String>) = coroutineScope {
         return@coroutineScope firestoreInstance
             .collection("messagesChannel").whereArrayContains("recipients", user)
+            .whereLessThan("invisible", user.second)
     }
 
     fun getMessages(messageID: String) =
@@ -50,8 +47,10 @@ class FirestoreUtils {
         getUserAsDocument(userID).get().addOnCompleteListener { otherUser ->
             CoroutineScope(Dispatchers.IO).launch {
                 getCurrentUserAsDocument().get().addOnCompleteListener { currentUser ->
+                    val messageID =
+                        if (currentUser.result!!.id > otherUser.result!!.id) "${currentUser.result!!.id}_${otherUser.result!!.id}" else "${otherUser.result!!.id}_${currentUser.result!!.id}"
                     firestoreInstance.collection("messagesChannel")
-                        .add(
+                        .document(messageID).set(
                             MessageConfig(
                                 listOf(
                                     Pair(
@@ -62,7 +61,7 @@ class FirestoreUtils {
                                         currentUser.result!!["uid"] as String,
                                         currentUser.result!!["name"] as String
                                     )
-                                )
+                                ), ""
                             )
                         )
                 }

@@ -10,6 +10,7 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.location.LocationManager
 import android.os.Bundle
+import android.text.format.DateUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -43,6 +45,8 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 import java.net.URL
+import java.time.LocalDate
+import java.util.*
 
 
 class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
@@ -71,7 +75,7 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
         broadcastViewModel =
             ViewModelProvider(this, factory).get(BroadcastViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_broadcast, container, false)
-        CoroutineScope(Dispatchers.IO).launch {
+        /*CoroutineScope(Dispatchers.IO).launch {
             val bitmap = BitmapFactory.decodeStream(
                 URL(broadcastViewModel.getCurrentUserAsUser().profilePicturePath)
                     .openConnection()
@@ -80,7 +84,7 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
             withContext(Dispatchers.Main) {
                 broadcastViewModel.profileImg.value = bitmap
             }
-        }
+        }*/
         CoroutineScope(Dispatchers.IO).launch {
             Log.d("USER", broadcastViewModel.getUsers().size.toString())
         }
@@ -95,7 +99,6 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
                 val mapFragment =
                     childFragmentManager.findFragmentById(R.id.broadcastMap) as SupportMapFragment
                 mapFragment.getMapAsync(this)
-                Log.d("BROADCAST", it[0].name)
             }
         })
         locationPinBitmap = BitmapDescriptorFactory.fromBitmap(
@@ -150,6 +153,7 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
         CoroutineScope(Dispatchers.IO).launch {
             broadcastViewModel.updateCurrentLocation()
         }
+
         broadcastViewModel.currentUserLocation.observe(requireActivity(), Observer {
             if (it.latitude != 0.0 && it.longitude != 0.0) {
                 val mapFragment =
@@ -161,7 +165,7 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
             }
         })
 
-        updateLocation()
+        updateLocationInBackend()
 
         broadcastSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -188,6 +192,39 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
             updateMarkerOnMap(broadcastViewModel.currentUserLocation.value!!)
             updateRadiusOnMap(broadcastViewModel.currentUserLocation.value!!, it)
         })
+
+        sendBroadcastButton.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                Log.d(
+                    "BROADCAST",
+                    broadcastViewModel.getCurrentUserAsUser().lastBroadcasted.toDate().toString()
+                )
+                Log.d("BROADCAST", Date().toString())
+
+                if (isSameDay(
+                        broadcastViewModel.getCurrentUserAsUser().lastBroadcasted.toDate(),
+                        Date()
+                    )
+                ) {
+                    Snackbar.make(
+                        broadcastRootView,
+                        "Broadcast limit has been reached for the day",
+                        Snackbar.LENGTH_SHORT
+                    )
+                        .show()
+                } else {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        broadcastViewModel.sendBroadcast(broadcastMessageText.text.toString())
+                        Snackbar.make(
+                            broadcastRootView,
+                            "Broadcast Message has been radiated successfully!",
+                            Snackbar.LENGTH_SHORT
+                        )
+                            .show()
+                    }
+                }
+            }
+        }
     }
 
     private fun updateRadiusOnMap(center: LatLng, radius: Int) {
@@ -217,7 +254,7 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
         if (this::marker.isInitialized) {
             marker.remove()
         }
-        if(this::userMarkers.isInitialized) {
+        if (this::userMarkers.isInitialized) {
             userMarkers.forEach {
                 it.remove()
             }
@@ -232,7 +269,7 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
     }
 
-    private fun updateLocation() {
+    private fun updateLocationInBackend() {
 
         val lm: LocationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -299,9 +336,16 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
 
     private fun updateUsersOnMap(users: List<User>) {
         users.forEach {
-            userMarkerOptions.add(MarkerOptions()
-                .position(it.location.getAsLatLng())
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.user_pin)))
+            userMarkerOptions.add(
+                MarkerOptions()
+                    .position(it.location.getAsLatLng())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.user_pin))
+            )
         }
     }
+
+    private fun isSameDay(firstDate: Date, secondDate: Date): Boolean {
+        return firstDate.year == secondDate.year && firstDate.month == secondDate.month && firstDate.date == secondDate.date
+    }
+
 }
