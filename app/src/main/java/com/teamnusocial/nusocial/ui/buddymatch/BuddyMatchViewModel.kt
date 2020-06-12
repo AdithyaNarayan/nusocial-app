@@ -12,12 +12,16 @@ class BuddyMatchViewModel : ViewModel() {
     val images: ArrayList<String> = arrayListOf()
 
     var matchedUsers: MutableLiveData<MutableList<User>> = MutableLiveData(mutableListOf())
+    var you: MutableLiveData<User> = MutableLiveData(User())
 
     fun updateMatchedUsers(list: MutableList<User>) {
-        matchedUsers.value!!.addAll(list)
+        matchedUsers.value = list.toMutableList()
         if (list.size > 0) {
             matchedUsers.notifyListener()
         }
+    }
+    fun updateYou(user: User) {
+        you.value = user
     }
 }
 

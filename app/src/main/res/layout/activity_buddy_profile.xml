@@ -37,29 +37,20 @@
         <TextView
             android:id="@+id/about_info_more_info"
             android:layout_width="326dp"
-            android:layout_height="281dp"
+            android:layout_height="326dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="65dp"
             android:layout_marginBottom="8dp"
-            android:scrollbars="vertical"/>
+            android:scrollbars="vertical" />
+
         <TextView
             android:id="@+id/about_more_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="75dp"
+            android:layout_marginTop="30dp"
             android:text="About Me"
             android:textSize="18dp" />
-
-        <TextView
-            android:id="@+id/interests_more_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="25dp"
-            android:text="Interests"
-            android:textSize="18dp"
-            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/name_more_info"
@@ -67,18 +58,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="5dp"
-            android:text="Dao Ngoc Hieu"
+            android:text="--Blank--"
             android:textSize="20dp"
             android:textStyle="bold" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/interest_container_more_info"
-            android:layout_width="322dp"
-            android:layout_height="25dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="50dp"
-            android:backgroundTint="#3F51B5"
-            app:cardElevation="0dp" />
     </androidx.cardview.widget.CardView>
 
     <androidx.appcompat.widget.Toolbar

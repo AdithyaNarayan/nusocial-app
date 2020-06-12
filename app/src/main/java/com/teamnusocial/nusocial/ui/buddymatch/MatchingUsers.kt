@@ -47,7 +47,6 @@ class UserComparator(val you: User,val allUsers: MutableList<User>) : Comparator
         analyzePastMatches()
         var maxPos = 0
         //gender
-        Log.d("TEST4", "check size " + genderCount.size)
         for(i in 0..2) {
             if(genderCount[i] > genderCount[maxPos]) maxPos = i
         }

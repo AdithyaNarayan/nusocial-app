@@ -39,13 +39,5 @@ class BuddyProfileActivity : AppCompatActivity() {
         about_info_more_info.text = userAbout
         name_more_info.text = userName
 
-        var cardView = findViewById<CardView>(R.id.interest_container_more_info)
-            var linearLayoutHorizontal = LinearLayout(this)
-            linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
-            for (x in 0..3) {
-                val module: View = this.layoutInflater.inflate(R.layout.matched_module_child,null)
-                linearLayoutHorizontal.addView(module)
-            }
-        cardView.addView(linearLayoutHorizontal)
     }
 }

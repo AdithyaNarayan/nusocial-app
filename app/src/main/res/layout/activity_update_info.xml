@@ -1,108 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/scrollFeed"
-    tools:context=".ui.you.UpdateInfoActivity"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:background="@drawable/centre_background"
-    android:focusableInTouchMode="true">
+    android:background="#03A9F4"
+    tools:context=".ui.you.UpdateInfoActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarUpdateInfo"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:title="More Info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:theme="@style/ToolBarStyle" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/personalDetailsCard"
-        style="@style/centreLocatorCardDesign"
-        android:layout_marginTop="10dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="10dp">
+    <Button
+        android:id="@+id/update_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        android:backgroundTint="#FF9800"
+        android:text="Update"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeYearOfStudy" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:focusableInTouchMode="false"
-            android:orientation="vertical"
-            android:padding="20dp">
+    <TextView
+        android:id="@+id/changeNameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
+        android:text="Name"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/changeName"
+        app:layout_constraintHorizontal_bias="0.39"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/txtInputName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/changeName"
+        android:layout_width="288dp"
+        android:layout_height="43dp"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="84dp"
+        android:layout_marginEnd="28dp"
+        android:autofillHints=""
+        android:background="@drawable/rounded_edit_text"
+        android:elevation="8dp"
+        android:fontFamily="@font/light"
+        android:hint="name"
+        android:inputType="textEmailAddress"
+        android:paddingHorizontal="12dp"
+        android:textColor="#000000"
+        android:textColorHint="#74768f"
+        android:windowSoftInputMode="adjustResize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-                <EditText
-                    android:id="@+id/txtName"
-                    style="@style/modifiedEditText"
-                    android:hint="@string/name"
-                    android:singleLine="true" />
+    <TextView
+        android:id="@+id/changeCourseTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:text="Course"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/changeCourse"
+        app:layout_constraintHorizontal_bias="0.39"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeNameTitle" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+    <EditText
+        android:id="@+id/changeCourse"
+        android:layout_width="288dp"
+        android:layout_height="43dp"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="28dp"
+        android:autofillHints=""
+        android:background="@drawable/rounded_edit_text"
+        android:elevation="8dp"
+        android:fontFamily="@font/light"
+        android:hint="course of study"
+        android:inputType="textEmailAddress"
+        android:paddingHorizontal="12dp"
+        android:textColor="#00000000"
+        android:textColorHint="#74768f"
+        android:windowSoftInputMode="adjustResize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeName" />
 
+    <TextView
+        android:id="@+id/changeYearOfStudyTitle"
+        android:layout_width="68dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="32dp"
+        android:text="Year of study"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/changeYearOfStudy"
+        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeCourseTitle" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/txtInputEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/changeYearOfStudy"
+        android:layout_width="288dp"
+        android:layout_height="43dp"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="28dp"
+        android:autofillHints=""
+        android:background="@drawable/rounded_edit_text"
+        android:elevation="8dp"
+        android:fontFamily="@font/light"
+        android:inputType="number"
+        android:paddingHorizontal="12dp"
+        android:textColor="#000000"
+        android:textColorHint="#74768f"
+        android:windowSoftInputMode="adjustResize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeCourse" />
 
-                <EditText
-                    android:id="@+id/txtEmail"
-                    style="@style/modifiedEditText"
-                    android:ems="10"
-                    android:hint="@string/email"
-                    android:inputType="textEmailAddress" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/txtInputMob"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/txtMob"
-                    style="@style/modifiedEditText"
-                    android:hint="Test"
-                    android:inputType="phone" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/txtInputReg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/txtReg"
-                    style="@style/modifiedEditText"
-                    android:hint="Reg" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/txtInputFeedback"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/txtFeed"
-                    style="@style/modifiedEditText"
-                    android:hint="@string/message"
-                    android:inputType="textMultiLine"
-                    android:minLines="2" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <Button
-                android:id="@+id/btnSend"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:background="@drawable/centre_button"
-                android:text="@string/send"
-                android:textColor="@color/whiteTextColor" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-</androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

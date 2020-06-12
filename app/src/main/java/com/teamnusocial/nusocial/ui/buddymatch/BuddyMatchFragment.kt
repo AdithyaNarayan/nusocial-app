@@ -7,10 +7,8 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,19 +16,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firestore.v1.FirestoreGrpc
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Module
 import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.utils.FirestoreUtils
-import kotlinx.android.synthetic.main.buddymatch_img.*
 import kotlinx.android.synthetic.main.fragment_buddymatch.*
 import kotlinx.android.synthetic.main.matched_module_child.view.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class BuddyMatchFragment : Fragment() {
@@ -43,31 +38,32 @@ class BuddyMatchFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("TEST10", "Init Here C")
         buddyMatchViewModel =
             ViewModelProvider(requireActivity()).get(BuddyMatchViewModel::class.java)
-        lifecycleScope.launch {
-            buddyMatchViewModel.updateMatchedUsers(UserRepository(FirestoreUtils()).getUsers())
-        }
-        CoroutineScope(Dispatchers.IO).launch {
-            you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
-        }
     }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        lifecycleScope.launch {
+            buddyMatchViewModel.updateMatchedUsers(UserRepository(FirestoreUtils()).getUsers())
+            buddyMatchViewModel.updateYou(UserRepository(FirestoreUtils()).getCurrentUserAsUser())
+            populateMatchedUsers(buddyMatchViewModel.matchedUsers.value!!, inflater, container)
 
+        }
+        buddyMatchViewModel.you.observe(viewLifecycleOwner, Observer {
+            you = buddyMatchViewModel.you.value!!
+        })
         buddyMatchViewModel.matchedUsers.observe(viewLifecycleOwner, Observer {
             if (it.size > 0) {
-                populateMatchedUsers(it, inflater, container)
+                Log.d("TEST8", "Init Here")
             }
         })
         root = inflater.inflate(R.layout.fragment_buddymatch, container, false)
         return root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         swipeView = match_swipe as RecyclerView
@@ -75,8 +71,9 @@ class BuddyMatchFragment : Fragment() {
         snapHelper.attachToRecyclerView(swipeView)
         val layoutManager = LinearLayoutManager(context)
         layoutManager.orientation = LinearLayoutManager.HORIZONTAL
-        layoutManager.scrollToPositionWithOffset(Int.MAX_VALUE/2,  swipeView.width / 2 + 185)
         swipeView.layoutManager = layoutManager
+        val offset = resources.getDimension(R.dimen.offset_image)
+        swipeView.addItemDecoration(OffsetHelper(offset.toInt()))
     }
 
     fun onScrollListener(
@@ -85,7 +82,7 @@ class BuddyMatchFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?
     ) {
-        val currUser = allUsers[currPos]
+        val currUser = allUsers[currPos % allUsers.size]
         var cardView = matched_modules_buddymatch
         if (this::linearLayoutVertical.isInitialized) {
             cardView.removeAllViews()
@@ -115,9 +112,11 @@ class BuddyMatchFragment : Fragment() {
         }
         match_button.setOnClickListener {
             allUsers.remove(currUser)
-            swipeView.scrollBy(1,0)
-            swipeView.scrollBy(-1,0)
             buddyMatchViewModel.images.removeAt(currPos)
+            if(currPos == allUsers.size) {
+                swipeView.scrollToPosition(currPos - 1)
+            }
+
             if(buddyMatchViewModel.images.size == 0) {
                 buddyMatchViewModel.images.add("https://i7.pngflow.com/pngimage/455/105/png-anonymity-computer-icons-anonymous-user-anonymous-purple-violet-logo-smiley-clipart.png")
                 name_buddymatch.text = "--Blank--"
@@ -129,7 +128,7 @@ class BuddyMatchFragment : Fragment() {
             var toast = Toast.makeText(context, "Buddy added !", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 0)
             toast.show()
-            matchBuddy(currPos, currUser)
+            matchBuddy(currUser)
         }
     }
     fun isMatched(module: Module): Boolean {
@@ -197,8 +196,10 @@ class BuddyMatchFragment : Fragment() {
     ) {
         /**image swipe view**/
         val filteredAllUsers = MatchingUsers(allUsers, you).filterUsers()
+        buddyMatchViewModel.images.clear()
         for (user in filteredAllUsers) {
             buddyMatchViewModel.images.add(user.profilePicturePath)
+            Log.d("TEST6", user.name)
         }
         if(filteredAllUsers.size == 0) {
             buddyMatchViewModel.images.add("https://i7.pngflow.com/pngimage/455/105/png-anonymity-computer-icons-anonymous-user-anonymous-purple-violet-logo-smiley-clipart.png")
@@ -206,21 +207,13 @@ class BuddyMatchFragment : Fragment() {
         var adapter = Adapter(buddyMatchViewModel.images)
         swipeView.adapter = adapter
         /****/
-        /**starting match**/
-        var currPos = (Int.MAX_VALUE/2) % filteredAllUsers.size
-        var currUser = filteredAllUsers[currPos]
-        getMatchedModules(currPos, currUser, inflater, container, LinearLayout(context))
-
-
-        setUpButton(currUser, allUsers, currPos)
-
         swipeView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val snapView = snapHelper.findSnapView(swipeView.layoutManager)
                 if(filteredAllUsers.size > 0) {
                     onScrollListener(
-                        swipeView.layoutManager!!.getPosition(snapView!!) % filteredAllUsers.size,
+                        swipeView.getChildAdapterPosition(snapView!!),
                         filteredAllUsers,
                         inflater,
                         container
@@ -229,7 +222,7 @@ class BuddyMatchFragment : Fragment() {
             }
         })
     }
-    fun matchBuddy(currPos: Int,currUser: User) {
+    fun matchBuddy(currUser: User) {
         if(currUser.seenAndMatch.contains(you.uid)) {
             CoroutineScope(Dispatchers.IO).launch {
                 UserRepository(FirestoreUtils()).updateCurrentBuddies(currUser.uid)

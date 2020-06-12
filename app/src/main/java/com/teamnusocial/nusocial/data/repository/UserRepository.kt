@@ -63,6 +63,22 @@ class UserRepository(private val utils: FirestoreUtils) {
                 FieldValue.arrayUnion(newMatch)
             )
     }
+    suspend fun updateStringField(newValue: String, field: String) = coroutineScope {
+        utils
+            .getAllUsers().document(utils.getCurrentUser()!!.uid)
+            .update(
+                field,
+                newValue
+            )
+    }
+    suspend fun updateNumberField(newValue: Number, field: String) = coroutineScope {
+        utils
+            .getAllUsers().document(utils.getCurrentUser()!!.uid)
+            .update(
+                field,
+                newValue
+            )
+    }
 
     suspend fun getCurrentUserAsDocument() = utils.getCurrentUserAsDocument()
 

@@ -15,15 +15,15 @@ import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
 
 class Adapter(private val urls: ArrayList<String>) : RecyclerView.Adapter<Adapter.ImageHolder>() {
-    class ImageHolder(val imageView: ImageView): RecyclerView.ViewHolder(imageView)
+    class ImageHolder(val layoutView: ConstraintLayout): RecyclerView.ViewHolder(layoutView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder {
-        val imageView = LayoutInflater.from(parent.context).inflate(R.layout.buddymatch_img, parent, false) as ImageView
-        return ImageHolder(imageView)
+        val layoutView = LayoutInflater.from(parent.context).inflate(R.layout.buddymatch_img, parent, false) as ConstraintLayout
+        return ImageHolder(layoutView)
     }
     override fun onBindViewHolder(holder: ImageHolder, position: Int) {
-        Picasso.get().load(urls[position % urls.size]).into(holder.imageView)
+        Picasso.get().load(urls[position]).into(holder.layoutView.findViewById(R.id.buddy_img) as ImageView)
     }
 
-    override fun getItemCount() = Int.MAX_VALUE
+    override fun getItemCount() = urls.size
 }
