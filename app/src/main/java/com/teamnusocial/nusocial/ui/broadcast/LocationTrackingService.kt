@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.os.IBinder
 import android.util.Log
 import androidx.core.content.ContextCompat
@@ -16,10 +17,12 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.firestore.FirebaseFirestore
 import com.teamnusocial.nusocial.R
+import com.teamnusocial.nusocial.data.model.knn.Classifier
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.coroutines.runBlocking
-
+import java.text.DecimalFormat
+import java.util.*
 
 class LocationTrackingService() : Service() {
     private val repository: UserRepository = UserRepository(FirestoreUtils())
@@ -80,7 +83,6 @@ class LocationTrackingService() : Service() {
 
     private fun requestLocationUpdates() {
         val request = LocationRequest()
-        Log.d("BROADCAST", "KSFJ")
         request.interval = 10000
         request.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         val fusedLocationProviderClient =
@@ -95,8 +97,17 @@ class LocationTrackingService() : Service() {
             fusedLocationProviderClient
                 .requestLocationUpdates(request, object : LocationCallback() {
                     override fun onLocationResult(locationResult: LocationResult) {
+
+                        val decimalFormat = DecimalFormat("##.##")
+                        val cluster =
+                            decimalFormat.format(locationResult.lastLocation!!.latitude) + decimalFormat.format(
+                                locationResult.lastLocation!!.longitude
+                            )
                         runBlocking {
-                            repository.updateCurrentLocation(locationResult.lastLocation!!)
+                            repository.updateCurrentLocation(
+                                locationResult.lastLocation!!,
+                                cluster
+                            )
                         }
                     }
                 }, null)

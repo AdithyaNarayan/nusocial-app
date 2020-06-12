@@ -11,7 +11,7 @@ import com.teamnusocial.nusocial.R
 
 class MessagesRecyclerViewAdapter(
     val context: Context?,
-    val data: List<String>
+    val data: List<Pair<String, String>>
 ) :
     RecyclerView.Adapter<MessagesRecyclerViewAdapter.ViewHolder>() {
     private val inflater = LayoutInflater.from(context)
@@ -29,7 +29,7 @@ class MessagesRecyclerViewAdapter(
         holder: MessagesRecyclerViewAdapter.ViewHolder,
         position: Int
     ) {
-        val userName = data[position]
+        val userName = data[position].second
         holder.userNameTextView.text = userName
     }
 
@@ -50,7 +50,7 @@ class MessagesRecyclerViewAdapter(
     }
 
     fun getItem(id: Int): String {
-        return data[id]
+        return data[id].second
     }
 
     fun setClickListener(itemClickListener: ItemClickListener) {

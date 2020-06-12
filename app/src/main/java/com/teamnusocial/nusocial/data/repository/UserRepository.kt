@@ -2,15 +2,14 @@ package com.teamnusocial.nusocial.data.repository
 
 import android.location.Location
 import android.util.Log
-import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.ktx.getField
 import com.teamnusocial.nusocial.data.model.LocationLatLng
+import com.teamnusocial.nusocial.data.model.TextMessage
 import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 
 class UserRepository(private val utils: FirestoreUtils) {
@@ -20,11 +19,11 @@ class UserRepository(private val utils: FirestoreUtils) {
         utils.getAllUsers().get().addOnCompleteListener {
             if (it.isSuccessful) {
                 it.result!!.documents.forEach { user ->
-                   if(FirebaseAuth.getInstance().uid != user.id && !currUser.buddies.contains(user.id) && !currUser.seenAndMatch.contains(user.id)) {
-                       var userItem = user.toObject(User::class.java)!!
-                       userItem.uid = user.id
-                       userList.add(userItem)
-                   }
+                    if(FirebaseAuth.getInstance().uid != user.id && !currUser.buddies.contains(user.id) && !currUser.seenAndMatch.contains(user.id)) {
+                        var userItem = user.toObject(User::class.java)!!
+                        userItem.uid = user.id
+                        userList.add(userItem)
+                    }
                 }
             } else {
                 Log.d("USER", it.exception!!.message.toString())
@@ -32,18 +31,16 @@ class UserRepository(private val utils: FirestoreUtils) {
         }.await()
         userList
     }
-    suspend fun addUser(user: User) = coroutineScope {
-        utils.getAllUsers().add(user)
-    }
-
-    suspend fun updateCurrentLocation(location: Location) = coroutineScope {
+    suspend fun updateCurrentLocation(location: Location, cluster: String) = coroutineScope {
         utils
-            .getAllUsers().document(utils.getCurrentUser()!!.uid)
+            .getAllUsers()
+            .document(utils.getCurrentUser()!!.uid)
             .update(
                 "location",
                 LocationLatLng(
                     location.latitude,
-                    location.longitude
+                    location.longitude,
+                    cluster
                 )
             )
     }
@@ -84,17 +81,59 @@ class UserRepository(private val utils: FirestoreUtils) {
 
     suspend fun getCurrentUserAsUser() = coroutineScope {
         var user = User()
-        //Log.d("DEBUG_F", FirebaseAuth.getInstance().uid)
         utils.getCurrentUserAsDocument().get().addOnCompleteListener {
             if (it.isSuccessful) {
                 user = it.result?.toObject(User::class.java)!!
             } else {
                 Log.d("USER", it.exception!!.message.toString())
             }
-        }.addOnFailureListener {
-            Log.d("DEBUG_USER", it.message.toString())
-        }
-            .await()
-            user
+        }.await()
+        user
+    }
+
+    suspend fun getUser(userID: String) = coroutineScope {
+        var user = User()
+        utils.getUserAsDocument(userID).get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                user = it.result?.toObject(User::class.java)!!
+            } else {
+                Log.d("USER", it.exception!!.message.toString())
+            }
+        }.await()
+        user
+    }
+
+    suspend fun getUserAnd(userID: String, onComplete: (User) -> Unit) {
+        utils.getUserAsDocument(userID).get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                onComplete(it.result!!.toObject(User::class.java)!!)
+            }
         }
     }
+
+    suspend fun createChatWith(userID: String) = utils.createChatWith(userID)
+
+    suspend fun sendMessage(messageID: String, messageText: String) = coroutineScope {
+        utils.getMessages(messageID).collection("messages")
+            .add(
+                TextMessage(
+                    messageText,
+                    Timestamp.now(),
+                    utils.getCurrentUser()!!.uid
+                )
+            )
+        utils.getMessages(messageID).collection("messages").addSnapshotListener { querySnapshot, exception ->
+            if(querySnapshot!!.documents.size > 1) {
+                utils.getMessages(messageID).update("invisible","")
+            }
+        }
+    }
+
+    suspend fun makeInvisibleTo(userID: String, messageID: String) = coroutineScope {
+        utils.getMessages(messageID).update("invisible", userID)
+    }
+
+    fun getMessageID(firstUser: User, secondUser: User) =
+        if (firstUser.uid > secondUser.uid) "${firstUser.uid}_${secondUser.uid}" else "${secondUser.uid}_${firstUser.uid}"
+}
+

@@ -26,5 +26,8 @@
     <string name="send">Send</string>
     <string name="please_enter_your_broadcast_message_here">Please enter your broadcast message here</string>
     <string name="message">Message</string>
+    <string name="time">time</string>
+    <string name="send_a_message">Send a Message</string>
+    <string name="you">You</string>
 
 </resources>

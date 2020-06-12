@@ -26,4 +26,5 @@ class Adapter(private val urls: ArrayList<String>) : RecyclerView.Adapter<Adapte
     }
 
     override fun getItemCount() = urls.size
+
 }

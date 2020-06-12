@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.teamnusocial.nusocial.HomeActivity
 import com.teamnusocial.nusocial.R
-import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import kotlinx.coroutines.CoroutineScope
@@ -103,8 +102,6 @@ class SignUpActivity : AppCompatActivity(), KodeinAware {
                                 it.result?.user!!.uid,
                                 nameSignUpEditText.text.toString()
                             )
-                            var userRepo = UserRepository(FirestoreUtils())
-                            userRepo.addUser(userRepo.getCurrentUserAsUser())
                         }
                         startActivity(Intent(this@SignUpActivity, HomeActivity::class.java))
                     } else {

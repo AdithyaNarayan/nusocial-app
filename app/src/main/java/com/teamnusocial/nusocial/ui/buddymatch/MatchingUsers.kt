@@ -1,14 +1,7 @@
 package com.teamnusocial.nusocial.ui.buddymatch
 
-import android.util.Log
 import com.teamnusocial.nusocial.data.model.Gender
 import com.teamnusocial.nusocial.data.model.User
-import com.teamnusocial.nusocial.data.repository.UserRepository
-import com.teamnusocial.nusocial.utils.FirestoreUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.*
 import kotlin.Comparator
 import kotlin.collections.HashMap
 

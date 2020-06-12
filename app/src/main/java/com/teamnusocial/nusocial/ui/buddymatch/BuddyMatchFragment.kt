@@ -27,7 +27,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
 class BuddyMatchFragment : Fragment() {
     private lateinit var swipeView: RecyclerView
     private lateinit var buddyMatchViewModel: BuddyMatchViewModel
@@ -152,7 +151,6 @@ class BuddyMatchFragment : Fragment() {
         /**matched modules**/
         var cardView = matched_modules_buddymatch
         var id: Int = 0
-
         linearLayoutVertical.orientation = LinearLayout.VERTICAL
         if (numberOfRows > 1 || numberOfMatchedModules == 4) {
             for (y in 1..numberOfRows) {
@@ -234,4 +232,5 @@ class BuddyMatchFragment : Fragment() {
             }
         }
     }
+
 }

@@ -1,9 +1,28 @@
 package com.teamnusocial.nusocial.data.model
 
+import android.location.Location
+import android.location.LocationManager
+import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 
-data class LocationLatLng(val latitude: Double, val longitude: Double) {
-    constructor() : this(0.0, 0.0)
+data class LocationLatLng(val latitude: Double, val longitude: Double, var cluster: String) {
+    constructor() : this(0.0, 0.0, "")
 
     fun getAsLatLng() = LatLng(latitude, longitude)
+
+    fun distanceTo(locationLatLng: LocationLatLng): Double {
+        val firstLoc =
+            Location(LocationManager.GPS_PROVIDER)
+        val secondLoc =
+            Location(LocationManager.GPS_PROVIDER)
+
+        firstLoc.latitude = latitude
+        firstLoc.longitude = longitude
+
+        secondLoc.latitude = locationLatLng.latitude
+        secondLoc.longitude = locationLatLng.longitude
+        Log.d("BROADCAST", firstLoc.toString())
+        return firstLoc.distanceTo(secondLoc).toDouble()
+    }
+
 }

@@ -12,4 +12,5 @@
     <color name="black">#000000</color>
     <color name="whiteTextColor">#fff</color>
     <color name="primaryTextColor">#00a5ff</color>
+    <color name="blue_transparent">#A16CADF9</color>
 </resources>
