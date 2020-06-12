@@ -1,33 +1,31 @@
 package com.teamnusocial.nusocial.ui.you
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
+import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.firestore.v1.FirestoreGrpc
 import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
-import com.teamnusocial.nusocial.data.model.User
+import com.teamnusocial.nusocial.data.model.Module
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.auth.SignInActivity
-import com.teamnusocial.nusocial.ui.buddymatch.BuddyMatchViewModel
-import com.teamnusocial.nusocial.ui.buddymatch.MaskTransformation
 import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
 import com.teamnusocial.nusocial.utils.FirestoreUtils
-import kotlinx.android.synthetic.main.activity_buddy_profile.*
-import kotlinx.android.synthetic.main.fragment_buddymatch.*
 import kotlinx.android.synthetic.main.fragment_you.*
 import kotlinx.android.synthetic.main.matched_module_child.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 
 class YouFragment : Fragment() {
 
@@ -61,7 +59,7 @@ class YouFragment : Fragment() {
     private fun updateUI() {
         val updateInfoButton = update_info_button
         val logOutButton = log_out_button
-
+        var m_Text = ""
         logOutButton.setOnClickListener {
             FirebaseAuthUtils().logOut()
             var intent = Intent(context, SignInActivity::class.java)
@@ -70,6 +68,27 @@ class YouFragment : Fragment() {
             intent.putExtra("USER_COURSE", viewModel.you.courseOfStudy)
             startActivity(intent)
 
+        }
+        add_module_button.setOnClickListener{
+            val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+            builder.setTitle("Add Modules")
+            val input = EditText(context)
+            input.inputType = InputType.TYPE_CLASS_TEXT
+            builder.setView(input)
+            builder.setPositiveButton("OK",
+                DialogInterface.OnClickListener { dialog, which ->
+                    m_Text = input.text.toString()
+                    var result = m_Text.split(",")
+                    var realRes = mutableListOf<Module>()
+                    for(string in result) {
+                        val moduleCode = string.replace("\\s".toRegex(), "")
+                        realRes.add(Module(moduleCode, "", listOf()))
+                    }
+                    updateModules(realRes)
+                })
+            builder.setNegativeButton("Cancel",
+                DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
+            builder.show()
         }
         updateInfoButton.setOnClickListener {
             var intent = Intent(context, UpdateInfoActivity::class.java)
@@ -125,5 +144,10 @@ class YouFragment : Fragment() {
         cardView.addView(linearLayoutVertical)
         /****/
 
+    }
+    fun updateModules(value: MutableList<Module>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            UserRepository(FirestoreUtils()).updateModules(value)
+        }
     }
 }

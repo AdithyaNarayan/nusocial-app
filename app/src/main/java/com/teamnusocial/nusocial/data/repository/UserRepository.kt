@@ -6,6 +6,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.teamnusocial.nusocial.data.model.LocationLatLng
+import com.teamnusocial.nusocial.data.model.Module
 import com.teamnusocial.nusocial.data.model.TextMessage
 import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.utils.FirestoreUtils
@@ -75,6 +76,16 @@ class UserRepository(private val utils: FirestoreUtils) {
                 field,
                 newValue
             )
+    }
+    suspend fun updateModules(newValue: MutableList<Module>) = coroutineScope {
+        for(module in newValue) {
+            utils
+                .getAllUsers().document(utils.getCurrentUser()!!.uid)
+                .update(
+                    "modules",
+                    FieldValue.arrayUnion(module)
+                )
+        }
     }
 
     suspend fun getCurrentUserAsDocument() = utils.getCurrentUserAsDocument()
