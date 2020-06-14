@@ -7,12 +7,14 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -32,7 +34,6 @@ class BuddyMatchFragment : Fragment() {
     private lateinit var buddyMatchViewModel: BuddyMatchViewModel
     private lateinit var snapHelper: LinearSnapHelper
     private lateinit var root: View
-    private lateinit var linearLayoutVertical: LinearLayout
     private lateinit var you: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,17 +83,14 @@ class BuddyMatchFragment : Fragment() {
         container: ViewGroup?
     ) {
         val currUser = allUsers[currPos % allUsers.size]
-        var cardView = matched_modules_buddymatch
-        if (this::linearLayoutVertical.isInitialized) {
-            cardView.removeAllViews()
-        }
-        linearLayoutVertical = LinearLayout(context)
-        linearLayoutVertical.removeAllViewsInLayout()
+        var tableView = matched_modules_buddymatch
+        tableView.removeAllViews()
 
-        getMatchedModules(currPos, currUser, inflater, container, linearLayoutVertical)
+        getMatchedModules(currPos, currUser, inflater, container)
 
         setUpButton(currUser, allUsers, currPos)
     }
+    val alphaAni = AlphaAnimation(1F, 0.8F)
     fun setUpButton(currUser: User, allUsers: MutableList<User>, currPos: Int) {
         if(allUsers.size == 0) {
             more_info_buddymatch.isEnabled = false
@@ -102,19 +100,15 @@ class BuddyMatchFragment : Fragment() {
             more_info_buddymatch.isEnabled = true
             match_button.isEnabled = true
         }
-        more_info_buddymatch.setOnClickListener {
-            val intent = Intent(context, BuddyProfileActivity::class.java)
-            intent.putExtra("USER_IMG", currUser.profilePicturePath)
-            intent.putExtra("USER_NAME", currUser.name)
-            intent.putExtra("USER_ABOUT", currUser.about)
-            startActivity(intent)
-        }
         match_button.setOnClickListener {
+            match_button.startAnimation(alphaAni)
             allUsers.remove(currUser)
             buddyMatchViewModel.images.removeAt(currPos)
             if(currPos == allUsers.size) {
                 swipeView.scrollToPosition(currPos - 1)
             }
+            swipeView.scrollBy(1,0)
+            swipeView.scrollBy(-1,0)
 
             if(buddyMatchViewModel.images.size == 0) {
                 buddyMatchViewModel.images.add("https://i7.pngflow.com/pngimage/455/105/png-anonymity-computer-icons-anonymous-user-anonymous-purple-violet-logo-smiley-clipart.png")
@@ -129,6 +123,16 @@ class BuddyMatchFragment : Fragment() {
             toast.show()
             matchBuddy(currUser)
         }
+        more_info_buddymatch.setOnClickListener {
+            if(allUsers.size > 0) {
+                val intent = Intent(context, BuddyProfileActivity::class.java)
+                intent.putExtra("USER_IMG", currUser.profilePicturePath)
+                intent.putExtra("USER_NAME", currUser.name)
+                intent.putExtra("USER_ABOUT", currUser.about)
+                more_info_buddymatch.startAnimation(alphaAni)
+                startActivity(intent)
+            }
+        }
     }
     fun isMatched(module: Module): Boolean {
         for(module_you in you.modules) {
@@ -136,53 +140,18 @@ class BuddyMatchFragment : Fragment() {
         }
         return false
     }
-    fun getMatchedModules(currPos: Int, currUser: User, inflater: LayoutInflater, container: ViewGroup?, linearLayoutVertical: LinearLayout) {
+    fun getMatchedModules(currPos: Int, currUser: User, inflater: LayoutInflater, container: ViewGroup?) {
         name_buddymatch.text = currUser.name
         major_buddymatch.text = currUser.courseOfStudy
         curr_year_buddymatch.text = "Year " + currUser.yearOfStudy.toString()
         var matchedModules = currUser.modules.filter { module -> isMatched(module) }.toList()
+
         val numberOfMatchedModules = matchedModules.size
-
-
-        var numberOfRows = numberOfMatchedModules / 4
-        numberOfRows += if (numberOfMatchedModules % 4 > 0) 1 else 0
         /****/
 
         /**matched modules**/
-        var cardView = matched_modules_buddymatch
-        var id: Int = 0
-        linearLayoutVertical.orientation = LinearLayout.VERTICAL
-        if (numberOfRows > 1 || numberOfMatchedModules == 4) {
-            for (y in 1..numberOfRows) {
-                var linearLayoutHorizontal = LinearLayout(context)
-                linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
-                for (x in 0..3) {
-                    val module: View =
-                        inflater.inflate(R.layout.matched_module_child, container, false)
-                    module.module_name.text = matchedModules[id++].moduleCode
-                    linearLayoutHorizontal.addView(module)
-                }
-                linearLayoutVertical.addView(linearLayoutHorizontal)
-            }
-            var linearLayoutHorizontal = LinearLayout(context)
-            linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
-            for (x in 1..numberOfMatchedModules % 4) {
-                val module: View = inflater.inflate(R.layout.matched_module_child, container, false)
-                module.module_name.text = matchedModules[id++].moduleCode
-                linearLayoutHorizontal.addView(module)
-            }
-            linearLayoutVertical.addView(linearLayoutHorizontal)
-        } else if (numberOfMatchedModules < 4) {
-            var linearLayoutHorizontal = LinearLayout(context)
-            linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
-            for (x in 1..numberOfMatchedModules) {
-                val module: View = inflater.inflate(R.layout.matched_module_child, container, false)
-                module.module_name.text = matchedModules[id++].moduleCode
-                linearLayoutHorizontal.addView(module)
-            }
-            linearLayoutVertical.addView(linearLayoutHorizontal)
-        }
-        cardView.addView(linearLayoutVertical)
+        matched_modules_buddymatch.layoutManager = GridLayoutManager(context, 4)
+        matched_modules_buddymatch.adapter = ModulesAdapter(currUser.modules.toTypedArray(), context)
         /****/
 
 

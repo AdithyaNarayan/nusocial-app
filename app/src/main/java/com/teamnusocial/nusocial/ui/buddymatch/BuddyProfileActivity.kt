@@ -1,18 +1,19 @@
 package com.teamnusocial.nusocial.ui.buddymatch
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
-import android.view.View
-import android.widget.LinearLayout
+import android.util.Log
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.cardview.widget.CardView
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
+import com.teamnusocial.nusocial.HomeActivity
 import com.teamnusocial.nusocial.R
-import com.teamnusocial.nusocial.data.model.User
 import kotlinx.android.synthetic.main.activity_buddy_profile.*
+import kotlinx.android.synthetic.main.fragment_buddymatch.*
+
+
 class BuddyProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,5 +40,20 @@ class BuddyProfileActivity : AppCompatActivity() {
         about_info_more_info.text = userAbout
         name_more_info.text = userName
 
+        back_profile_button.setOnClickListener {
+            finish()
+        }
+
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

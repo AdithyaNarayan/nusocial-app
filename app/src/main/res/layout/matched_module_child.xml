@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/module_wrapper">
     <TextView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/module_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp"
         android:background="@drawable/rounded_edit_text"
         android:padding="4dp"
         android:text="CS2030"
         android:textColor="@color/blue"
         android:textSize="13dp"
         />
+</LinearLayout>

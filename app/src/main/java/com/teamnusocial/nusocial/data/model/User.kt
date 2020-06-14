@@ -29,12 +29,12 @@ data class User(
 ) : Comparable<User> {
     constructor() : this(
         "",
-        "",
+        "--Blank--",
         Gender.MALE,
         "https://i7.pngflow.com/pngimage/455/105/png-anonymity-computer-icons-anonymous-user-anonymous-purple-violet-logo-smiley-clipart.png",
         listOf(),
         1,
-        "",
+        "--blank--",
         LocationLatLng(0.0, 0.0, ""),
         listOf(),
         "",

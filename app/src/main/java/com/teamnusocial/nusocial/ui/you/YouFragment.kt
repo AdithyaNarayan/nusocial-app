@@ -103,7 +103,7 @@ class YouFragment : Fragment() {
             .into(image)
 
 
-        /**all modules**/
+       /* /**all modules**/
         var cardView = modules_taking
         var id: Int = 0
         var linearLayoutVertical = LinearLayout(context)
@@ -111,7 +111,7 @@ class YouFragment : Fragment() {
         var numberOfRows = numberOfModules / 4
         numberOfRows += if (numberOfModules % 4 > 0) 1 else 0
         linearLayoutVertical.orientation = LinearLayout.VERTICAL
-        if (numberOfRows > 1 || numberOfModules == 4) {
+        if (numberOfRows > 1 || numberOfModules % 4 == 0) {
             for (y in 1..numberOfRows) {
                 var linearLayoutHorizontal = LinearLayout(context)
                 linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
@@ -142,7 +142,7 @@ class YouFragment : Fragment() {
             linearLayoutVertical.addView(linearLayoutHorizontal)
         }
         cardView.addView(linearLayoutVertical)
-        /****/
+        /****/*/
 
     }
     fun updateModules(value: MutableList<Module>) {

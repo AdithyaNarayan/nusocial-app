@@ -21,8 +21,17 @@
             tools:layout_editor_absoluteY="233dp">
 
         </fragment>
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include layout="@layout/content_broadcast_bottom_sheet" />
+        <include
+            android:id="@+id/bottom_sheet_broadcast"
+            layout="@layout/content_broadcast_bottom_sheet"
+            android:layout_width="0dp"
+            android:layout_height="335dp"
+            android:layout_marginTop="600dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

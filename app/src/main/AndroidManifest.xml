@@ -15,10 +15,10 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".ui.you.UpdateInfoActivity"
-            android:parentActivityName=".HomeActivity" ></activity>
+            ></activity>
         <activity
             android:name=".ui.buddymatch.BuddyProfileActivity"
-            android:parentActivityName=".HomeActivity" />
+            />
 
         <activity android:name=".ui.messages.MessageChatActivity"></activity>
 

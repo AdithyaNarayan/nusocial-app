@@ -46,14 +46,14 @@
         android:textColor="@color/black" />
 
     <com.google.android.material.button.MaterialButton
-        android:layout_width="wrap_content"
-
         android:id="@+id/sendBroadcastButton"
+
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/broadcastHeading"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="-24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="201dp"
+        android:layout_marginEnd="36dp"
         android:backgroundTint="@color/blue"
         android:fontFamily="@font/bold"
         android:shadowColor="@color/blue"
@@ -68,7 +68,7 @@
         android:layout_alignParentStart="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/rounded_edit_text"
         android:fontFamily="@font/regular"
@@ -90,9 +90,9 @@
         android:layout_below="@+id/broadcastMessageText"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="4dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="65dp"
+        android:layout_marginEnd="2dp"
         android:layout_marginBottom="24dp"
         android:max="4"
         android:progress="1"

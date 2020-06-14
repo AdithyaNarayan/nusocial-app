@@ -13,92 +13,118 @@
         android:id="@+id/match_swipe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/card_buddy_match"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
-        android:layout_width="340dp"
-        android:layout_height="239dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/card_buddy_match"
+        android:layout_width="383dp"
+        android:layout_height="253dp"
         android:layout_marginBottom="28dp"
-        android:backgroundTint="#3F51B5"
-        app:cardCornerRadius="20dp"
+        android:background="@drawable/centre_background_orange"
+        android:paddingLeft="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/matched_modules_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="90dp"
-            android:text="Matched modules" />
+            android:layout_marginTop="4dp"
+            android:text="Matched modules"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.059"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/curr_year_buddymatch" />
 
-        <androidx.cardview.widget.CardView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/matched_modules_buddymatch"
-            android:layout_width="258dp"
-            android:layout_height="109dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="115dp"
-            android:backgroundTint="#3F51B5"
-            app:cardElevation="0.0dp">
+            android:layout_width="274dp"
+            android:layout_height="93dp"
+            android:layout_marginTop="52dp"
+            android:scrollbars="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.144"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/major_buddymatch">
 
-        </androidx.cardview.widget.CardView>
+        </androidx.recyclerview.widget.RecyclerView>
 
         <TextView
             android:id="@+id/curr_year_buddymatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="70dp" />
+            android:layout_marginTop="4dp"
+            android:text="NA"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@+id/matched_modules_buddymatch"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.043"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/major_buddymatch"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/major_buddymatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="50dp"
-            android:textSize="15dp" />
+            android:layout_marginTop="4dp"
+            android:text="No major"
+            android:textColor="@color/black"
+            android:textSize="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.049"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/name_buddymatch" />
 
         <TextView
             android:id="@+id/name_buddymatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|top"
-            android:layout_marginTop="8dp"
+            android:paddingTop="10dp"
             android:text="--Blank--"
-            android:textSize="30dp" />
+            android:textColor="@color/black"
+            android:textSize="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.058"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.cardview.widget.CardView>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/match_button"
+            android:layout_width="70dp"
+            android:layout_height="0dp"
+            android:background="@drawable/matched_button"
+            android:text="Match !"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/matched_modules_buddymatch"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
-    <Button
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/more_info_buddymatch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
         android:layout_marginBottom="16dp"
+        android:background="@drawable/centre_button"
         android:text="More info"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/match_button"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="160dp"
-        android:background="@drawable/circle_positive"
-        android:text="Match !"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
