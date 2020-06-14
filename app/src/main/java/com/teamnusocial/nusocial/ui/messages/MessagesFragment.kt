@@ -61,6 +61,9 @@ class MessagesFragment : Fragment() {
     }
 
     private fun updateRecyclerView(list: List<Pair<String, String>>) {
+        if (messageUsersRecyclerView == null) {
+            return
+        }
         val recyclerView: RecyclerView = messageUsersRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         adapter = MessagesRecyclerViewAdapter(requireContext(), list)

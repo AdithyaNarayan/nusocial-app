@@ -29,29 +29,31 @@ class UpdateInfoActivity : AppCompatActivity() {
         changeYearOfStudy.hint = curr_year.toString()
 
         update_button.setOnClickListener {
-            if(changeName.text.toString() != curr_name) {
+            if (changeName.text.toString() != curr_name || changeName.text.toString() != "") {
                 updateStringField("name", changeName.text.toString())
             }
-            if(changeCourse.text.toString() != curr_course) {
+            if (changeCourse.text.toString() != curr_course || changeCourse.text.toString() != "") {
                 updateStringField("courseOfStudy", changeCourse.text.toString())
             }
-            if(changeYearOfStudy.text.toString() != curr_year.toString()) {
+            /*if (changeYearOfStudy.text.toString() != curr_year.toString() || changeYearOfStudy.text.toString() != "-1") {
                 updateNumberField(
                     "yearOfStudy",
                     changeYearOfStudy.text.toString()[0].toInt() % 5 + 1
                 )
-            }
-         }
+            }*/
         }
-    fun updateStringField(field: String,value: String) {
+    }
+
+    fun updateStringField(field: String, value: String) {
         CoroutineScope(Dispatchers.IO).launch {
             UserRepository(FirestoreUtils()).updateStringField(value, field)
         }
     }
+
     fun updateNumberField(field: String, value: Number) {
         CoroutineScope(Dispatchers.IO).launch {
             UserRepository(FirestoreUtils()).updateNumberField(value, field)
         }
     }
-    }
+}
 

@@ -24,7 +24,7 @@ import kotlinx.coroutines.runBlocking
 import java.text.DecimalFormat
 import java.util.*
 
-class LocationTrackingService() : Service() {
+class LocationTrackingService : Service() {
     private val repository: UserRepository = UserRepository(FirestoreUtils())
 
     companion object {

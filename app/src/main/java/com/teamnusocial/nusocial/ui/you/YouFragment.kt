@@ -1,8 +1,10 @@
 package com.teamnusocial.nusocial.ui.you
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
@@ -13,6 +15,8 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Module
@@ -25,6 +29,7 @@ import kotlinx.android.synthetic.main.matched_module_child.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class YouFragment : Fragment() {
@@ -56,7 +61,41 @@ class YouFragment : Fragment() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1) if (resultCode == Activity.RESULT_OK) {
+            val selectedImage: Uri = data!!.data!!
+            val filePath =
+                FirebaseStorage.getInstance().getReference("/images/${viewModel.you.uid}")
+            filePath.putFile(selectedImage)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        filePath.downloadUrl.addOnCompleteListener { url ->
+                            FirebaseFirestore.getInstance().collection("users")
+                                .document(viewModel.you.uid)
+                                .update("profilePicturePath", url.result.toString())
+                            CoroutineScope(Dispatchers.IO).launch {
+
+                                viewModel.you =
+                                    UserRepository(FirestoreUtils()).getCurrentUserAsUser()
+                                withContext(Dispatchers.Main) { updateUI() }
+                            }
+                        }
+
+
+                    }
+                }
+
+        }
+    }
+
     private fun updateUI() {
+        you_img.setOnClickListener {
+            val photoPickerIntent = Intent(Intent.ACTION_PICK)
+            photoPickerIntent.type = "image/*"
+            startActivityForResult(photoPickerIntent, 1)
+        }
+        youName.text = viewModel.you.name
         val updateInfoButton = update_info_button
         val logOutButton = log_out_button
         var m_Text = ""
@@ -69,23 +108,25 @@ class YouFragment : Fragment() {
             startActivity(intent)
 
         }
-        add_module_button.setOnClickListener{
+        add_module_button.setOnClickListener {
             val builder: AlertDialog.Builder = AlertDialog.Builder(context)
             builder.setTitle("Add Modules")
             val input = EditText(context)
             input.inputType = InputType.TYPE_CLASS_TEXT
             builder.setView(input)
-            builder.setPositiveButton("OK",
-                DialogInterface.OnClickListener { dialog, which ->
-                    m_Text = input.text.toString()
-                    var result = m_Text.split(",")
-                    var realRes = mutableListOf<Module>()
-                    for(string in result) {
-                        val moduleCode = string.replace("\\s".toRegex(), "")
-                        realRes.add(Module(moduleCode, "", listOf()))
-                    }
-                    updateModules(realRes)
-                })
+            builder.setPositiveButton(
+                "OK"
+            ) { dialog, which ->
+                m_Text = input.text.toString()
+                var result = m_Text.split(",")
+                var realRes = mutableListOf<Module>()
+                for (string in result) {
+                    val moduleCode = string.replace("\\s".toRegex(), "")
+                    realRes.add(Module(moduleCode, "", listOf()))
+                }
+                updateModules(realRes)
+
+            }
             builder.setNegativeButton("Cancel",
                 DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
             builder.show()
@@ -103,21 +144,21 @@ class YouFragment : Fragment() {
             .into(image)
 
 
-       /* /**all modules**/
+        /**all modules**/
         var cardView = modules_taking
         var id: Int = 0
         var linearLayoutVertical = LinearLayout(context)
         val numberOfModules = viewModel.you.modules.size
-        var numberOfRows = numberOfModules / 4
-        numberOfRows += if (numberOfModules % 4 > 0) 1 else 0
+        var numberOfRows = numberOfModules / 3
+        numberOfRows += if (numberOfModules % 3 > 0) 1 else 0
         linearLayoutVertical.orientation = LinearLayout.VERTICAL
-        if (numberOfRows > 1 || numberOfModules % 4 == 0) {
-            for (y in 1..numberOfRows) {
-                var linearLayoutHorizontal = LinearLayout(context)
+        if (numberOfRows > 1 || numberOfModules % 3 == 0) {
+            for (y in 1 until numberOfRows) {
+                val linearLayoutHorizontal = LinearLayout(context)
                 linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
-                for (x in 0..3) {
+                for (x in 0..2) {
                     val module: View =
-                        inflater.inflate(R.layout.matched_module_child, container , false)
+                        inflater.inflate(R.layout.matched_module_child, container, false)
                     module.module_name.text = viewModel.you.modules[id++].moduleCode
                     linearLayoutHorizontal.addView(module)
                 }
@@ -125,13 +166,15 @@ class YouFragment : Fragment() {
             }
             var linearLayoutHorizontal = LinearLayout(context)
             linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
-            for (x in 1..numberOfModules % 4) {
+            var m = if (numberOfModules % 3 == 0) 3 else numberOfModules % 3
+            if (numberOfModules == 0) m = 0
+            for (x in 1..m) {
                 val module: View = inflater.inflate(R.layout.matched_module_child, container, false)
                 module.module_name.text = viewModel.you.modules[id++].moduleCode
                 linearLayoutHorizontal.addView(module)
             }
             linearLayoutVertical.addView(linearLayoutHorizontal)
-        } else if (numberOfModules < 4) {
+        } else if (numberOfModules < 3) {
             var linearLayoutHorizontal = LinearLayout(context)
             linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
             for (x in 1..numberOfModules) {
@@ -142,12 +185,57 @@ class YouFragment : Fragment() {
             linearLayoutVertical.addView(linearLayoutHorizontal)
         }
         cardView.addView(linearLayoutVertical)
-        /****/*/
+        /****/
 
     }
-    fun updateModules(value: MutableList<Module>) {
+
+    private fun updateModules(value: MutableList<Module>) {
         CoroutineScope(Dispatchers.IO).launch {
             UserRepository(FirestoreUtils()).updateModules(value)
+            viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
+            withContext(Dispatchers.Main) {
+                var cardView = modules_taking
+                var id: Int = 0
+                var linearLayoutVertical = LinearLayout(context)
+                val numberOfModules = viewModel.you.modules.size
+                var numberOfRows = numberOfModules / 3
+                numberOfRows += if (numberOfModules % 3 > 0) 1 else 0
+                linearLayoutVertical.orientation = LinearLayout.VERTICAL
+                if (numberOfRows > 1 || numberOfModules % 3 == 0) {
+                    for (y in 1 until numberOfRows) {
+                        val linearLayoutHorizontal = LinearLayout(context)
+                        linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
+                        for (x in 0..2) {
+                            val module: View =
+                                inflater.inflate(R.layout.matched_module_child, container, false)
+                            module.module_name.text = viewModel.you.modules[id++].moduleCode
+                            linearLayoutHorizontal.addView(module)
+                        }
+                        linearLayoutVertical.addView(linearLayoutHorizontal)
+                    }
+                    var linearLayoutHorizontal = LinearLayout(context)
+                    linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
+                    val m = if (numberOfModules % 3 == 0) 3 else numberOfModules % 3
+                    for (x in 1..m) {
+                        val module: View =
+                            inflater.inflate(R.layout.matched_module_child, container, false)
+                        module.module_name.text = viewModel.you.modules[id++].moduleCode
+                        linearLayoutHorizontal.addView(module)
+                    }
+                    linearLayoutVertical.addView(linearLayoutHorizontal)
+                } else if (numberOfModules < 3) {
+                    var linearLayoutHorizontal = LinearLayout(context)
+                    linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
+                    for (x in 1..numberOfModules) {
+                        val module: View =
+                            inflater.inflate(R.layout.matched_module_child, container, false)
+                        module.module_name.text = viewModel.you.modules[id++].moduleCode
+                        linearLayoutHorizontal.addView(module)
+                    }
+                    linearLayoutVertical.addView(linearLayoutHorizontal)
+                }
+                cardView.addView(linearLayoutVertical)
+            }
         }
     }
 }

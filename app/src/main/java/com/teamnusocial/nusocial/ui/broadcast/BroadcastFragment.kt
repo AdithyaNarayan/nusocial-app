@@ -326,9 +326,9 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
     }
 
     private fun overlay(firstBmp: Bitmap, secondBmp: Bitmap): Bitmap {
-        val bmOverlay = Bitmap.createBitmap(firstBmp.width, firstBmp.height, firstBmp.config);
+        val bmOverlay = Bitmap.createBitmap(firstBmp.width, firstBmp.height, firstBmp.config)
         val canvas = Canvas(bmOverlay)
-        canvas.drawBitmap(firstBmp, Matrix(), null);
+        canvas.drawBitmap(firstBmp, Matrix(), null)
         canvas.drawBitmap(secondBmp, 0.0f, 0.0f, null)
         return bmOverlay
     }

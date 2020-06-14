@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -24,7 +23,6 @@ import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.android.synthetic.main.fragment_buddymatch.*
-import kotlinx.android.synthetic.main.matched_module_child.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -152,10 +150,12 @@ class BuddyMatchFragment : Fragment() {
         /**matched modules**/
         matched_modules_buddymatch.layoutManager = GridLayoutManager(context, 4)
         matched_modules_buddymatch.adapter = ModulesAdapter(currUser.modules.toTypedArray(), context)
+
         /****/
 
 
     }
+
     fun populateMatchedUsers(
         allUsers: MutableList<User>,
         inflater: LayoutInflater,
@@ -200,6 +200,7 @@ class BuddyMatchFragment : Fragment() {
                 UserRepository(FirestoreUtils()).updateCurrentMatches(currUser.uid)
             }
         }
+
     }
 
 }
