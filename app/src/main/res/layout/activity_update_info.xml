@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#03A9F4"
+    tools:context=".ui.you.UpdateInfoActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarUpdateInfo"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:title="More Info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:theme="@style/ToolBarStyle" />
+
+    <Button
+        android:id="@+id/update_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        android:backgroundTint="#FF9800"
+        android:text="Update"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeYearOfStudy" />
+
+    <TextView
+        android:id="@+id/changeNameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
+        android:text="Name"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/changeName"
+        app:layout_constraintHorizontal_bias="0.39"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/changeName"
+        android:layout_width="288dp"
+        android:layout_height="43dp"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="84dp"
+        android:layout_marginEnd="28dp"
+        android:autofillHints=""
+        android:background="@drawable/rounded_edit_text"
+        android:elevation="8dp"
+        android:fontFamily="@font/light"
+        android:hint="name"
+        android:inputType="textEmailAddress"
+        android:paddingHorizontal="12dp"
+        android:textColor="@color/black"
+        android:textColorHint="#74768f"
+        android:windowSoftInputMode="adjustResize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/changeCourseTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:text="Course"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/changeCourse"
+        app:layout_constraintHorizontal_bias="0.39"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeNameTitle" />
+
+    <EditText
+        android:id="@+id/changeCourse"
+        android:layout_width="288dp"
+        android:layout_height="43dp"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="28dp"
+        android:autofillHints=""
+        android:background="@drawable/rounded_edit_text"
+        android:elevation="8dp"
+        android:fontFamily="@font/light"
+        android:hint="course of study"
+        android:inputType="textEmailAddress"
+        android:paddingHorizontal="12dp"
+        android:textColor="@color/black"
+        android:textColorHint="#74768f"
+        android:windowSoftInputMode="adjustResize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeName" />
+
+    <TextView
+        android:id="@+id/changeYearOfStudyTitle"
+        android:layout_width="68dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="32dp"
+        android:text="Year of study"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/changeYearOfStudy"
+        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeCourseTitle" />
+
+    <EditText
+        android:id="@+id/changeYearOfStudy"
+        android:layout_width="288dp"
+        android:layout_height="43dp"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="28dp"
+        android:autofillHints=""
+        android:background="@drawable/rounded_edit_text"
+        android:elevation="8dp"
+        android:fontFamily="@font/light"
+        android:inputType="number"
+        android:paddingHorizontal="12dp"
+        android:textColor="@color/black"
+        android:textColorHint="#74768f"
+        android:windowSoftInputMode="adjustResize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeCourse" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
