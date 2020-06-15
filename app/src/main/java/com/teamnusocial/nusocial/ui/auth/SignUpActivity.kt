@@ -27,18 +27,11 @@ class SignUpActivity : AppCompatActivity(), KodeinAware {
     private val factory by instance<AuthViewModelFactory>()
     private lateinit var viewModel: AuthViewModel
 
-    private fun isValidEmail() =
-        !emailSignUpEditText.text.isNullOrEmpty() && Patterns.EMAIL_ADDRESS.matcher(
-            emailSignUpEditText.text.toString()
-        ).matches()
-
-
-    private fun isValidPassword() =
-        !passwordSignUpEditText.text.isNullOrEmpty() && passwordSignUpEditText.text.toString().length >= 6
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
+
+        viewModel = ViewModelProvider(this, factory).get(AuthViewModel::class.java)
 
         // make the sign in button out of focus
         signInButton.alpha = 0.20f
@@ -47,16 +40,14 @@ class SignUpActivity : AppCompatActivity(), KodeinAware {
             overridePendingTransition(0, 0)
         }
 
-        viewModel = ViewModelProvider(this, factory).get(AuthViewModel::class.java)
-
         // validate email
         emailSignUpEditText.addTextChangedListener {
-            viewModel.isValidEmail.value = isValidEmail()
+            viewModel.updateValidEmail(it.toString())
         }
 
         // validate password
         passwordSignUpEditText.addTextChangedListener {
-            viewModel.isValidPassword.value = isValidPassword()
+            viewModel.updateValidPassword(it.toString())
         }
 
         // change the edit text depending on validity of email
@@ -71,7 +62,7 @@ class SignUpActivity : AppCompatActivity(), KodeinAware {
 
         // change the edit text depending on validity of password
         viewModel.isValidPassword.observe(this@SignUpActivity, Observer {
-            if (!isValidPassword()) {
+            if (!it) {
                 passwordSignUpEditText.setBackgroundResource(R.drawable.rounded_edit_text_error)
                 Log.d("AUTH", "Invalid password")
             } else {
@@ -81,7 +72,7 @@ class SignUpActivity : AppCompatActivity(), KodeinAware {
 
         continueSignUpButton.setOnClickListener { _ ->
 
-            if (!(isValidEmail() && isValidPassword())) {
+            if (!(viewModel.isValidPassword.value!! && viewModel.isValidEmail.value!!)) {
                 Snackbar
                     .make(
                         signUpRootView,

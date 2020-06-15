@@ -106,11 +106,12 @@ class BuddyMatchFragment : Fragment() {
         swipeView.scrollBy(-1,0)
 
         if(buddyMatchViewModel.images.size == 0) {
+            match_button.isEnabled = false
+            more_info_buddymatch.isEnabled = false
             buddyMatchViewModel.images.add("https://i7.pngflow.com/pngimage/455/105/png-anonymity-computer-icons-anonymous-user-anonymous-purple-violet-logo-smiley-clipart.png")
             name_buddymatch.text = "--Blank--"
             major_buddymatch.text = ""
             curr_year_buddymatch.text = ""
-            matched_modules_buddymatch.removeAllViews()
         }
         (swipeView.adapter as Adapter).notifyDataSetChanged()
         var toast = Toast.makeText(context, "Buddy added !", Toast.LENGTH_SHORT)
@@ -169,7 +170,6 @@ class BuddyMatchFragment : Fragment() {
         curr_year_buddymatch.text = "Year " + currUser.yearOfStudy.toString()
         var matchedModules = currUser.modules.filter { module -> isMatched(module) }.toList()
 
-        val numberOfMatchedModules = matchedModules.size
         /****/
 
         /**matched modules**/
@@ -198,6 +198,7 @@ class BuddyMatchFragment : Fragment() {
         var adapter = Adapter(buddyMatchViewModel.images)
         swipeView.adapter = adapter
         /****/
+
         swipeView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)

@@ -5,10 +5,7 @@ import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
 
 class AuthUserRepository(private val authUtils: FirebaseAuthUtils) {
 
-    fun isSignedIn(): MutableLiveData<Boolean> =
-        MutableLiveData<Boolean>().apply {
-            value = authUtils.getCurrentUser() != null
-        }
+    fun isSignedIn() = authUtils.getCurrentUser() != null
 
     fun createUser(email: String, password: String) = authUtils.createUser(email, password)
 

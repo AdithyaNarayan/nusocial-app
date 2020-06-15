@@ -60,8 +60,10 @@ class YouFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         modules_taking.layoutManager = GridLayoutManager(context, 4)
         lifecycleScope.launch {
+            spin_kit_you.visibility = View.VISIBLE
             viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
             updateUI()
+            spin_kit_you.visibility = View.GONE
         }
     }
 
