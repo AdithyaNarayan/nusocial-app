@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
@@ -22,6 +23,8 @@ import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Module
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.auth.SignInActivity
+import com.teamnusocial.nusocial.ui.buddymatch.MaskTransformation
+import com.teamnusocial.nusocial.ui.buddymatch.ModulesAdapter
 import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.android.synthetic.main.fragment_you.*
@@ -55,6 +58,7 @@ class YouFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        modules_taking.layoutManager = GridLayoutManager(context, 4)
         lifecycleScope.launch {
             viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
             updateUI()
@@ -90,21 +94,26 @@ class YouFragment : Fragment() {
     }
 
     private fun updateUI() {
-        you_img.setOnClickListener {
+        you_name.text = viewModel.you.name
+
+        course_you.text = viewModel.you.courseOfStudy
+
+        if(viewModel.you.yearOfStudy == 5) year_you.text = "Graduate"
+        else year_you.text = "Year ${viewModel.you.yearOfStudy}"
+
+        number_of_buddies_you.text = "${viewModel.you.buddies.size} buddies"
+        you_image.setOnClickListener {
             val photoPickerIntent = Intent(Intent.ACTION_PICK)
             photoPickerIntent.type = "image/*"
             startActivityForResult(photoPickerIntent, 1)
         }
-        youName.text = viewModel.you.name
+
         val updateInfoButton = update_info_button
         val logOutButton = log_out_button
         var m_Text = ""
         logOutButton.setOnClickListener {
             FirebaseAuthUtils().logOut()
             var intent = Intent(context, SignInActivity::class.java)
-            intent.putExtra("USER_NAME", viewModel.you.name)
-            intent.putExtra("USER_YEAR", viewModel.you.yearOfStudy)
-            intent.putExtra("USER_COURSE", viewModel.you.courseOfStudy)
             startActivity(intent)
 
         }
@@ -133,58 +142,25 @@ class YouFragment : Fragment() {
         }
         updateInfoButton.setOnClickListener {
             var intent = Intent(context, UpdateInfoActivity::class.java)
+            intent.putExtra("USER_NAME", viewModel.you.name)
+            intent.putExtra("USER_YEAR", viewModel.you.yearOfStudy)
+            intent.putExtra("USER_COURSE", viewModel.you.courseOfStudy)
+            intent.putExtra("USER_ABOUT", viewModel.you.about)
             startActivity(intent)
         }
 
-        val image = you_img
         Picasso
             .get()
             .load(viewModel.you.profilePicturePath)
+            .centerCrop()
+            .transform(MaskTransformation(requireContext(), R.drawable.more_info_img_frame))
             .fit()
-            .into(image)
+            .into(you_image)
 
 
         /**all modules**/
-        var cardView = modules_taking
-        var id: Int = 0
-        var linearLayoutVertical = LinearLayout(context)
-        val numberOfModules = viewModel.you.modules.size
-        var numberOfRows = numberOfModules / 3
-        numberOfRows += if (numberOfModules % 3 > 0) 1 else 0
-        linearLayoutVertical.orientation = LinearLayout.VERTICAL
-        if (numberOfRows > 1 || numberOfModules % 3 == 0) {
-            for (y in 1 until numberOfRows) {
-                val linearLayoutHorizontal = LinearLayout(context)
-                linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
-                for (x in 0..2) {
-                    val module: View =
-                        inflater.inflate(R.layout.matched_module_child, container, false)
-                    module.module_name.text = viewModel.you.modules[id++].moduleCode
-                    linearLayoutHorizontal.addView(module)
-                }
-                linearLayoutVertical.addView(linearLayoutHorizontal)
-            }
-            var linearLayoutHorizontal = LinearLayout(context)
-            linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
-            var m = if (numberOfModules % 3 == 0) 3 else numberOfModules % 3
-            if (numberOfModules == 0) m = 0
-            for (x in 1..m) {
-                val module: View = inflater.inflate(R.layout.matched_module_child, container, false)
-                module.module_name.text = viewModel.you.modules[id++].moduleCode
-                linearLayoutHorizontal.addView(module)
-            }
-            linearLayoutVertical.addView(linearLayoutHorizontal)
-        } else if (numberOfModules < 3) {
-            var linearLayoutHorizontal = LinearLayout(context)
-            linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
-            for (x in 1..numberOfModules) {
-                val module: View = inflater.inflate(R.layout.matched_module_child, container, false)
-                module.module_name.text = viewModel.you.modules[id++].moduleCode
-                linearLayoutHorizontal.addView(module)
-            }
-            linearLayoutVertical.addView(linearLayoutHorizontal)
-        }
-        cardView.addView(linearLayoutVertical)
+        modules_taking.adapter = ModulesAdapter(viewModel.you.modules.toTypedArray(), requireContext())
+
         /****/
 
     }
@@ -194,47 +170,7 @@ class YouFragment : Fragment() {
             UserRepository(FirestoreUtils()).updateModules(value)
             viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
             withContext(Dispatchers.Main) {
-                var cardView = modules_taking
-                var id: Int = 0
-                var linearLayoutVertical = LinearLayout(context)
-                val numberOfModules = viewModel.you.modules.size
-                var numberOfRows = numberOfModules / 3
-                numberOfRows += if (numberOfModules % 3 > 0) 1 else 0
-                linearLayoutVertical.orientation = LinearLayout.VERTICAL
-                if (numberOfRows > 1 || numberOfModules % 3 == 0) {
-                    for (y in 1 until numberOfRows) {
-                        val linearLayoutHorizontal = LinearLayout(context)
-                        linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
-                        for (x in 0..2) {
-                            val module: View =
-                                inflater.inflate(R.layout.matched_module_child, container, false)
-                            module.module_name.text = viewModel.you.modules[id++].moduleCode
-                            linearLayoutHorizontal.addView(module)
-                        }
-                        linearLayoutVertical.addView(linearLayoutHorizontal)
-                    }
-                    var linearLayoutHorizontal = LinearLayout(context)
-                    linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
-                    val m = if (numberOfModules % 3 == 0) 3 else numberOfModules % 3
-                    for (x in 1..m) {
-                        val module: View =
-                            inflater.inflate(R.layout.matched_module_child, container, false)
-                        module.module_name.text = viewModel.you.modules[id++].moduleCode
-                        linearLayoutHorizontal.addView(module)
-                    }
-                    linearLayoutVertical.addView(linearLayoutHorizontal)
-                } else if (numberOfModules < 3) {
-                    var linearLayoutHorizontal = LinearLayout(context)
-                    linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
-                    for (x in 1..numberOfModules) {
-                        val module: View =
-                            inflater.inflate(R.layout.matched_module_child, container, false)
-                        module.module_name.text = viewModel.you.modules[id++].moduleCode
-                        linearLayoutHorizontal.addView(module)
-                    }
-                    linearLayoutVertical.addView(linearLayoutHorizontal)
-                }
-                cardView.addView(linearLayoutVertical)
+                modules_taking.adapter = ModulesAdapter(viewModel.you.modules.toTypedArray(), requireContext())
             }
         }
     }

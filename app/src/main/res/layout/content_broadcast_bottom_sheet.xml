@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/orange"
-    app:behavior_peekHeight="40dp"
+    app:behavior_peekHeight="120dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <ImageView
@@ -32,7 +32,7 @@
         android:fontFamily="@font/bold"
         android:text="@string/title_broadcast"
         android:textColor="@color/black"
-        android:textSize="24sp" />
+        android:textSize="24dp" />
 
     <TextView
         android:id="@+id/broadCastRadiusTextView"

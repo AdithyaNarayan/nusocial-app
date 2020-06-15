@@ -1,8 +1,16 @@
 package com.teamnusocial.nusocial.ui.you
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
+import android.util.Log
+import android.view.MenuItem
+import android.view.View
+import android.widget.Adapter
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import androidx.core.view.get
+import com.teamnusocial.nusocial.HomeActivity
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.utils.FirestoreUtils
@@ -22,25 +30,68 @@ class UpdateInfoActivity : AppCompatActivity() {
 
         val curr_name = intent.getStringExtra("USER_NAME")
         val curr_course = intent.getStringExtra("USER_COURSE")
-        val curr_year = intent.getIntExtra("USER_YEAR", -1)
+        val curr_year = intent.getIntExtra("USER_YEAR", 0)
+        val curr_about = intent.getStringExtra("USER_ABOUT")
+        if(curr_name != "" && curr_name != null) {
+            changeName.hint = curr_name
+        }
+        if(curr_course != "" && curr_course != null) {
+            changeCourse.hint = curr_course
+        }
+        if(curr_about != "" && curr_about != null) {
+            about_input.hint = curr_about
+        }
+        var new_year: Int = 0
 
-        changeName.hint = curr_name
-        changeCourse.hint = curr_course
-        changeYearOfStudy.hint = curr_year.toString()
+        val listOfYear = arrayOf("1","2","3","4","Graduate")
+        val arrayAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listOfYear)
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        change_year_dropdown.setAdapter(arrayAdapter)
 
+        change_year_dropdown.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when(listOfYear.get(position)) {
+                    "1" -> new_year = 1
+                    "2" -> new_year = 2
+                    "3" -> new_year = 3
+                    "4" -> new_year = 4
+                    else -> new_year = 5
+                }
+            }
+
+        }
         update_button.setOnClickListener {
-            if (changeName.text.toString() != curr_name || changeName.text.toString() != "") {
+            if (changeName.text.toString() != curr_name && changeName.text.toString() != "") {
                 updateStringField("name", changeName.text.toString())
             }
-            if (changeCourse.text.toString() != curr_course || changeCourse.text.toString() != "") {
+            if (changeCourse.text.toString() != curr_course && changeCourse.text.toString() != "") {
                 updateStringField("courseOfStudy", changeCourse.text.toString())
             }
-            /*if (changeYearOfStudy.text.toString() != curr_year.toString() || changeYearOfStudy.text.toString() != "-1") {
+            if (new_year != 0 && new_year != curr_year) {
                 updateNumberField(
                     "yearOfStudy",
-                    changeYearOfStudy.text.toString()[0].toInt() % 5 + 1
+                    new_year
                 )
-            }*/
+            }
+            if(about_input.text.toString() != curr_about) {
+                updateStringField("about", about_input.text.toString())
+            }
+            val intent = Intent(this,HomeActivity::class.java)
+            intent.putExtra("FROM_UPDATE", "update")
+            startActivity(intent)
+        }
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

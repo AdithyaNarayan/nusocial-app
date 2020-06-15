@@ -23,12 +23,11 @@
         android:id="@+id/card_buddy_match"
         android:layout_width="383dp"
         android:layout_height="253dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="84dp"
         android:background="@drawable/centre_background_orange"
         android:paddingLeft="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
@@ -45,14 +44,14 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/matched_modules_buddymatch"
-            android:layout_width="274dp"
-            android:layout_height="93dp"
-            android:layout_marginTop="52dp"
+            android:layout_width="284dp"
+            android:layout_height="85dp"
+            android:layout_marginTop="4dp"
             android:scrollbars="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.144"
+            app:layout_constraintHorizontal_bias="0.156"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/major_buddymatch">
+            app:layout_constraintTop_toBottomOf="@+id/matched_modules_title">
 
         </androidx.recyclerview.widget.RecyclerView>
 
@@ -63,12 +62,10 @@
             android:layout_marginTop="4dp"
             android:text="NA"
             android:textColor="@color/black"
-            app:layout_constraintBottom_toTopOf="@+id/matched_modules_buddymatch"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.043"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/major_buddymatch"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/major_buddymatch" />
 
         <TextView
             android:id="@+id/major_buddymatch"
@@ -88,12 +85,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|top"
+            android:maxWidth="300dp"
             android:paddingTop="10dp"
             android:text="--Blank--"
             android:textColor="@color/black"
-            android:textSize="30dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.058"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toStartOf="@+id/match_button"
+            app:layout_constraintHorizontal_bias="0.088"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -118,12 +116,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="56dp"
         android:background="@drawable/centre_button"
         android:text="More info"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent" />
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/spin_kit"
+        style="@style/SpinKitView.CubeGrid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:SpinKit_Color="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

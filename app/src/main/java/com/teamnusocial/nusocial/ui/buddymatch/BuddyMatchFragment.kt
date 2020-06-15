@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -22,9 +24,11 @@ import com.teamnusocial.nusocial.data.model.Module
 import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.utils.FirestoreUtils
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_buddymatch.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class BuddyMatchFragment : Fragment() {
@@ -33,10 +37,11 @@ class BuddyMatchFragment : Fragment() {
     private lateinit var snapHelper: LinearSnapHelper
     private lateinit var root: View
     private lateinit var you: User
+    private lateinit var inflater: LayoutInflater
+    private lateinit var container: ViewGroup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("TEST10", "Init Here C")
         buddyMatchViewModel =
             ViewModelProvider(requireActivity()).get(BuddyMatchViewModel::class.java)
     }
@@ -45,25 +50,26 @@ class BuddyMatchFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        lifecycleScope.launch {
-            buddyMatchViewModel.updateMatchedUsers(UserRepository(FirestoreUtils()).getUsers())
-            buddyMatchViewModel.updateYou(UserRepository(FirestoreUtils()).getCurrentUserAsUser())
-            populateMatchedUsers(buddyMatchViewModel.matchedUsers.value!!, inflater, container)
-
-        }
-        buddyMatchViewModel.you.observe(viewLifecycleOwner, Observer {
-            you = buddyMatchViewModel.you.value!!
-        })
-        buddyMatchViewModel.matchedUsers.observe(viewLifecycleOwner, Observer {
-            if (it.size > 0) {
-                Log.d("TEST8", "Init Here")
-            }
-        })
+        this.inflater = inflater
+        this.container = container!!
         root = inflater.inflate(R.layout.fragment_buddymatch, container, false)
         return root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        lifecycleScope.launch {
+            spin_kit.visibility = View.VISIBLE
+            buddyMatchViewModel.updateMatchedUsers(UserRepository(FirestoreUtils()).getUsers())
+            buddyMatchViewModel.updateYou(UserRepository(FirestoreUtils()).getCurrentUserAsUser())
+            spin_kit.visibility = View.GONE
+            if(buddyMatchViewModel.you.value!!.courseOfStudy != "--blank--") {
+                populateMatchedUsers(buddyMatchViewModel.matchedUsers.value!!, inflater, container)
+            }
+
+        }
+        buddyMatchViewModel.you.observe(viewLifecycleOwner, Observer {
+            you = buddyMatchViewModel.you.value!!
+        })
         swipeView = match_swipe as RecyclerView
         snapHelper = LinearSnapHelper() //make the swiping snappy
         snapHelper.attachToRecyclerView(swipeView)
@@ -88,8 +94,45 @@ class BuddyMatchFragment : Fragment() {
 
         setUpButton(currUser, allUsers, currPos)
     }
-    val alphaAni = AlphaAnimation(1F, 0.8F)
+    fun setUpButtonAfterAnimation(currUser: User, allUsers: MutableList<User>, currPos: Int) {
+        allUsers.remove(currUser)
+        buddyMatchViewModel.images.removeAt(currPos)
+        if(currPos == allUsers.size) {
+            swipeView.scrollToPosition(currPos - 1)
+        }
+        swipeView.scrollBy(-1,0)
+        swipeView.scrollBy(1,0)
+        swipeView.scrollBy(1,0)
+        swipeView.scrollBy(-1,0)
+
+        if(buddyMatchViewModel.images.size == 0) {
+            buddyMatchViewModel.images.add("https://i7.pngflow.com/pngimage/455/105/png-anonymity-computer-icons-anonymous-user-anonymous-purple-violet-logo-smiley-clipart.png")
+            name_buddymatch.text = "--Blank--"
+            major_buddymatch.text = ""
+            curr_year_buddymatch.text = ""
+            matched_modules_buddymatch.removeAllViews()
+        }
+        (swipeView.adapter as Adapter).notifyDataSetChanged()
+        var toast = Toast.makeText(context, "Buddy added !", Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 0)
+        toast.show()
+        matchBuddy(currUser)
+    }
     fun setUpButton(currUser: User, allUsers: MutableList<User>, currPos: Int) {
+        val alphaAni = AlphaAnimation(1F, 0.8F)
+        val animFadeOut = AnimationUtils.loadAnimation(context, R.anim.fade_out)
+        val animFadeOut2 = AnimationUtils.loadAnimation(context, R.anim.fade_out)
+        animFadeOut.setAnimationListener(object: Animation.AnimationListener {
+            override fun onAnimationEnd(animation: Animation?) {
+                setUpButtonAfterAnimation(currUser, allUsers, currPos)
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {
+            }
+
+            override fun onAnimationStart(animation: Animation?) {
+            }
+        })
         if(allUsers.size == 0) {
             more_info_buddymatch.isEnabled = false
             match_button.isEnabled = false
@@ -100,26 +143,8 @@ class BuddyMatchFragment : Fragment() {
         }
         match_button.setOnClickListener {
             match_button.startAnimation(alphaAni)
-            allUsers.remove(currUser)
-            buddyMatchViewModel.images.removeAt(currPos)
-            if(currPos == allUsers.size) {
-                swipeView.scrollToPosition(currPos - 1)
-            }
-            swipeView.scrollBy(1,0)
-            swipeView.scrollBy(-1,0)
-
-            if(buddyMatchViewModel.images.size == 0) {
-                buddyMatchViewModel.images.add("https://i7.pngflow.com/pngimage/455/105/png-anonymity-computer-icons-anonymous-user-anonymous-purple-violet-logo-smiley-clipart.png")
-                name_buddymatch.text = "--Blank--"
-                major_buddymatch.text = ""
-                curr_year_buddymatch.text = ""
-                matched_modules_buddymatch.removeAllViews()
-            }
-            (swipeView.adapter as Adapter).notifyDataSetChanged()
-            var toast = Toast.makeText(context, "Buddy added !", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 0)
-            toast.show()
-            matchBuddy(currUser)
+            card_buddy_match.startAnimation(animFadeOut2)
+            swipeView.findViewHolderForAdapterPosition(currPos)?.itemView?.startAnimation(animFadeOut)
         }
         more_info_buddymatch.setOnClickListener {
             if(allUsers.size > 0) {
@@ -134,7 +159,7 @@ class BuddyMatchFragment : Fragment() {
     }
     fun isMatched(module: Module): Boolean {
         for(module_you in you.modules) {
-            if(module.moduleCode == module_you.moduleCode) return true
+            if(module.moduleCode.equals(module_you.moduleCode)) return true
         }
         return false
     }
@@ -148,8 +173,8 @@ class BuddyMatchFragment : Fragment() {
         /****/
 
         /**matched modules**/
-        matched_modules_buddymatch.layoutManager = GridLayoutManager(context, 4)
-        matched_modules_buddymatch.adapter = ModulesAdapter(currUser.modules.toTypedArray(), context)
+        matched_modules_buddymatch.layoutManager = GridLayoutManager(context, 3)
+        matched_modules_buddymatch.adapter = ModulesAdapter(matchedModules.toTypedArray(), context)
 
         /****/
 
@@ -166,7 +191,6 @@ class BuddyMatchFragment : Fragment() {
         buddyMatchViewModel.images.clear()
         for (user in filteredAllUsers) {
             buddyMatchViewModel.images.add(user.profilePicturePath)
-            Log.d("TEST6", user.name)
         }
         if(filteredAllUsers.size == 0) {
             buddyMatchViewModel.images.add("https://i7.pngflow.com/pngimage/455/105/png-anonymity-computer-icons-anonymous-user-anonymous-purple-violet-logo-smiley-clipart.png")

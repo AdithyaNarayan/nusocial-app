@@ -8,6 +8,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.teamnusocial.nusocial.ui.you.YouFragment
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity() {
@@ -16,7 +17,6 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
-
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -31,9 +31,11 @@ class HomeActivity : AppCompatActivity() {
         )
         setupWithNavController(topBar, navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
+        val isFromUpdate = intent.getStringExtra("FROM_UPDATE")
+        if(isFromUpdate !=null && isFromUpdate.equals("update")) {
+            navController.navigate(R.id.navigation_you)
+        }
         if (savedInstanceState == null) {
-
         }
 
     }
