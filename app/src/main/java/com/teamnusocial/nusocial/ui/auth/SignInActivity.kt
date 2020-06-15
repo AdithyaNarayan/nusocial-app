@@ -140,13 +140,5 @@ class SignInActivity : AppCompatActivity(), KodeinAware {
             buildDialogForgotPassword()
         }
 
-        viewModel.isValidEmail.observe(this@SignInActivity, Observer {
-            if (!it) {
-                emailForgotEditText.setBackgroundResource(R.drawable.rounded_edit_text_error)
-                Log.d("AUTH", "Invalid email")
-            } else {
-                emailForgotEditText.setBackgroundResource(R.drawable.rounded_edit_text)
-            }
-        })
     }
 }

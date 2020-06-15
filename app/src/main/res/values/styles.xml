@@ -27,7 +27,6 @@
         <item name="shapeAppearanceOverlay">@style/MessagesCustomCorners</item>
     </style>
 
-
     <style name="MessagesCustomCorners" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopRight">48dp</item>
@@ -35,7 +34,5 @@
         <item name="cornerSizeBottomRight">48dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
-
-
 
 </resources>

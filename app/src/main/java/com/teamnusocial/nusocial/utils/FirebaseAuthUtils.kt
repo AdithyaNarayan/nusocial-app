@@ -25,10 +25,7 @@ class FirebaseAuthUtils {
 
     fun forgotPassword(email: String) = firebaseAuth.sendPasswordResetEmail(email)
 
-
-    fun logOut() {
-        firebaseAuth.signOut()
-    }
+    fun logOut() = firebaseAuth.signOut()
 
     suspend fun initializeUser(userID: String, name: String) = coroutineScope {
         firestoreInstance.collection("users").document(userID).set(

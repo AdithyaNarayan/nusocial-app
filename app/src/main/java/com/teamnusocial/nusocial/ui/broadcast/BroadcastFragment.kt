@@ -97,9 +97,11 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
         broadcastViewModel.closestNeighboursList.observe(requireActivity(), Observer {
             if (it.size > 0) {
                 updateUsersOnMap(it)
-                val mapFragment =
-                    childFragmentManager.findFragmentById(R.id.broadcastMap) as SupportMapFragment
-                mapFragment.getMapAsync(this)
+                if (isAdded) {
+                    val mapFragment =
+                        childFragmentManager.findFragmentById(R.id.broadcastMap) as SupportMapFragment
+                    mapFragment.getMapAsync(this)
+                }
             }
         })
         locationPinBitmap = BitmapDescriptorFactory.fromBitmap(
@@ -156,10 +158,11 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
         }
         broadcastViewModel.currentUserLocation.observe(requireActivity(), Observer {
             if (it.latitude != 0.0 && it.longitude != 0.0) {
-                val mapFragment =
-                    childFragmentManager.findFragmentById(R.id.broadcastMap) as SupportMapFragment
-
-                mapFragment.getMapAsync(this)
+                if (isAdded) {
+                    val mapFragment =
+                        childFragmentManager.findFragmentById(R.id.broadcastMap) as SupportMapFragment
+                    mapFragment.getMapAsync(this)
+                }
                 updateMarkerOnMap(it)
                 updateRadiusOnMap(it, broadcastViewModel.broadcastRadius.value!!)
             }
@@ -185,10 +188,11 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
         broadcastViewModel.broadcastRadius.observe(requireActivity(), Observer {
             broadCastRadiusTextView.text =
                 if (it > 999) ((it / 1000).toString() + " km") else ("$it m")
-            val mapFragment =
-                childFragmentManager.findFragmentById(R.id.broadcastMap) as SupportMapFragment
-
-            mapFragment.getMapAsync(this)
+            if (isAdded) {
+                val mapFragment =
+                    childFragmentManager.findFragmentById(R.id.broadcastMap) as SupportMapFragment
+                mapFragment.getMapAsync(this)
+            }
             updateMarkerOnMap(broadcastViewModel.currentUserLocation.value!!)
             updateRadiusOnMap(broadcastViewModel.currentUserLocation.value!!, it)
         })
