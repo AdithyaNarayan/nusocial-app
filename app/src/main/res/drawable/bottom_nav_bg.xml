@@ -4,14 +4,6 @@
         android:topLeftRadius="26dp"
 
         />
-    <gradient
-        android:angle="0"
-        android:centerX="0%"
-        android:centerColor="@color/red"
-        android:startColor="@color/orange"
-        android:endColor="#ff7a21"
-        android:type="linear"
-        />
     <padding
         android:left="0dp"
         android:top="0dp"
@@ -22,4 +14,5 @@
         android:width="175dp"
         android:height="40dp"
         />
+    <solid android:color="@color/orange"/>
 </shape>
