@@ -1,23 +1,22 @@
 package com.teamnusocial.nusocial.ui.you
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.Adapter
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.core.view.get
+import androidx.appcompat.app.AppCompatActivity
 import com.teamnusocial.nusocial.HomeActivity
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.repository.UserRepository
+import com.teamnusocial.nusocial.ui.you.CustomSpinner.OnSpinnerEventsListener
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.android.synthetic.main.activity_update_info.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 
 class UpdateInfoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,11 +42,21 @@ class UpdateInfoActivity : AppCompatActivity() {
         }
         var new_year: Int = 0
 
+
         val listOfYear = arrayOf("1","2","3","4","Graduate")
         val arrayAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listOfYear)
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        change_year_dropdown.setAdapter(arrayAdapter)
+        change_year_dropdown.adapter = arrayAdapter
 
+        change_year_dropdown.setSpinnerEventsListener(object : OnSpinnerEventsListener {
+            override fun onSpinnerOpened() {
+                change_year_dropdown.isSelected = true
+            }
+
+            override fun onSpinnerClosed() {
+                change_year_dropdown.isSelected = false
+            }
+        })
         change_year_dropdown.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
 

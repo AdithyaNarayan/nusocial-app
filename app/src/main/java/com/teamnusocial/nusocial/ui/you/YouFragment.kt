@@ -10,8 +10,13 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.EditText
-import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -28,11 +33,11 @@ import com.teamnusocial.nusocial.ui.buddymatch.ModulesAdapter
 import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.android.synthetic.main.fragment_you.*
-import kotlinx.android.synthetic.main.matched_module_child.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Collections.rotate
 
 
 class YouFragment : Fragment() {
@@ -111,12 +116,55 @@ class YouFragment : Fragment() {
         }
 
         val updateInfoButton = update_info_button
-        val logOutButton = log_out_button
         var m_Text = ""
-        logOutButton.setOnClickListener {
-            FirebaseAuthUtils().logOut()
-            var intent = Intent(context, SignInActivity::class.java)
-            startActivity(intent)
+        val listOfActions = arrayOf("Choose an action","Log out")
+        val arrayAdapter = object: ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, listOfActions) {
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
+                var res =  super.getDropDownView(position, convertView, parent) as TextView
+                res.setTextColor(resources.getColor(R.color.black, resources.newTheme()))
+                if(position == 0) {
+                    res.setBackgroundResource(R.drawable.centre_background)
+                }
+                return res
+            }
+        }
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        general_dropdown.adapter = arrayAdapter
+
+        val rotateAnim = RotateAnimation(0F, 180F, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+        rotateAnim.duration = 300
+        rotateAnim.setInterpolator(LinearInterpolator())
+        general_dropdown.setSpinnerEventsListener(object :
+            CustomSpinner.OnSpinnerEventsListener {
+            override fun onSpinnerOpened() {
+                general_dropdown.isSelected = true
+                general_dropdown.startAnimation(rotateAnim)
+            }
+
+            override fun onSpinnerClosed() {
+                general_dropdown.isSelected = false
+                general_dropdown.startAnimation(rotateAnim)
+            }
+        })
+        general_dropdown.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when(listOfActions.get(position)) {
+                    "Log out" -> {
+                            FirebaseAuthUtils().logOut()
+                            var intent = Intent(context, SignInActivity::class.java)
+                            startActivity(intent)
+                    }
+                    else -> {}
+                }
+            }
 
         }
         add_module_button.setOnClickListener {

@@ -125,7 +125,6 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         sheetBehavior =
             BottomSheetBehavior.from(broadcastBottomSheetLayout)
-
         sheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(view: View, state: Int) {
@@ -150,7 +149,12 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
         broadcastRootView.setOnClickListener {
             if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
                 sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            }
+            } else sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED
+        }
+        broadcastArrow.setOnClickListener {
+            if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+                sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            } else sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED
         }
 
         CoroutineScope(Dispatchers.IO).launch {

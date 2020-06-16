@@ -5,7 +5,7 @@
     android:id="@+id/broadcastBottomSheetLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/orange"
+    android:background="@color/blue"
     app:behavior_peekHeight="120dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
@@ -52,11 +52,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/broadcastHeading"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="201dp"
-        android:layout_marginEnd="36dp"
-        android:backgroundTint="@color/blue"
+        android:layout_marginTop="-34dp"
+        android:layout_marginEnd="27dp"
+        android:backgroundTint="@color/orange"
         android:fontFamily="@font/bold"
-        android:shadowColor="@color/blue"
+        android:shadowColor="@color/orange"
         android:text="@string/send"
         app:cornerRadius="16dp" />
 
@@ -90,9 +90,9 @@
         android:layout_below="@+id/broadcastMessageText"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="3dp"
-        android:layout_marginTop="65dp"
-        android:layout_marginEnd="2dp"
+        android:layout_marginStart="-1dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="6dp"
         android:layout_marginBottom="24dp"
         android:max="4"
         android:progress="1"

@@ -167,7 +167,7 @@ class BuddyMatchFragment : Fragment() {
     fun getMatchedModules(currPos: Int, currUser: User, inflater: LayoutInflater, container: ViewGroup?) {
         name_buddymatch.text = currUser.name
         major_buddymatch.text = currUser.courseOfStudy
-        curr_year_buddymatch.text = "Year " + currUser.yearOfStudy.toString()
+        curr_year_buddymatch.text = if(currUser.yearOfStudy < 5) "Year " + currUser.yearOfStudy.toString() else "Graduate"
         var matchedModules = currUser.modules.filter { module -> isMatched(module) }.toList()
 
         /****/
