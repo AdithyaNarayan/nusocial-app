@@ -10,6 +10,5 @@
         android:width="270dp"
         android:height="60dp"
         />
-    <corners android:radius="10dp"/>
     <solid android:color="@color/white"/>
 </shape>

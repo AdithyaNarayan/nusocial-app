@@ -21,17 +21,24 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Module
+import com.teamnusocial.nusocial.data.model.Post
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.auth.SignInActivity
 import com.teamnusocial.nusocial.ui.buddymatch.MaskTransformation
 import com.teamnusocial.nusocial.ui.buddymatch.ModulesAdapter
 import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
 import com.teamnusocial.nusocial.utils.FirestoreUtils
+import com.teamnusocial.nusocial.utils.getTimeAgo
+import kotlinx.android.synthetic.main.fragment_buddymatch.*
 import kotlinx.android.synthetic.main.fragment_you.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -210,9 +217,19 @@ class YouFragment : Fragment() {
 
         /**all modules**/
         modules_taking.adapter = ModulesAdapter(viewModel.you.modules.toTypedArray(), requireContext())
-
         /****/
 
+        /**personal posts**/
+        val allPosts = mutableListOf<Post>(Post("124",viewModel.you.uid,"The melancholy of Haruhi Suzumiya", mutableListOf("https://jw-webmagazine.com/wp-content/uploads/2019/07/jw-5d1b5680e819c9.96019818.png"), Timestamp(0,0),false, 0,0,
+            mutableListOf()))
+        val postAdapter = PostAdapter(allPosts)
+        val snapHelper = LinearSnapHelper() //make the swiping snappy
+        snapHelper.attachToRecyclerView(personal_posts)
+        val layoutManager = LinearLayoutManager(context)
+        layoutManager.orientation = LinearLayoutManager.VERTICAL
+        personal_posts.layoutManager = layoutManager
+        personal_posts.adapter = postAdapter
+        /****/
     }
 
     private fun updateModules(value: MutableList<Module>) {

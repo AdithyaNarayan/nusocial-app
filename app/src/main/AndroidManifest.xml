@@ -13,15 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".ui.you.UpdateInfoActivity"
-            ></activity>
-        <activity
-            android:name=".ui.buddymatch.BuddyProfileActivity"
-            />
-
-        <activity android:name=".ui.messages.MessageChatActivity"></activity>
-
+        <activity android:name=".ui.you.SinglePostActivity"></activity>
+        <activity android:name=".ui.you.UpdateInfoActivity" />
+        <activity android:name=".ui.buddymatch.BuddyProfileActivity" />
+        <activity android:name=".ui.messages.MessageChatActivity" />
 
         <meta-data
             android:name="com.google.android.gms.version"
