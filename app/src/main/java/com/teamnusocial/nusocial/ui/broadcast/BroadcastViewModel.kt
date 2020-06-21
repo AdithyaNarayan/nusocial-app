@@ -43,17 +43,9 @@ class BroadcastViewModel(private val repository: UserRepository) : ViewModel() {
     var broadcastRadius = MutableLiveData<Int>().apply {
         value = 200
     }
-    var profileImg = MutableLiveData<Bitmap>().apply {
-        value = null
-    }
-    private val _text = MutableLiveData<String>().apply {
-        value = "Map goes here"
-    }
-    val text: LiveData<String> = _text
+    var profileImg = MutableLiveData<Bitmap>()
 
-    suspend fun getUsers() = coroutineScope {
-        repository.getUsers()
-    }
+    suspend fun getUsers() = repository.getUsers()
 
     fun updateRadius(progress: Int) {
         broadcastRadius.value = when (progress) {
@@ -76,14 +68,14 @@ class BroadcastViewModel(private val repository: UserRepository) : ViewModel() {
     }
 
     suspend fun getCurrentUserAsUser() = repository.getCurrentUserAsUser()
-    fun setProfileBitmap(bitmap: Bitmap) {
 
+    fun setProfileBitmap(bitmap: Bitmap) {
         profileImg.value = bitmap
     }
 
     suspend fun sendBroadcast(messageText: String) = coroutineScope {
-        repository.getCurrentUserAsDocument().update("lastBroadcasted", Timestamp.now())
-        repository.getUserAnd(getCurrentUserAsUser().uid) { currUser ->
+        repository.updateLastBroadcasted(Timestamp.now())
+        repository.getUserAnd(repository.getCurrentUserAsUser().uid) { currUser ->
             closestNeighboursList.value!!.filter { otherUser ->
                 currUser.location.distanceTo(otherUser.location) < (broadcastRadius.value!! - 50)
             }.forEach {

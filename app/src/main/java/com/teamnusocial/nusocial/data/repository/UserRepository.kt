@@ -21,7 +21,7 @@ class UserRepository(private val utils: FirestoreUtils) {
             if (it.isSuccessful) {
                 it.result!!.documents.forEach { user ->
                     if(FirebaseAuth.getInstance().uid != user.id && !currUser.buddies.contains(user.id) && !currUser.seenAndMatch.contains(user.id)) {
-                        var userItem = user.toObject(User::class.java)!!
+                        val userItem = user.toObject(User::class.java)!!
                         userItem.uid = user.id
                         userList.add(userItem)
                     }
@@ -90,8 +90,13 @@ class UserRepository(private val utils: FirestoreUtils) {
 
     suspend fun getCurrentUserAsDocument() = utils.getCurrentUserAsDocument()
 
+    suspend fun updateLastBroadcasted(timestamp: Timestamp) {
+        getCurrentUserAsDocument().update("lastBroadcasted", timestamp)
+    }
+
     suspend fun getCurrentUserAsUser() = coroutineScope {
         var user = User()
+        utils.getCurrentUserAsDocument().get()
         utils.getCurrentUserAsDocument().get().addOnCompleteListener {
             if (it.isSuccessful) {
                 user = it.result?.toObject(User::class.java)!!
