@@ -42,15 +42,75 @@ class AuthViewModelTest : TestCase() {
 
     @Test
     fun validEmailTest() {
-        //Given
-        val email = "abc@gmail.com"
-        val expectedResult = true
+        // Test 1
+        // Given
+        var email = "abc@gmail.com"
+        var expectedResult = true
 
-        //When
+        // When
         viewModel.updateValidEmail(email)
 
-        //Then
+        // Then
+        assertEquals(expectedResult, viewModel.isValidEmail.value)
+
+        // Test 2
+        // Given
+        email = "abc"
+        expectedResult = false
+
+        // When
+        viewModel.updateValidEmail(email)
+
+        // Then
         assertEquals(expectedResult, viewModel.isValidEmail.value)
     }
 
+    @Test
+    fun validPasswordTest() {
+        // Test 1
+        // Given
+        var password = "somecomplexpassword"
+        var expectedResult = true
+
+        // When
+        viewModel.updateValidPassword(password)
+
+        // Then
+        assertEquals(expectedResult, viewModel.isValidPassword.value)
+
+        // Test 2
+        // Given
+        password = "1234"
+        expectedResult = false
+
+        // When
+        viewModel.updateValidPassword(password)
+
+        // Then
+        assertEquals(expectedResult, viewModel.isValidPassword.value)
+    }
+
+    @Test
+    fun signedInTest() {
+        // Test 1
+        // Given
+        var expectedResult = true
+
+        // When
+        `when`(authUserRepository.isSignedIn()).thenReturn(true)
+
+        // Then
+        assertEquals(expectedResult, viewModel.isSignedIn().value)
+
+        // Test 2
+        // Given
+        expectedResult = false
+
+        // When
+        `when`(authUserRepository.isSignedIn()).thenReturn(false)
+
+        // Then
+        assertEquals(expectedResult, viewModel.isSignedIn().value)
+
+    }
 }
