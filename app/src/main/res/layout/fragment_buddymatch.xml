@@ -5,30 +5,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    tools:context=".ui.buddymatch.BuddyMatchFragment"
-    >
+    tools:context=".ui.buddymatch.BuddyMatchFragment">
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/match_swipe"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/card_buddy_match"
+        android:layout_height="0dp"
+        android:layout_marginTop="52dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/card_buddy_match"
-        android:layout_width="383dp"
-        android:layout_height="253dp"
-        android:layout_marginBottom="84dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/centre_background_orange"
-        android:paddingLeft="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingLeft="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="96dp"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/match_swipe">
 
         <TextView
             android:id="@+id/matched_modules_title"
@@ -38,20 +40,22 @@
             android:text="Matched modules"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.059"
+            app:layout_constraintHorizontal_bias="0.061"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/curr_year_buddymatch" />
+            app:layout_constraintTop_toBottomOf="@id/curr_year_buddymatch" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/matched_modules_buddymatch"
-            android:layout_width="284dp"
-            android:layout_height="85dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:scrollbars="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="84dp"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintEnd_toStartOf="parent"
             app:layout_constraintHorizontal_bias="0.156"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/matched_modules_title">
+            app:layout_constraintStart_toStartOf="@id/card_buddy_match"
+            app:layout_constraintTop_toBottomOf="@+id/matched_modules_title"
+            android:layout_width="match_parent">
 
         </androidx.recyclerview.widget.RecyclerView>
 
@@ -74,7 +78,7 @@
             android:layout_marginTop="4dp"
             android:text="No major"
             android:textColor="@color/black"
-            android:textSize="15dp"
+            android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.049"
             app:layout_constraintStart_toStartOf="parent"
@@ -97,7 +101,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/match_button"
-            android:layout_width="70dp"
+            android:layout_width="72dp"
             android:layout_height="0dp"
             android:background="@drawable/matched_button"
             android:text="Match !"
@@ -116,25 +120,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
-        android:layout_marginBottom="60dp"
         android:background="@drawable/centre_button"
         android:text="More info"
+        android:layout_marginTop="0dp"
+        android:translationY="-24dp"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent" />
-    <com.github.ybq.android.spinkit.SpinKitView
-        android:id="@+id/spin_kit"
-        style="@style/SpinKitView.Large.CubeGrid"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        app:SpinKit_Color="@color/colorAccent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/card_buddy_match" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

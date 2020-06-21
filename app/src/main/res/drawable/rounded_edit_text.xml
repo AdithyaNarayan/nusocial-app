@@ -11,4 +11,5 @@
         android:shadowDx="0"
         android:shadowDy="0"
         android:shadowRadius="8"/>
+    <stroke android:color="@color/orange" android:width="1dp"/>
 </shape>

@@ -3,6 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:fontFamily">@font/regular</item>
+
     </style>
 
     <style name="BottomButton">
@@ -34,6 +35,7 @@
         <item name="cornerSizeBottomRight">48dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
+
 
 
 </resources>

@@ -6,24 +6,11 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:id="@+id/you_fragment"
-    android:layout_marginBottom="?attr/actionBarSize"
     android:layout_marginTop="?attr/actionBarSize">
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.you.YouFragment">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/personal_posts"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:layout_marginBottom="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/modules_taking" />
 
     <TextView
         android:id="@+id/number_of_buddies_you"
@@ -141,18 +128,34 @@
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/modules_taking_title" />
-    <com.github.ybq.android.spinkit.SpinKitView
-        android:id="@+id/spin_kit_you"
-        style="@style/SpinKitView.Large.CubeGrid"
+
+    <TextView
+        android:id="@+id/communities_in_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        app:SpinKit_Color="@color/colorAccent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/centre_background_orange"
+        android:padding="5dp"
+        android:text="Other Communities"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/add_module_button" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/communities_in"
+        android:layout_width="344dp"
+        android:layout_height="156dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/corner_card_background_blue"
+        android:padding="5dp"
+        android:scrollbars="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/communities_in_title" />
 
     <com.teamnusocial.nusocial.ui.you.CustomSpinner
         android:id="@+id/general_dropdown"

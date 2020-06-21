@@ -1,27 +1,32 @@
 package com.teamnusocial.nusocial.data.model
 
+import android.os.Parcelable
 import com.google.firebase.Timestamp
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Post(
-    var uid: String,
+    var id: String,
+    var communityID: String,
     var ownerUid: String,
     var textContent: String,
     var imageList: MutableList<String>,
+    var videoList: MutableList<String>,
     var timeStamp: Timestamp,
-    var isLike: Boolean,
+    var userLikeList: MutableList<String>,
     var numLike: Int,
-    var numComment: Int,
-    var commentList: MutableList<Comment>
-) {
+    var numComment: Int
+): Parcelable {
     constructor() : this(
+        "",
         "",
         "",
         "--blank--",
         mutableListOf(),
+        mutableListOf(),
         Timestamp(0,0),
-        false,
+        mutableListOf(),
         0,
-        0,
-        mutableListOf()
+        0
     )
 }

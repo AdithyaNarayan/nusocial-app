@@ -1,4 +1,4 @@
-package com.teamnusocial.nusocial.ui.you
+package com.teamnusocial.nusocial.ui.community
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -13,7 +13,9 @@ class PostImageAdapter(val allImage: List<String>): RecyclerView.Adapter<PostIma
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder {
         val imageView = LayoutInflater.from(parent.context).inflate(R.layout.post_image_item, parent, false) as ConstraintLayout
-        return ImageHolder(imageView)
+        return ImageHolder(
+            imageView
+        )
     }
 
     override fun onBindViewHolder(holder: ImageHolder, position: Int) {

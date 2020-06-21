@@ -2,7 +2,6 @@ package com.teamnusocial.nusocial.ui.buddymatch
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -19,16 +18,17 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.github.ybq.android.spinkit.SpinKitView
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Module
 import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.repository.UserRepository
+import com.teamnusocial.nusocial.ui.community.SingleCommunityActivity
+import com.teamnusocial.nusocial.ui.you.CommunityItemAdapter
 import com.teamnusocial.nusocial.utils.FirestoreUtils
-import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_buddymatch.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class BuddyMatchFragment : Fragment() {
@@ -39,6 +39,7 @@ class BuddyMatchFragment : Fragment() {
     private lateinit var you: User
     private lateinit var inflater: LayoutInflater
     private lateinit var container: ViewGroup
+    var isBusy: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,16 +58,23 @@ class BuddyMatchFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launch {
-            spin_kit.visibility = View.VISIBLE
-            buddyMatchViewModel.updateMatchedUsers(UserRepository(FirestoreUtils()).getUsers())
-            buddyMatchViewModel.updateYou(UserRepository(FirestoreUtils()).getCurrentUserAsUser())
-            spin_kit.visibility = View.GONE
-            if(buddyMatchViewModel.you.value!!.courseOfStudy != "--blank--") {
-                populateMatchedUsers(buddyMatchViewModel.matchedUsers.value!!, inflater, container)
+        val spin_kit = activity?.findViewById<SpinKitView>(R.id.spin_kit)!!
+            lifecycleScope.launch {
+                spin_kit.visibility = View.VISIBLE
+                isBusy = true
+                buddyMatchViewModel.updateMatchedUsers(UserRepository(FirestoreUtils()).getUsers())
+                buddyMatchViewModel.updateYou(UserRepository(FirestoreUtils()).getCurrentUserAsUser())
+                spin_kit.visibility = View.GONE
+                isBusy = false
+                if (buddyMatchViewModel.you.value!!.courseOfStudy != "--blank--") {
+                    populateMatchedUsers(
+                        buddyMatchViewModel.matchedUsers.value!!,
+                        inflater,
+                        container
+                    )
+                }
             }
 
-        }
         buddyMatchViewModel.you.observe(viewLifecycleOwner, Observer {
             you = buddyMatchViewModel.you.value!!
         })
@@ -77,7 +85,7 @@ class BuddyMatchFragment : Fragment() {
         layoutManager.orientation = LinearLayoutManager.HORIZONTAL
         swipeView.layoutManager = layoutManager
         val offset = resources.getDimension(R.dimen.offset_image)
-        swipeView.addItemDecoration(OffsetHelper(offset.toInt()))
+        swipeView.addItemDecoration(OffsetHelperHorizontal(offset.toInt()))
     }
 
     fun onScrollListener(
@@ -174,7 +182,14 @@ class BuddyMatchFragment : Fragment() {
 
         /**matched modules**/
         matched_modules_buddymatch.layoutManager = GridLayoutManager(context, 3)
-        matched_modules_buddymatch.adapter = ModulesAdapter(matchedModules.toTypedArray(), context)
+        var modulesAdapter = ModulesAdapter(matchedModules.toTypedArray(), context)
+        modulesAdapter.setClickListener(object : ModulesAdapter.ItemClickListener {
+            override fun onItemClick(view: View?, position: Int) {
+                val intent = Intent(requireContext(), SingleCommunityActivity::class.java)
+                startActivity(intent)
+            }
+        })
+        matched_modules_buddymatch.adapter = modulesAdapter
 
         /****/
 
@@ -227,5 +242,4 @@ class BuddyMatchFragment : Fragment() {
         }
 
     }
-
 }

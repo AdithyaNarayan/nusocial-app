@@ -25,7 +25,8 @@ data class User(
     public val buddies: List<String>, // store uid of buddies
     public val about: String,
     public val lastBroadcasted: Timestamp,
-    public val seenAndMatch: MutableList<String>
+    public val seenAndMatch: MutableList<String>,
+    public var communities: MutableList<Community>
 ) : Comparable<User> {
     constructor() : this(
         "",
@@ -39,6 +40,7 @@ data class User(
         listOf(),
         "",
         Timestamp(Date(0)),
+        mutableListOf(),
         mutableListOf()
     )
 

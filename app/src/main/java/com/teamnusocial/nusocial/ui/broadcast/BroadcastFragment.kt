@@ -113,13 +113,13 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
         return root
     }
 
-    private fun moveToCommunityFragment() {
+    /*private fun moveToCommunityFragment() {
         requireActivity()
             .supportFragmentManager
             .beginTransaction()
             .replace(R.id.nav_host_fragment, CommunityFragment())
             .commit()
-    }
+    }*/
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -281,7 +281,7 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
         val lm: LocationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            moveToCommunityFragment()
+            // TODO: Log Here
         }
 
         val permission: Int = ContextCompat.checkSelfPermission(

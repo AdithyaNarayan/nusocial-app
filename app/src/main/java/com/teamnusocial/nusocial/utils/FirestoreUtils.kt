@@ -39,6 +39,31 @@ class FirestoreUtils {
             .whereLessThan("invisible", user.second)
     }
 
+    //posts, comments and communities
+    suspend fun getAllPosts() = coroutineScope {
+        return@coroutineScope firestoreInstance
+            .collection("posts")
+    }
+    suspend fun getAllComments() = coroutineScope {
+        return@coroutineScope firestoreInstance
+            .collection("comments")
+    }
+    suspend fun getAllCommunities() =
+        coroutineScope {
+            firestoreInstance.collection("communities")
+        }
+    suspend fun getAllPostsOfCommunity(communityID: String) = coroutineScope {
+        return@coroutineScope firestoreInstance
+            .collection("posts")
+            .whereEqualTo("communityID", communityID)
+    }
+    suspend fun getAllCommentsOfPost(postID: String) = coroutineScope {
+        return@coroutineScope firestoreInstance
+            .collection("comments")
+            .whereEqualTo("parentPostID", postID)
+            .orderBy("timeStamp")
+    }
+    //
     fun getMessages(messageID: String) =
         firestoreInstance.collection("messagesChannel").document(messageID)
 

@@ -7,16 +7,14 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.TextView
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -24,17 +22,22 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.github.ybq.android.spinkit.SpinKitView
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
+import com.teamnusocial.nusocial.data.model.Community
 import com.teamnusocial.nusocial.data.model.Module
 import com.teamnusocial.nusocial.data.model.Post
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.auth.SignInActivity
 import com.teamnusocial.nusocial.ui.buddymatch.MaskTransformation
 import com.teamnusocial.nusocial.ui.buddymatch.ModulesAdapter
+import com.teamnusocial.nusocial.ui.community.SingleCommunityActivity
+import com.teamnusocial.nusocial.ui.messages.MessageChatActivity
+import com.teamnusocial.nusocial.ui.messages.MessagesRecyclerViewAdapter
 import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import com.teamnusocial.nusocial.utils.getTimeAgo
@@ -71,6 +74,8 @@ class YouFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         modules_taking.layoutManager = GridLayoutManager(context, 4)
+        communities_in.layoutManager = GridLayoutManager(context, 2)
+        val spin_kit_you = activity?.findViewById<SpinKitView>(R.id.spin_kit)!!
         lifecycleScope.launch {
             spin_kit_you.visibility = View.VISIBLE
             viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
@@ -108,6 +113,7 @@ class YouFragment : Fragment() {
     }
 
     private fun updateUI() {
+
         you_name.text = viewModel.you.name
 
         course_you.text = viewModel.you.courseOfStudy
@@ -192,6 +198,7 @@ class YouFragment : Fragment() {
                 }
                 updateModules(realRes)
 
+
             }
             builder.setNegativeButton("Cancel",
                 DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
@@ -216,19 +223,41 @@ class YouFragment : Fragment() {
 
 
         /**all modules**/
-        modules_taking.adapter = ModulesAdapter(viewModel.you.modules.toTypedArray(), requireContext())
-        /****/
-
-        /**personal posts**/
-        val allPosts = mutableListOf<Post>(Post("124",viewModel.you.uid,"The melancholy of Haruhi Suzumiya", mutableListOf("https://jw-webmagazine.com/wp-content/uploads/2019/07/jw-5d1b5680e819c9.96019818.png"), Timestamp(0,0),false, 0,0,
-            mutableListOf()))
-        val postAdapter = PostAdapter(allPosts)
-        val snapHelper = LinearSnapHelper() //make the swiping snappy
-        snapHelper.attachToRecyclerView(personal_posts)
-        val layoutManager = LinearLayoutManager(context)
-        layoutManager.orientation = LinearLayoutManager.VERTICAL
-        personal_posts.layoutManager = layoutManager
-        personal_posts.adapter = postAdapter
+        var modulesAdapter = ModulesAdapter(viewModel.you.modules.toTypedArray(), requireContext())
+        modulesAdapter.setClickListener(object : ModulesAdapter.ItemClickListener {
+            override fun onItemClick(view: View?, position: Int) {
+                val intent = Intent(requireContext(), SingleCommunityActivity::class.java)
+                var exist = false
+                for(community in viewModel.you.communities) {
+                    if(community.module.moduleCode.equals(viewModel.you.modules[position].moduleCode)) {
+                        intent.putExtra("COMMUNITY_DATA", community)
+                        exist = true
+                        break
+                    }
+                }
+                if(!exist) {
+                    var toast = Toast.makeText(context, "No such community !", Toast.LENGTH_SHORT)
+                    toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 0)
+                    toast.show()
+                } else {
+                    startActivity(intent)
+                }
+            }
+        })
+        modules_taking.adapter = modulesAdapter
+        viewModel.you.communities.add(Community("","CS1010", mutableListOf(), mutableListOf(),
+            Module("CS1010","Prog", listOf()),"https://www.comp.nus.edu.sg/~cs1010/labs/2017s1/lab6/img/gas_stations.jpg",
+            mutableListOf()
+        ))
+        var communityAdapter = CommunityItemAdapter(viewModel.you.communities.toTypedArray(), requireContext())
+        communityAdapter.setClickListener(object : CommunityItemAdapter.ItemClickListener {
+            override fun onItemClick(view: View?, position: Int) {
+                val intent = Intent(requireContext(), SingleCommunityActivity::class.java)
+                intent.putExtra("COMMUNITY_DATA", viewModel.you.communities[position])
+                startActivity(intent)
+            }
+        })
+        communities_in.adapter = communityAdapter
         /****/
     }
 

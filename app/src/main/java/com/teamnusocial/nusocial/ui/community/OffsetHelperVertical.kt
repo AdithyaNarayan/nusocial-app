@@ -4,7 +4,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-internal class OffsetHelper(private val mBottomOffset: Int) : RecyclerView.ItemDecoration() {
+internal class OffsetHelperVertical() : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(
         outRect: Rect,
         view: View,
@@ -15,12 +15,12 @@ internal class OffsetHelper(private val mBottomOffset: Int) : RecyclerView.ItemD
         val dataSize = state.itemCount
         val position = parent.getChildAdapterPosition(view)
         if (dataSize > 1 && position == dataSize - 1) {
-            outRect.set(0, 0, mBottomOffset, 0)
+            outRect.set(0, 0, 0, 170)
         } else if(dataSize > 1 && position == 0) {
-            outRect.set(mBottomOffset, 0, 0, 0)
+            outRect.set(0,320 , 0, 30)
         }
         else {
-            outRect.set(0, 0, 0, 0)
+            outRect.set(0, 0, 0, 30)
         }
     }
 

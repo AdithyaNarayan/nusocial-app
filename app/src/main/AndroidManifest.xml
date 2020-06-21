@@ -5,6 +5,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 
     <application
         android:name=".DependencyInjectionApplication"
@@ -13,7 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.you.SinglePostActivity"></activity>
+        <activity android:name=".ui.community.SingleCommunityActivity"></activity>
+        <activity android:name=".ui.community.SinglePostActivity" />
         <activity android:name=".ui.you.UpdateInfoActivity" />
         <activity android:name=".ui.buddymatch.BuddyProfileActivity" />
         <activity android:name=".ui.messages.MessageChatActivity" />

@@ -1,5 +1,9 @@
 package com.teamnusocial.nusocial.data.model
 
-data class Classes(private val id: String) {
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class Classes(private val id: String): Parcelable{
     constructor() : this("")
 }

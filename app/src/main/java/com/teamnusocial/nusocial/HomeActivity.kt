@@ -1,25 +1,13 @@
 package com.teamnusocial.nusocial
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupWithNavController
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.teamnusocial.nusocial.ui.auth.SignInActivity
-import com.teamnusocial.nusocial.ui.you.CustomSpinner
-import com.teamnusocial.nusocial.ui.you.YouFragment
-import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.activity_update_info.*
-import kotlin.math.log
 
 class HomeActivity : AppCompatActivity() {
 
@@ -41,6 +29,7 @@ class HomeActivity : AppCompatActivity() {
         )
         setupWithNavController(topBar, navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             if(destination.id == R.id.navigation_you) {
                 topBar.setBackgroundResource(R.drawable.top_bar_rect)
@@ -55,5 +44,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
     }
+
+
 
 }
