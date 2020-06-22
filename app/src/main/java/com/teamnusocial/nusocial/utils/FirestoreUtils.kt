@@ -2,10 +2,7 @@ package com.teamnusocial.nusocial.utils
 
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.*
 import com.teamnusocial.nusocial.data.model.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
@@ -40,29 +37,24 @@ class FirestoreUtils {
     }
 
     //posts, comments and communities
-    suspend fun getAllPosts() = coroutineScope {
+    suspend fun getAllPosts(communityID: String) = coroutineScope {
         return@coroutineScope firestoreInstance
             .collection("posts")
+            .document(communityID)
+            .collection("posts")
     }
-    suspend fun getAllComments() = coroutineScope {
+    suspend fun getComments(communityID: String, postID: String) = coroutineScope {
         return@coroutineScope firestoreInstance
+            .collection("comments")
+            .document(communityID)
+            .collection("posts")
+            .document(postID)
             .collection("comments")
     }
     suspend fun getAllCommunities() =
         coroutineScope {
             firestoreInstance.collection("communities")
         }
-    suspend fun getAllPostsOfCommunity(communityID: String) = coroutineScope {
-        return@coroutineScope firestoreInstance
-            .collection("posts")
-            .whereEqualTo("communityID", communityID)
-    }
-    suspend fun getAllCommentsOfPost(postID: String) = coroutineScope {
-        return@coroutineScope firestoreInstance
-            .collection("comments")
-            .whereEqualTo("parentPostID", postID)
-            .orderBy("timeStamp")
-    }
     //
     fun getMessages(messageID: String) =
         firestoreInstance.collection("messagesChannel").document(messageID)

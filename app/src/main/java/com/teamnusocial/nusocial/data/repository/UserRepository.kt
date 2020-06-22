@@ -96,7 +96,7 @@ class UserRepository(private val utils: FirestoreUtils) {
 
     suspend fun getCurrentUserAsUser() = coroutineScope {
         var user = User()
-        utils.getCurrentUserAsDocument().get()
+        //utils.getCurrentUserAsDocument().get()
         utils.getCurrentUserAsDocument().get().addOnCompleteListener {
             if (it.isSuccessful) {
                 user = it.result?.toObject(User::class.java)!!
@@ -106,7 +106,6 @@ class UserRepository(private val utils: FirestoreUtils) {
         }.await()
         user
     }
-
     suspend fun getUser(userID: String) = coroutineScope {
         var user = User()
         utils.getUserAsDocument(userID).get().addOnCompleteListener {

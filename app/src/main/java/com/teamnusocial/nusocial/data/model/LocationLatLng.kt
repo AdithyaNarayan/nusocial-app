@@ -2,10 +2,13 @@ package com.teamnusocial.nusocial.data.model
 
 import android.location.Location
 import android.location.LocationManager
+import android.os.Parcelable
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.android.parcel.Parcelize
 
-data class LocationLatLng(val latitude: Double, val longitude: Double, var cluster: String) {
+@Parcelize
+data class LocationLatLng(val latitude: Double, val longitude: Double, var cluster: String) : Parcelable{
     constructor() : this(0.0, 0.0, "")
 
     fun getAsLatLng() = LatLng(latitude, longitude)

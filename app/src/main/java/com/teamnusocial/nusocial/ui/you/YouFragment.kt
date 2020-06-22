@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -19,35 +20,26 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.github.ybq.android.spinkit.SpinKitView
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Community
 import com.teamnusocial.nusocial.data.model.Module
-import com.teamnusocial.nusocial.data.model.Post
+import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.auth.SignInActivity
 import com.teamnusocial.nusocial.ui.buddymatch.MaskTransformation
 import com.teamnusocial.nusocial.ui.buddymatch.ModulesAdapter
 import com.teamnusocial.nusocial.ui.community.SingleCommunityActivity
-import com.teamnusocial.nusocial.ui.messages.MessageChatActivity
-import com.teamnusocial.nusocial.ui.messages.MessagesRecyclerViewAdapter
 import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
 import com.teamnusocial.nusocial.utils.FirestoreUtils
-import com.teamnusocial.nusocial.utils.getTimeAgo
-import kotlinx.android.synthetic.main.fragment_buddymatch.*
 import kotlinx.android.synthetic.main.fragment_you.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Collections.rotate
 
 
 class YouFragment : Fragment() {
@@ -59,6 +51,7 @@ class YouFragment : Fragment() {
     private lateinit var viewModel: YouViewModel
     private lateinit var inflater: LayoutInflater
     private lateinit var container: ViewGroup
+    private var socialToolRepo = SocialToolsRepository(FirestoreUtils())
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -67,7 +60,6 @@ class YouFragment : Fragment() {
         this.container = container!!
         this.inflater = inflater
         viewModel = ViewModelProvider(requireActivity()).get(YouViewModel::class.java)
-
         return root
     }
 
@@ -79,6 +71,8 @@ class YouFragment : Fragment() {
         lifecycleScope.launch {
             spin_kit_you.visibility = View.VISIBLE
             viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
+            viewModel.allCommunitites = SocialToolsRepository(FirestoreUtils()).getAllCommunities()
+            viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> viewModel.you.communities.contains(comm.id) }.toMutableList()
             updateUI()
             spin_kit_you.visibility = View.GONE
         }
@@ -98,7 +92,6 @@ class YouFragment : Fragment() {
                                 .document(viewModel.you.uid)
                                 .update("profilePicturePath", url.result.toString())
                             CoroutineScope(Dispatchers.IO).launch {
-
                                 viewModel.you =
                                     UserRepository(FirestoreUtils()).getCurrentUserAsUser()
                                 withContext(Dispatchers.Main) { updateUI() }
@@ -197,8 +190,7 @@ class YouFragment : Fragment() {
                     realRes.add(Module(moduleCode, "", listOf()))
                 }
                 updateModules(realRes)
-
-
+                updateCommunity(realRes)
             }
             builder.setNegativeButton("Cancel",
                 DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
@@ -210,6 +202,11 @@ class YouFragment : Fragment() {
             intent.putExtra("USER_YEAR", viewModel.you.yearOfStudy)
             intent.putExtra("USER_COURSE", viewModel.you.courseOfStudy)
             intent.putExtra("USER_ABOUT", viewModel.you.about)
+            startActivity(intent)
+        }
+
+        create_new_community.setOnClickListener {
+            val intent = Intent(context, CreateNewCommunityActivity::class.java)
             startActivity(intent)
         }
 
@@ -228,9 +225,11 @@ class YouFragment : Fragment() {
             override fun onItemClick(view: View?, position: Int) {
                 val intent = Intent(requireContext(), SingleCommunityActivity::class.java)
                 var exist = false
-                for(community in viewModel.you.communities) {
+                for(community in viewModel.allCommunitites) {
                     if(community.module.moduleCode.equals(viewModel.you.modules[position].moduleCode)) {
                         intent.putExtra("COMMUNITY_DATA", community)
+                        intent.putExtra("USER_DATA", viewModel.you)
+                        Log.d("TEST_AT_YOU", community.coverImageUrl)
                         exist = true
                         break
                     }
@@ -245,15 +244,12 @@ class YouFragment : Fragment() {
             }
         })
         modules_taking.adapter = modulesAdapter
-        viewModel.you.communities.add(Community("","CS1010", mutableListOf(), mutableListOf(),
-            Module("CS1010","Prog", listOf()),"https://www.comp.nus.edu.sg/~cs1010/labs/2017s1/lab6/img/gas_stations.jpg",
-            mutableListOf()
-        ))
-        var communityAdapter = CommunityItemAdapter(viewModel.you.communities.toTypedArray(), requireContext())
+        var communityAdapter = CommunityItemAdapter(viewModel.allYourCommunities.toTypedArray(), requireContext())
         communityAdapter.setClickListener(object : CommunityItemAdapter.ItemClickListener {
             override fun onItemClick(view: View?, position: Int) {
                 val intent = Intent(requireContext(), SingleCommunityActivity::class.java)
                 intent.putExtra("COMMUNITY_DATA", viewModel.you.communities[position])
+                intent.putExtra("USER_DATA", viewModel.you)
                 startActivity(intent)
             }
         })
@@ -264,10 +260,42 @@ class YouFragment : Fragment() {
     private fun updateModules(value: MutableList<Module>) {
         CoroutineScope(Dispatchers.IO).launch {
             UserRepository(FirestoreUtils()).updateModules(value)
+        }
+    }
+    private fun updateCommunity(value: MutableList<Module>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            for(module in value) {
+                if(!communityExits(module.moduleCode)) {
+                    socialToolRepo.addCommunity(
+                        Community(
+                            "", module.moduleCode,
+                            mutableListOf(), mutableListOf(viewModel.you.uid),module,"https://miro.medium.com/max/2580/1*4B6JM5TCU8hckm4WKYxPLQ.jpeg",
+                            mutableListOf()
+                        ),
+                        viewModel.you.uid
+                    )
+                } else {
+                    var comm = viewModel.allCommunitites.find { comm -> comm.module.moduleCode.equals(module.moduleCode) }
+                    if(comm != null) {
+                        socialToolRepo.addMemberToCommunity(viewModel.you.uid, comm.id)
+                    } else {
+                        Log.d("ERROR_ADD_MOD","COMM DOES NOT EXIST")
+                    }
+                }
+            }
             viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
+            viewModel.allCommunitites = SocialToolsRepository(FirestoreUtils()).getAllCommunities()
+            viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> viewModel.you.communities.contains(comm.id) }.toMutableList()
             withContext(Dispatchers.Main) {
                 modules_taking.adapter = ModulesAdapter(viewModel.you.modules.toTypedArray(), requireContext())
+                updateUI()
             }
         }
+    }
+    fun communityExits(moduleCode: String): Boolean {
+        for(community in viewModel.allCommunitites) {
+            if(community.module.moduleCode.equals(moduleCode)) return true
+        }
+        return false
     }
 }

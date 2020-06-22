@@ -1,11 +1,11 @@
 package com.teamnusocial.nusocial.ui.community
 
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
@@ -13,17 +13,27 @@ import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Post
+import com.teamnusocial.nusocial.data.model.User
+import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
+import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.you.CustomSpinner
+import com.teamnusocial.nusocial.utils.FirestoreUtils
 import com.teamnusocial.nusocial.utils.getTimeAgo
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
-class PostAdapter(val allPosts: List<Post>): RecyclerView.Adapter<PostAdapter.PostHolder>() {
+class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>, val you: User, val commID: String): FirestoreRecyclerAdapter<Post, PostAdapter.PostHolder>(options) {
     private val viewPool = RecyclerView.RecycledViewPool()
-    public var totalHeight: Int = 0
+    private val utils = SocialToolsRepository(FirestoreUtils())
     class PostHolder(val layoutView: ConstraintLayout): RecyclerView.ViewHolder(layoutView)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostHolder {
         val layoutView = LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false) as ConstraintLayout
@@ -32,27 +42,26 @@ class PostAdapter(val allPosts: List<Post>): RecyclerView.Adapter<PostAdapter.Po
         )
     }
 
-    override fun onBindViewHolder(holder: PostHolder, position: Int) {
-        var context_ = holder.layoutView.context
-        var dateTimePost = holder.layoutView.findViewById<TextView>(R.id.date_time_post)
-        var textContent = holder.layoutView.findViewById<TextView>(R.id.text_content)
-        var postOwnerName = holder.layoutView.findViewById<TextView>(R.id.post_owner_name)
-        var avatar = holder.layoutView.findViewById<CircleImageView>(R.id.profile_image)
-        var imageSlider = holder.layoutView.findViewById<RecyclerView>(R.id.images_slider)
-        var dropdown_options = holder.layoutView.findViewById<CustomSpinner>(R.id.post_options)
-        var comment_button = holder.layoutView.findViewById<Button>(R.id.comment_button)
-        var like_button = holder.layoutView.findViewById<CheckBox>(R.id.like_button)
-        var share_button = holder.layoutView.findViewById<Button>(R.id.share_button)
-        var like_stat = holder.layoutView.findViewById<TextView>(R.id.like_stat)
-        var comment_stat = holder.layoutView.findViewById<TextView>(R.id.comment_stat)
-        var share_stat = holder.layoutView.findViewById<TextView>(R.id.share_stat)
+    override fun onBindViewHolder(holder: PostHolder, position: Int, model: Post) {
+        val context_ = context
+        val dateTimePost = holder.layoutView.findViewById<TextView>(R.id.date_time_post)
+        val textContent = holder.layoutView.findViewById<TextView>(R.id.text_content)
+        val postOwnerName = holder.layoutView.findViewById<TextView>(R.id.post_owner_name)
+        val avatar = holder.layoutView.findViewById<CircleImageView>(R.id.profile_image)
+        val imageSlider = holder.layoutView.findViewById<RecyclerView>(R.id.images_slider)
+        val dropdown_options = holder.layoutView.findViewById<CustomSpinner>(R.id.post_options)
+        val comment_button = holder.layoutView.findViewById<Button>(R.id.comment_button)
+        val like_button = holder.layoutView.findViewById<CheckBox>(R.id.like_button)
+        //val share_button = holder.layoutView.findViewById<Button>(R.id.share_button)
+        val like_stat = holder.layoutView.findViewById<TextView>(R.id.like_stat)
+        val comment_stat = holder.layoutView.findViewById<TextView>(R.id.comment_stat)
 
 
-        val currPost = allPosts[position]
+        val currPost = model
 
         /**basic stat**/
-        like_stat.text = "${currPost.numLike} like(s)"
-        comment_stat.text = "${currPost.numComment} comments(s)"
+        like_stat.text = "${currPost.userLikeList.size} like(s)"
+        comment_stat.text = "${currPost.commentList.size} comments(s)"
 
 
         /**set up image slider**/
@@ -65,17 +74,40 @@ class PostAdapter(val allPosts: List<Post>): RecyclerView.Adapter<PostAdapter.Po
             adapter = postImageAdapter
             setRecycledViewPool(viewPool)
         }
+        like_button.isChecked = model.userLikeList.contains(you.uid)
+        //Log.d("TEST_ID", "here is ${you.uid} ans ${like_button.isChecked}")
+
+        like_button.setOnCheckedChangeListener { button, isChecked ->
+            if(isChecked) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    utils.likeUpdateAdd(commID, model.id, you.uid)
+                }
+            } else {
+                CoroutineScope(Dispatchers.IO).launch {
+                    utils.likeUpdateRemove(commID, model.id, you.uid)
+                }
+            }
+        }
 
         comment_button.setOnClickListener {
             val intent = Intent(context_, SinglePostActivity::class.java)
             intent.putExtra("POST_DATA", currPost)
             context_.startActivity(intent)
         }
+
+
         dateTimePost.text = getTimeAgo(currPost.timeStamp.seconds)
         textContent.text = currPost.textContent
-        postOwnerName.text = "HIeu"
-        Picasso.get().load("https://scontent-xsp1-2.xx.fbcdn.net/v/t1.0-9/19224907_1825340341115797_8328796348323933218_n.jpg?_nc_cat=107&_nc_sid=110474&_nc_ohc=4xKOhMdh9KoAX9wdXst&_nc_ht=scontent-xsp1-2.xx&oh=2108a955ba2194e976b112d5e83b90ab&oe=5F0E3856")
-            .into(avatar)
+
+        /**owner handling**/
+        CoroutineScope(Dispatchers.IO).launch {
+            val owner = UserRepository(FirestoreUtils()).getUser(model.ownerUid)
+            withContext(Dispatchers.Main) {
+                postOwnerName.text = owner.name
+                Picasso.get().load(owner.profilePicturePath)
+                    .into(avatar)
+            }
+        }
 
         /**set up dropdown**/
         var allOptions = arrayListOf<String>("Choose an action","Edit","Delete")
@@ -119,30 +151,19 @@ class PostAdapter(val allPosts: List<Post>): RecyclerView.Adapter<PostAdapter.Po
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 when(allOptions.get(position)) {
                     "Edit" -> {
-                        Log.d("TEST40", "this is edit")
+                        val intent = Intent(context, EditPostActivity::class.java)
+                        intent.putExtra("POST_DATA", model)
+                        context.startActivity(intent)
                     }
                     "Delete" -> {
-                        Log.d("TEST40", "this is delete")
+                        CoroutineScope(Dispatchers.IO).launch {
+                            utils.deletePost(commID, model.id)
+                        }
                     }
                     else -> {}
                 }
             }
 
         }
-
-        like_button.setOnClickListener {
-            like_stat.text = "${currPost.numLike} like(s)"
-        }
-
-        share_button.setOnClickListener {
-
-        }
-        totalHeight += holder.layoutView.measuredHeight + 10
-        Log.d("TEST100","heigh in adapter ${totalHeight}")
     }
-
-
-
-    override fun getItemCount() = allPosts.size
-
 }

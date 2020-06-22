@@ -1,9 +1,11 @@
 package com.teamnusocial.nusocial.data.model
 
+import android.os.Parcelable
 import com.google.firebase.Timestamp
 import com.squareup.okhttp.Dispatcher
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.utils.FirestoreUtils
+import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
@@ -13,6 +15,7 @@ import java.util.*
 enum class Gender {
     MALE, FEMALE, OTHERS
 }
+@Parcelize
 data class User(
     public var uid: String,
     public val name: String,
@@ -26,8 +29,8 @@ data class User(
     public val about: String,
     public val lastBroadcasted: Timestamp,
     public val seenAndMatch: MutableList<String>,
-    public var communities: MutableList<Community>
-) : Comparable<User> {
+    public var communities: MutableList<String>
+) : Comparable<User>, Parcelable {
     constructor() : this(
         "",
         "--Blank--",

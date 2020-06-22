@@ -11,15 +11,14 @@
         android:id="@+id/main_container_more_info"
         android:layout_width="383dp"
         android:layout_height="341dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/centre_background_orange"
         android:padding="8dp"
         android:paddingBottom="20dp"
         android:translationZ="-1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/more_info_image"
-        app:layout_constraintVertical_bias="0.285">
+        app:layout_constraintTop_toBottomOf="@+id/more_info_image">
 
         <TextView
             android:id="@+id/about_info_more_info"
@@ -91,14 +90,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
+        android:layout_marginTop="328dp"
         android:background="@drawable/centre_button"
         android:text="Back"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/main_container_more_info"
-        app:layout_constraintVertical_bias="0.873" />
+        app:layout_constraintTop_toTopOf="@+id/main_container_more_info" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

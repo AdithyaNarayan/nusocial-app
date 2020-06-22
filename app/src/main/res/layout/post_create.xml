@@ -79,11 +79,12 @@
     <EditText
         android:id="@+id/post_text_content_input"
         android:layout_width="390dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:hint="Type somthing..."
         android:paddingHorizontal="10dp"
         android:paddingVertical="10dp"
+        android:textColor="@color/black"
         android:textColorHint="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

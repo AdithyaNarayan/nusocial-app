@@ -49,13 +49,13 @@ class CommunityFragment : Fragment() {
     fun updateUI() {
         val dummy = Post()
         val allPosts = mutableListOf<Post>(dummy, dummy, dummy)
-        val postAdapter =
+        /*val postAdapter =
             PostAdapter(allPosts)
         val layoutManager = LinearLayoutManager(context)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         personal_posts.layoutManager = layoutManager
         personal_posts.addItemDecoration(OffsetHelperVertical())
-        personal_posts.adapter = postAdapter
+        personal_posts.adapter = postAdapter*/
 
     }
 

@@ -14,24 +14,29 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Community
 import com.teamnusocial.nusocial.data.model.Post
+import com.teamnusocial.nusocial.data.model.TextMessage
+import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
 import com.teamnusocial.nusocial.data.repository.UserRepository
+import com.teamnusocial.nusocial.ui.messages.MessageHolder
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.android.synthetic.main.activity_single_community.*
 import kotlinx.android.synthetic.main.post_create.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.io.FileNotFoundException
 import java.util.*
 
@@ -41,21 +46,27 @@ class SingleCommunityActivity : AppCompatActivity() {
     var imageEncoded: String = ""
     var imagesEncodedList: MutableList<String> = mutableListOf()
     private lateinit var viewModel: CommunityViewModel
+    var utils = SocialToolsRepository(FirestoreUtils())
+    private lateinit var allPostAdapter: FirestoreRecyclerAdapter<Post, PostAdapter.PostHolder>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_community)
         currCommData = intent.getParcelableExtra("COMMUNITY_DATA")!!
         viewModel = ViewModelProvider(this).get(CommunityViewModel::class.java)
-        lifecycleScope.launch {
-            viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
-            updateUI()
-        }
+        viewModel.you = intent.getParcelableExtra("USER_DATA")!!
+        val query =
+            FirebaseFirestore.getInstance().collection("posts").document(currCommData.id).collection("posts").orderBy("timeStamp", Query.Direction.DESCENDING)
+        allPostAdapter = PostAdapter(this,FirestoreRecyclerOptions.Builder<Post>()
+            .setQuery(query, Post::class.java)
+            .build(), viewModel.you, currCommData.id)
+        updateUI()
+
     }
     fun updateUI() {
-        Picasso.get().load("https://i.pinimg.com/originals/28/35/be/2835be38b5274a4b20155999a7613542.jpg").into(community_cover_pic)
+        Picasso.get().load(currCommData.coverImageUrl).into(community_cover_pic)
+        //Log.d("TEST_PIC", currCommData.coverImageUrl)
+        comm_name.text = currCommData.name
         setUpCreateNewPost()
-
-        var allPostAdapter = PostAdapter(mutableListOf(Post(), Post(), Post(), Post()))
         var layoutManager = LinearLayoutManager(this)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         all_posts_single_comm.layoutManager = layoutManager
@@ -86,7 +97,31 @@ class SingleCommunityActivity : AppCompatActivity() {
         }
 
         publish_post_button.setOnClickListener {
-
+            var postID = ""
+            CoroutineScope(Dispatchers.IO).launch {
+                postID = utils.addPost(Post("",currCommData.id,viewModel.you.uid, post_text_content_input.text.toString(),
+                    mutableListOf(), mutableListOf(), Timestamp.now(), mutableListOf(),
+                    mutableListOf()
+                ), currCommData.id)
+                if(!imageEncoded.equals("")) {
+                    pushImagesToFirebase(imageEncoded.toUri(), 0, postID)
+                } else if(imagesEncodedList.size > 0) {
+                    for(index in 0 until imagesEncodedList.size) {
+                        pushImagesToFirebase(imagesEncodedList[index].toUri(), index, postID)
+                    }
+                }
+                viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
+                //viewModel.allSingleCommPost = utils.getAllPostsOfCommunity(currCommData.id)
+                withContext(Dispatchers.Main) {
+                    all_posts_single_comm.smoothScrollToPosition(0)
+                    imageEncoded = ""
+                    imagesEncodedList = mutableListOf()
+                }
+            }
+            post_text_content_input.setText("")
+            post_text_content_input.clearFocus()
+            images_slider.adapter = PostImageAdapter(mutableListOf())
+            //video_slider.adapter
         }
     }
 
@@ -154,26 +189,31 @@ class SingleCommunityActivity : AppCompatActivity() {
         }
     }
 
-    fun pushImagesToFirebase(imagePath: Uri) {
+    fun pushImagesToFirebase(imagePath: Uri, index: Int,postID: String) {
         val selectedImage = imagePath
         val storage = FirebaseStorage.getInstance()
-        val fileName = UUID.randomUUID()
+        val fileName = postID + index.toString()
+        Log.d("TEST_IMG_UPLOAD", "here is ${postID}")
         val filePath =
-            storage.getReference("/post/images/${fileName}")
+            storage.getReference("/post_images/${fileName}")
         filePath.putFile(selectedImage)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     filePath.downloadUrl.addOnCompleteListener { url ->
                         FirebaseFirestore.getInstance().collection("posts")
-                            .document(viewModel.you.uid)
+                            .document(postID)
                             .update("imageList", FieldValue.arrayUnion(url.result.toString()))
-                        CoroutineScope(Dispatchers.IO).launch {
-                            viewModel.you =
-                                UserRepository(FirestoreUtils()).getCurrentUserAsUser()
-                            withContext(Dispatchers.Main) { updateUI() }
-                        }
                     }
                 }
             }
+    }
+    override fun onStart() {
+        super.onStart()
+        if (this::allPostAdapter.isInitialized) allPostAdapter.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (this::allPostAdapter.isInitialized) allPostAdapter.stopListening()
     }
 }

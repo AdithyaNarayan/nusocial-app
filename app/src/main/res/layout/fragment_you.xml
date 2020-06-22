@@ -124,6 +124,7 @@
         android:background="@drawable/corner_card_background_blue"
         android:padding="5dp"
         android:scrollbars="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/add_module_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
@@ -156,6 +157,19 @@
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/communities_in_title" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/create_new_community"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/centre_button_orange"
+        android:text="Update Info"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/communities_in" />
 
     <com.teamnusocial.nusocial.ui.you.CustomSpinner
         android:id="@+id/general_dropdown"
