@@ -9,6 +9,7 @@ data class Comment(
   var id: String,
   var ownerUid: String,
   var ownerName: String,
+  var ownerProfileImageUrl: String,
   var timeStamp: Timestamp,
   var parentPostID: String,
   var textContent: String,
@@ -17,6 +18,7 @@ data class Comment(
   constructor(): this(
     "",
     "",
+    "https://image.flaticon.com/icons/png/512/64/64572.png",
     "--Blank--",
     Timestamp(0,0),
     "",

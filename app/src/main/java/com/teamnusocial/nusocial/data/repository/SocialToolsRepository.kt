@@ -102,6 +102,9 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
                         .getComments(commID, postID)
                         .document(ref.id)
                         .update("id", ref.id)
+
+                    utils.getAllPosts(commID).document(postID).update("commentList", FieldValue.arrayUnion(ref.id))
+
                 }
             }
             .addOnFailureListener { e ->
@@ -176,6 +179,9 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
         utils.getComments(commID, postID).document(commentID).delete()
             .addOnSuccessListener {
                 Log.d("DELETE_COMMENT", "SUCCESS")
+                CoroutineScope(Dispatchers.IO).launch {
+                    utils.getAllPosts(commID).document(postID).update("commentList", FieldValue.arrayRemove(commentID))
+                }
             }
             .addOnFailureListener {
                 Log.d("DELETE_COMMENT", "FAILED")
@@ -184,10 +190,10 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
     suspend fun deletePost(commID: String, postID: String) = coroutineScope {
         utils.getAllPosts(commID).document(postID).delete()
             .addOnSuccessListener {
-                Log.d("DELETE_COMMENT", "SUCCESS")
+                Log.d("DELETE_POST", "SUCCESS")
             }
             .addOnFailureListener {
-                Log.d("DELETE_COMMENT", "FAILED")
+                Log.d("DELETE_POST", "FAILED")
             }
     }
 }

@@ -29,7 +29,8 @@ data class User(
     public val about: String,
     public val lastBroadcasted: Timestamp,
     public val seenAndMatch: MutableList<String>,
-    public var communities: MutableList<String>
+    public var communities: MutableList<String>,
+    public var otherCommunity: MutableList<String>
 ) : Comparable<User>, Parcelable {
     constructor() : this(
         "",
@@ -43,6 +44,7 @@ data class User(
         listOf(),
         "",
         Timestamp(Date(0)),
+        mutableListOf(),
         mutableListOf(),
         mutableListOf()
     )

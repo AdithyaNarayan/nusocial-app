@@ -43,6 +43,14 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
     }
 
     override fun onBindViewHolder(holder: PostHolder, position: Int, model: Post) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val owner = UserRepository(FirestoreUtils()).getUser(model.ownerUid)
+            withContext(Dispatchers.Main) {
+                updatePostFunctions(owner, holder, position, model)
+            }
+        }
+    }
+    fun updatePostFunctions(owner: User, holder: PostHolder, position: Int, model: Post) {
         val context_ = context
         val dateTimePost = holder.layoutView.findViewById<TextView>(R.id.date_time_post)
         val textContent = holder.layoutView.findViewById<TextView>(R.id.text_content)
@@ -92,6 +100,8 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
         comment_button.setOnClickListener {
             val intent = Intent(context_, SinglePostActivity::class.java)
             intent.putExtra("POST_DATA", currPost)
+            intent.putExtra("USER_DATA", you)
+            intent.putExtra("OWNER_DATA", owner)
             context_.startActivity(intent)
         }
 
@@ -100,14 +110,10 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
         textContent.text = currPost.textContent
 
         /**owner handling**/
-        CoroutineScope(Dispatchers.IO).launch {
-            val owner = UserRepository(FirestoreUtils()).getUser(model.ownerUid)
-            withContext(Dispatchers.Main) {
-                postOwnerName.text = owner.name
-                Picasso.get().load(owner.profilePicturePath)
-                    .into(avatar)
-            }
-        }
+        postOwnerName.text = owner.name
+        Picasso.get().load(owner.profilePicturePath)
+            .into(avatar)
+
 
         /**set up dropdown**/
         var allOptions = arrayListOf<String>("Choose an action","Edit","Delete")
@@ -153,6 +159,7 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
                     "Edit" -> {
                         val intent = Intent(context, EditPostActivity::class.java)
                         intent.putExtra("POST_DATA", model)
+                        intent.putExtra("OWNER_DATA", owner)
                         context.startActivity(intent)
                     }
                     "Delete" -> {

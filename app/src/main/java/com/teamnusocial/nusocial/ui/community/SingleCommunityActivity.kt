@@ -46,7 +46,7 @@ class SingleCommunityActivity : AppCompatActivity() {
     var imageEncoded: String = ""
     var imagesEncodedList: MutableList<String> = mutableListOf()
     private lateinit var viewModel: CommunityViewModel
-    var utils = SocialToolsRepository(FirestoreUtils())
+    private val utils = SocialToolsRepository(FirestoreUtils())
     private lateinit var allPostAdapter: FirestoreRecyclerAdapter<Post, PostAdapter.PostHolder>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +55,7 @@ class SingleCommunityActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(CommunityViewModel::class.java)
         viewModel.you = intent.getParcelableExtra("USER_DATA")!!
         val query =
-            FirebaseFirestore.getInstance().collection("posts").document(currCommData.id).collection("posts").orderBy("timeStamp", Query.Direction.DESCENDING)
+            FirebaseFirestore.getInstance().collection("communities").document(currCommData.id).collection("posts").orderBy("timeStamp", Query.Direction.DESCENDING)
         allPostAdapter = PostAdapter(this,FirestoreRecyclerOptions.Builder<Post>()
             .setQuery(query, Post::class.java)
             .build(), viewModel.you, currCommData.id)
@@ -104,10 +104,10 @@ class SingleCommunityActivity : AppCompatActivity() {
                     mutableListOf()
                 ), currCommData.id)
                 if(!imageEncoded.equals("")) {
-                    pushImagesToFirebase(imageEncoded.toUri(), 0, postID)
+                    pushImagesToFirebase(imageEncoded.toUri(), 0, postID, currCommData.id)
                 } else if(imagesEncodedList.size > 0) {
                     for(index in 0 until imagesEncodedList.size) {
-                        pushImagesToFirebase(imagesEncodedList[index].toUri(), index, postID)
+                        pushImagesToFirebase(imagesEncodedList[index].toUri(), index, postID, currCommData.id)
                     }
                 }
                 viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
@@ -120,7 +120,7 @@ class SingleCommunityActivity : AppCompatActivity() {
             }
             post_text_content_input.setText("")
             post_text_content_input.clearFocus()
-            images_slider.adapter = PostImageAdapter(mutableListOf())
+            images_slider.adapter = PostImageEditAdapter(mutableListOf())
             //video_slider.adapter
         }
     }
@@ -180,16 +180,16 @@ class SingleCommunityActivity : AppCompatActivity() {
 
             }
             if(imagesEncodedList.size > 0) {
-                images_slider.adapter = PostImageAdapter(imagesEncodedList)
+                images_slider.adapter = PostImageEditAdapter(imagesEncodedList)
             } else if(!imageEncoded.equals("")) {
-                images_slider.adapter = PostImageAdapter(mutableListOf(imageEncoded))
+                images_slider.adapter = PostImageEditAdapter(mutableListOf(imageEncoded))
             } else {
                 Log.d("ERROR", "NO IMAGES PICKED")
             }
         }
     }
 
-    fun pushImagesToFirebase(imagePath: Uri, index: Int,postID: String) {
+    fun pushImagesToFirebase(imagePath: Uri, index: Int,postID: String, commID: String) {
         val selectedImage = imagePath
         val storage = FirebaseStorage.getInstance()
         val fileName = postID + index.toString()
@@ -200,7 +200,7 @@ class SingleCommunityActivity : AppCompatActivity() {
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     filePath.downloadUrl.addOnCompleteListener { url ->
-                        FirebaseFirestore.getInstance().collection("posts")
+                        FirebaseFirestore.getInstance().collection("communities").document(commID).collection("posts")
                             .document(postID)
                             .update("imageList", FieldValue.arrayUnion(url.result.toString()))
                     }

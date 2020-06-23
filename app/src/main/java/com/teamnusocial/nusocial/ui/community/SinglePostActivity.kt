@@ -21,22 +21,36 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Comment
 import com.teamnusocial.nusocial.data.model.Post
+import com.teamnusocial.nusocial.data.model.User
+import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
+import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.you.CustomSpinner
+import com.teamnusocial.nusocial.utils.FirestoreUtils
 import com.teamnusocial.nusocial.utils.getTimeAgo
+import kotlinx.android.synthetic.main.activity_single_community.*
 import kotlinx.android.synthetic.main.activity_single_post.*
 import kotlinx.android.synthetic.main.post.*
+import kotlinx.coroutines.*
 
 class SinglePostActivity : AppCompatActivity() {
     private val viewPool = RecyclerView.RecycledViewPool()
+    private lateinit var currPost: Post
     private lateinit var viewModel: SinglePostViewModel
+    private lateinit var allCommentsAdapter: FirestoreRecyclerAdapter<Comment, CommentAdapter.CommentHolder>
+    private val utils = SocialToolsRepository(FirestoreUtils())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_post)
@@ -48,8 +62,18 @@ class SinglePostActivity : AppCompatActivity() {
 
         /**set up view model**/
         viewModel = ViewModelProvider(this).get(SinglePostViewModel::class.java)
-
-        var currPost = intent.getParcelableExtra<Post>("POST_DATA")
+        currPost = intent.getParcelableExtra<Post>("POST_DATA")
+        viewModel.you = intent.getParcelableExtra<User>("USER_DATA")
+        val query =
+            FirebaseFirestore.getInstance().collection("communities").document(currPost.communityID)
+                .collection("posts")
+                .document(currPost.id)
+                .collection("comments")
+                .orderBy("timeStamp", Query.Direction.DESCENDING)
+        allCommentsAdapter = CommentAdapter(this, FirestoreRecyclerOptions.Builder<Comment>()
+            .setQuery(query, Comment::class.java)
+            .build(), viewModel.you, currPost)
+        viewModel.owner = intent.getParcelableExtra("OWNER_DATA")
         setUpPostFunctions(currPost)
 
     }
@@ -64,6 +88,11 @@ class SinglePostActivity : AppCompatActivity() {
         }
     }
     fun setUpPostFunctions(currPost: Post) {
+        /**basic stat**/
+        val like_number = currPost.userLikeList.size
+        like_stat.text = "${currPost.userLikeList.size} like(s)"
+        comment_stat.text = "${allCommentsAdapter.itemCount} comments(s)"
+
         val postImageAdapter =
             PostImageAdapter(currPost.imageList)
         val snapHelper = LinearSnapHelper() //make the swiping snappy
@@ -81,10 +110,30 @@ class SinglePostActivity : AppCompatActivity() {
             showKeyboard(input_comment, this)
         }
 
+        like_button.isChecked = currPost.userLikeList.contains(viewModel.owner.uid)
+
+        like_button.setOnCheckedChangeListener { button, isChecked ->
+            if(isChecked) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    utils.likeUpdateAdd(currPost.communityID, currPost.id, viewModel.owner.uid)
+                    withContext(Dispatchers.Main) {
+                        like_stat.text = "${like_number} like(s)"
+                    }
+                }
+            } else {
+                CoroutineScope(Dispatchers.IO).launch {
+                    utils.likeUpdateRemove(currPost.communityID, currPost.id, viewModel.owner.uid)
+                    withContext(Dispatchers.Main) {
+                        like_stat.text = "${like_number - 1} like(s)"
+                    }
+                }
+            }
+        }
+
         date_time_post.text = getTimeAgo(currPost.timeStamp.seconds)
         text_content.text = currPost.textContent
-        post_owner_name.text = "HIeu"
-        Picasso.get().load("https://scontent-xsp1-2.xx.fbcdn.net/v/t1.0-9/19224907_1825340341115797_8328796348323933218_n.jpg?_nc_cat=107&_nc_sid=110474&_nc_ohc=4xKOhMdh9KoAX9wdXst&_nc_ht=scontent-xsp1-2.xx&oh=2108a955ba2194e976b112d5e83b90ab&oe=5F0E3856")
+        post_owner_name.text = viewModel.owner.name
+            Picasso.get().load(viewModel.owner.profilePicturePath)
             .into(profile_image)
 
         var allOptions = arrayListOf<String>("Choose an action","Edit","Delete")
@@ -130,7 +179,10 @@ class SinglePostActivity : AppCompatActivity() {
                         Log.d("TEST40", "this is edit")
                     }
                     "Delete" -> {
-                        Log.d("TEST40", "this is delete")
+                        CoroutineScope(Dispatchers.IO).launch {
+                            utils.deletePost(currPost.communityID, currPost.id)
+                            finish()
+                        }
                     }
                     else -> {
 
@@ -139,11 +191,23 @@ class SinglePostActivity : AppCompatActivity() {
             }
 
         }
-
         val layoutManager = LinearLayoutManager(this)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         comments.layoutManager = layoutManager
-        comments.adapter = CommentAdapter(viewModel.allComments)
+        comments.adapter = allCommentsAdapter
+
+        send_comment_button.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                utils.addComment(Comment("",viewModel.owner.uid,viewModel.owner.name,viewModel.owner.profilePicturePath, Timestamp.now(), currPost.id, input_comment.text.toString(),
+                    mutableListOf()), currPost.id, currPost.communityID)
+                withContext(Dispatchers.Main) {
+                    input_comment.setText("")
+                    input_comment.clearFocus()
+                    comment_stat.text = "${allCommentsAdapter.itemCount + 1} comments(s)"
+                    comments.smoothScrollToPosition(0)
+                }
+            }
+        }
     }
     fun showKeyboard(mEtSearch: EditText, context: Context) {
         mEtSearch.requestFocus()
@@ -155,6 +219,15 @@ class SinglePostActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         input_comment.clearFocus()
+    }
+    override fun onStart() {
+        super.onStart()
+        if (this::allCommentsAdapter.isInitialized) allCommentsAdapter.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (this::allCommentsAdapter.isInitialized) allCommentsAdapter.stopListening()
     }
 
 }

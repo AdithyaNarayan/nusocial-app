@@ -10,7 +10,7 @@
 
     <TextView
         android:id="@+id/comm_name"
-        android:layout_width="100dp"
+        android:layout_width="330dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:background="@drawable/rounded_edit_text"

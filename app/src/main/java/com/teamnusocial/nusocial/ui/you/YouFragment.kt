@@ -66,13 +66,21 @@ class YouFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         modules_taking.layoutManager = GridLayoutManager(context, 4)
-        communities_in.layoutManager = GridLayoutManager(context, 2)
+        communities_in.layoutManager = GridLayoutManager(context, 1)
         val spin_kit_you = activity?.findViewById<SpinKitView>(R.id.spin_kit)!!
         lifecycleScope.launch {
             spin_kit_you.visibility = View.VISIBLE
             viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
             viewModel.allCommunitites = SocialToolsRepository(FirestoreUtils()).getAllCommunities()
+            //viewModel.allModulesAvailable = viewModel.allModulesOffered()
             viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> viewModel.you.communities.contains(comm.id) }.toMutableList()
+            for(comm in viewModel.allYourCommunities) {
+                if(comm.module.moduleCode.equals("")) {
+                    viewModel.otherCommunities.add(comm)
+                } else {
+                    viewModel.moduleCommunities.add(comm)
+                }
+            }
             updateUI()
             spin_kit_you.visibility = View.GONE
         }
@@ -106,6 +114,9 @@ class YouFragment : Fragment() {
     }
 
     private fun updateUI() {
+        for(module in viewModel.allModulesAvailable) {
+            Log.d("TEST_API", "here is ${module.moduleName} and ${module.moduleCode}")
+        }
 
         you_name.text = viewModel.you.name
 
@@ -225,7 +236,7 @@ class YouFragment : Fragment() {
             override fun onItemClick(view: View?, position: Int) {
                 val intent = Intent(requireContext(), SingleCommunityActivity::class.java)
                 var exist = false
-                for(community in viewModel.allCommunitites) {
+                for(community in viewModel.moduleCommunities) {
                     if(community.module.moduleCode.equals(viewModel.you.modules[position].moduleCode)) {
                         intent.putExtra("COMMUNITY_DATA", community)
                         intent.putExtra("USER_DATA", viewModel.you)
@@ -244,7 +255,7 @@ class YouFragment : Fragment() {
             }
         })
         modules_taking.adapter = modulesAdapter
-        var communityAdapter = CommunityItemAdapter(viewModel.allYourCommunities.toTypedArray(), requireContext())
+        var communityAdapter = CommunityItemAdapter(viewModel.otherCommunities.toTypedArray(), requireContext())
         communityAdapter.setClickListener(object : CommunityItemAdapter.ItemClickListener {
             override fun onItemClick(view: View?, position: Int) {
                 val intent = Intent(requireContext(), SingleCommunityActivity::class.java)
@@ -269,7 +280,7 @@ class YouFragment : Fragment() {
                     socialToolRepo.addCommunity(
                         Community(
                             "", module.moduleCode,
-                            mutableListOf(), mutableListOf(viewModel.you.uid),module,"https://miro.medium.com/max/2580/1*4B6JM5TCU8hckm4WKYxPLQ.jpeg",
+                            mutableListOf(viewModel.you.uid),module,"https://miro.medium.com/max/2580/1*4B6JM5TCU8hckm4WKYxPLQ.jpeg",
                             mutableListOf()
                         ),
                         viewModel.you.uid

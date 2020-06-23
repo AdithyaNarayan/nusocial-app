@@ -42,6 +42,7 @@ class FirebaseAuthUtils {
                 "Hey there! I'm using NUSocial!",
                 Timestamp(Date(0)),
                 mutableListOf(),
+                mutableListOf(),
                 mutableListOf()
             )
         )

@@ -3,8 +3,9 @@ package com.teamnusocial.nusocial.ui.community
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Timestamp
 import com.teamnusocial.nusocial.data.model.Comment
+import com.teamnusocial.nusocial.data.model.User
 
 class SinglePostViewModel() : ViewModel() {
-    var allComments: MutableList<Comment> = mutableListOf(Comment("","123","Hieu",
-        Timestamp(0,0),"","TEST", mutableListOf()))
+    var you: User = User()
+    var owner: User = User()
 }

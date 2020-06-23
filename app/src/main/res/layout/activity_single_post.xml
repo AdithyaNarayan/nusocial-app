@@ -23,7 +23,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/comment_input"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="wrap_content"
+        android:paddingVertical="12dp"
         android:background="@drawable/post_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

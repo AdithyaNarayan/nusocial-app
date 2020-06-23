@@ -1,21 +1,36 @@
 package com.teamnusocial.nusocial.ui.community
 
-import android.util.Log
+import android.app.Activity
+import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.TextView
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Comment
+import com.teamnusocial.nusocial.data.model.Post
+import com.teamnusocial.nusocial.data.model.User
+import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
 import com.teamnusocial.nusocial.ui.you.CustomSpinner
-class CommentAdapter(var allComments: List<Comment>) : RecyclerView.Adapter<CommentAdapter.CommentHolder>() {
+import com.teamnusocial.nusocial.utils.FirestoreUtils
+import com.teamnusocial.nusocial.utils.getTimeAgo
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+
+class CommentAdapter(val context_: Context, options: FirestoreRecyclerOptions<Comment>, val you: User, val parentPost: Post) : FirestoreRecyclerAdapter<Comment, CommentAdapter.CommentHolder>(options) {
+    private val utils = SocialToolsRepository(FirestoreUtils())
     class CommentHolder(val commentLayout: ConstraintLayout): RecyclerView.ViewHolder(commentLayout)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentHolder {
@@ -23,65 +38,94 @@ class CommentAdapter(var allComments: List<Comment>) : RecyclerView.Adapter<Comm
         return CommentHolder(commentLayout)
     }
 
-    override fun onBindViewHolder(holder: CommentHolder, position: Int) {
-        var comment = allComments[position]
+    override fun onBindViewHolder(holder: CommentHolder, position: Int, model: Comment) {
+        val comment_stat = (context_ as Activity).findViewById<TextView>(R.id.comment_stat)
+        var comment = model
         holder.commentLayout.findViewById<TextView>(R.id.text_content_comment).text = comment.textContent
         holder.commentLayout.findViewById<TextView>(R.id.comment_owner_name).text = comment.ownerName
 
+        holder.commentLayout.findViewById<TextView>(R.id.date_time_comment).text = getTimeAgo(comment.timeStamp.seconds)
+        Picasso.get().load(model.ownerProfileImageUrl).into(holder.commentLayout.findViewById<ImageView>(R.id.profile_image_comment))
         var dropdown_options = holder.commentLayout.findViewById<CustomSpinner>(R.id.comment_options)
         /**set up dropdown**/
-        var allOptions = arrayListOf<String>("Choose an action","Edit","Delete")
-        val arrayAdapter = object: ArrayAdapter<String>(holder.commentLayout.context, android.R.layout.simple_spinner_item, allOptions) {
-            override fun getDropDownView(
-                position: Int,
-                convertView: View?,
-                parent: ViewGroup
-            ): View {
-                var res =  super.getDropDownView(position, convertView, parent) as TextView
-                if(position == 0) {
-                    res.setBackgroundResource(R.drawable.centre_background)
-                }
-                return res
-            }
-        }
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        dropdown_options.adapter = arrayAdapter
-        /**animation for dropdown**/
-        val rotateAnim = RotateAnimation(0F, 180F, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
-        rotateAnim.duration = 200
-        rotateAnim.setInterpolator(LinearInterpolator())
-        dropdown_options.setSpinnerEventsListener(object :
-            CustomSpinner.OnSpinnerEventsListener {
-            override fun onSpinnerOpened() {
-                dropdown_options.isSelected = true
-                dropdown_options.startAnimation(rotateAnim)
-            }
-
-            override fun onSpinnerClosed() {
-                dropdown_options.isSelected = false
-                dropdown_options.startAnimation(rotateAnim)
-            }
-        })
-        dropdown_options.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-
-            }
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                when(allOptions.get(position)) {
-                    "Edit" -> {
-
+        var toast = Toast.makeText(context_, "You cannot carry out this action", Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 0)
+        var allOptions: ArrayList<String> = arrayListOf()
+        if(you.uid.equals(model.ownerUid)) allOptions = arrayListOf<String>("Choose an action","Edit","Delete")
+        else if(you.uid.equals(parentPost.ownerUid)) allOptions = arrayListOf<String>("Choose an action","Delete")
+        if(allOptions.size == 0) dropdown_options.visibility = View.GONE
+        else {
+            val arrayAdapter = object: ArrayAdapter<String>(context_, android.R.layout.simple_spinner_item, allOptions) {
+                override fun getDropDownView(
+                    position: Int,
+                    convertView: View?,
+                    parent: ViewGroup
+                ): View {
+                    var res =  super.getDropDownView(position, convertView, parent) as TextView
+                    if(position == 0) {
+                        res.setBackgroundResource(R.drawable.centre_background)
                     }
-                    "Delete" -> {
-
-                    }
-                    else -> {}
+                    return res
                 }
             }
+            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            dropdown_options.adapter = arrayAdapter
+            /**animation for dropdown**/
+            val rotateAnim = RotateAnimation(
+                0F,
+                180F,
+                Animation.RELATIVE_TO_SELF,
+                0.5f,
+                Animation.RELATIVE_TO_SELF,
+                0.5f
+            )
+            rotateAnim.duration = 200
+            rotateAnim.setInterpolator(LinearInterpolator())
+            dropdown_options.setSpinnerEventsListener(object :
+                CustomSpinner.OnSpinnerEventsListener {
+                override fun onSpinnerOpened() {
+                    dropdown_options.isSelected = true
+                    dropdown_options.startAnimation(rotateAnim)
+                }
 
+                override fun onSpinnerClosed() {
+                    dropdown_options.isSelected = false
+                    dropdown_options.startAnimation(rotateAnim)
+                }
+            })
+            dropdown_options.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    when (allOptions.get(position)) {
+                        "Edit" -> {
+                        }
+                        "Delete" -> {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                utils.deleteComment(
+                                    parentPost.communityID,
+                                    model.parentPostID,
+                                    model.id
+                                )
+                                withContext(Dispatchers.Main) {
+                                    comment_stat.text = "${itemCount - 1} comment(s)"
+                                }
+                            }
+                        }
+                        else -> {
+                        }
+                    }
+                }
+
+            }
         }
 
     }
-
-    override fun getItemCount() = allComments.size
 }

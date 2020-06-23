@@ -39,13 +39,13 @@ class FirestoreUtils {
     //posts, comments and communities
     suspend fun getAllPosts(communityID: String) = coroutineScope {
         return@coroutineScope firestoreInstance
-            .collection("posts")
+            .collection("communities")
             .document(communityID)
             .collection("posts")
     }
     suspend fun getComments(communityID: String, postID: String) = coroutineScope {
         return@coroutineScope firestoreInstance
-            .collection("comments")
+            .collection("communities")
             .document(communityID)
             .collection("posts")
             .document(postID)
