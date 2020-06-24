@@ -2,10 +2,8 @@ package com.teamnusocial.nusocial.ui.community
 
 import android.app.Activity
 import android.content.Context
-import android.content.res.Configuration
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -17,13 +15,10 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -36,11 +31,9 @@ import com.teamnusocial.nusocial.data.model.Comment
 import com.teamnusocial.nusocial.data.model.Post
 import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
-import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.you.CustomSpinner
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import com.teamnusocial.nusocial.utils.getTimeAgo
-import kotlinx.android.synthetic.main.activity_single_community.*
 import kotlinx.android.synthetic.main.activity_single_post.*
 import kotlinx.android.synthetic.main.post.*
 import kotlinx.coroutines.*
@@ -91,15 +84,13 @@ class SinglePostActivity : AppCompatActivity() {
         /**basic stat**/
         val like_number = currPost.userLikeList.size
         like_stat.text = "${currPost.userLikeList.size} like(s)"
-        comment_stat.text = "${allCommentsAdapter.itemCount} comments(s)"
+        comment_stat.text = "${currPost.numComment} comments(s)"
 
         val postImageAdapter =
             PostImageAdapter(currPost.imageList)
-        val snapHelper = LinearSnapHelper() //make the swiping snappy
-        snapHelper.attachToRecyclerView(images_slider)
         val childLayoutManager = LinearLayoutManager(
             this, RecyclerView.HORIZONTAL, false)
-        images_slider.apply {
+        old_images_slider.apply {
             layoutManager = childLayoutManager
             adapter = postImageAdapter
             setRecycledViewPool(viewPool)
@@ -176,7 +167,11 @@ class SinglePostActivity : AppCompatActivity() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 when(allOptions.get(position)) {
                     "Edit" -> {
-                        Log.d("TEST40", "this is edit")
+                        val intent = Intent(this@SinglePostActivity, EditPostActivity::class.java)
+                        intent.putExtra("POST_DATA", currPost)
+                        intent.putExtra("OWNER_DATA", viewModel.owner)
+                        intent.putExtra("USER_DATA", viewModel.you)
+                        startActivityForResult(intent, 0)
                     }
                     "Delete" -> {
                         CoroutineScope(Dispatchers.IO).launch {
@@ -198,7 +193,7 @@ class SinglePostActivity : AppCompatActivity() {
 
         send_comment_button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                utils.addComment(Comment("",viewModel.owner.uid,viewModel.owner.name,viewModel.owner.profilePicturePath, Timestamp.now(), currPost.id, input_comment.text.toString(),
+                utils.addComment(Comment("",viewModel.you.uid,viewModel.you.name,viewModel.you.profilePicturePath, Timestamp.now(), currPost.id, input_comment.text.toString(),
                     mutableListOf()), currPost.id, currPost.communityID)
                 withContext(Dispatchers.Main) {
                     input_comment.setText("")
@@ -216,6 +211,16 @@ class SinglePostActivity : AppCompatActivity() {
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 0 && resultCode == Activity.RESULT_OK) {
+            currPost = data!!.getParcelableExtra<Post>("POST_DATA")
+            viewModel.you = data!!.getParcelableExtra<User>("USER_DATA")
+            viewModel.owner = data!!.getParcelableExtra("OWNER_DATA")
+            setUpPostFunctions(currPost)
+        }
+
+    }
     override fun onBackPressed() {
         super.onBackPressed()
         input_comment.clearFocus()

@@ -1,15 +1,21 @@
 package com.teamnusocial.nusocial.ui.community
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class PostImageEditAdapter(var allImage: MutableList<String>): RecyclerView.Adapter<PostImageEditAdapter.ImageHolder>() {
+class PostImageEditAdapter(var allImage: MutableList<String>, val isCreate: Boolean, val postID: String): RecyclerView.Adapter<PostImageEditAdapter.ImageHolder>() {
     class ImageHolder(val imageView: ConstraintLayout): RecyclerView.ViewHolder(imageView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder {
@@ -27,7 +33,23 @@ class PostImageEditAdapter(var allImage: MutableList<String>): RecyclerView.Adap
         }
     }
     fun removeAt(position: Int) {
+        val imagePath = allImage[position]
         allImage.removeAt(position)
+        var startIndex = 0
+        var endIndex = 0
+        for(index in 0 until imagePath.length) {
+            if(imagePath[index] == '%') startIndex = index + 3
+            else if(imagePath[index] == '?') {
+                endIndex = index
+                break
+            }
+        }
+        Log.d("TEST_IMG_PATH", "HERE is ${imagePath}")
+        if(!isCreate) {
+            CoroutineScope(Dispatchers.IO).launch {
+                FirebaseStorage.getInstance().getReference("/post_images/${imagePath.substring(startIndex, endIndex)}").delete()
+            }
+        }
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, allImage.size)
     }

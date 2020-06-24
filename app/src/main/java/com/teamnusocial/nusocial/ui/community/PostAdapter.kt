@@ -2,7 +2,6 @@ package com.teamnusocial.nusocial.ui.community
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,20 +55,18 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
         val textContent = holder.layoutView.findViewById<TextView>(R.id.text_content)
         val postOwnerName = holder.layoutView.findViewById<TextView>(R.id.post_owner_name)
         val avatar = holder.layoutView.findViewById<CircleImageView>(R.id.profile_image)
-        val imageSlider = holder.layoutView.findViewById<RecyclerView>(R.id.images_slider)
+        val imageSlider = holder.layoutView.findViewById<RecyclerView>(R.id.old_images_slider)
         val dropdown_options = holder.layoutView.findViewById<CustomSpinner>(R.id.post_options)
         val comment_button = holder.layoutView.findViewById<Button>(R.id.comment_button)
         val like_button = holder.layoutView.findViewById<CheckBox>(R.id.like_button)
         //val share_button = holder.layoutView.findViewById<Button>(R.id.share_button)
         val like_stat = holder.layoutView.findViewById<TextView>(R.id.like_stat)
         val comment_stat = holder.layoutView.findViewById<TextView>(R.id.comment_stat)
-
-
         val currPost = model
 
         /**basic stat**/
         like_stat.text = "${currPost.userLikeList.size} like(s)"
-        comment_stat.text = "${currPost.commentList.size} comments(s)"
+        comment_stat.text = "${currPost.numComment} comments(s)"
 
 
         /**set up image slider**/
@@ -160,6 +157,7 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
                         val intent = Intent(context, EditPostActivity::class.java)
                         intent.putExtra("POST_DATA", model)
                         intent.putExtra("OWNER_DATA", owner)
+                        intent.putExtra("USER_DATA", you)
                         context.startActivity(intent)
                     }
                     "Delete" -> {

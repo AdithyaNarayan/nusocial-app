@@ -14,7 +14,7 @@ data class Post(
     var videoList: MutableList<String>,
     var timeStamp: Timestamp,
     var userLikeList: MutableList<String>,
-    var commentList: MutableList<String>
+    var numComment: Int
 ): Parcelable {
     constructor() : this(
         "",
@@ -25,6 +25,6 @@ data class Post(
         mutableListOf(),
         Timestamp(0,0),
         mutableListOf(),
-        mutableListOf()
+        0
     )
 }

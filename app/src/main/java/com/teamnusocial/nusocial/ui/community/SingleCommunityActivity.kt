@@ -2,21 +2,16 @@ package com.teamnusocial.nusocial.ui.community
 
 import android.Manifest
 import android.app.Activity
-import android.content.ClipData
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -29,16 +24,12 @@ import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Community
 import com.teamnusocial.nusocial.data.model.Post
-import com.teamnusocial.nusocial.data.model.TextMessage
 import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
 import com.teamnusocial.nusocial.data.repository.UserRepository
-import com.teamnusocial.nusocial.ui.messages.MessageHolder
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.android.synthetic.main.activity_single_community.*
 import kotlinx.android.synthetic.main.post_create.*
 import kotlinx.coroutines.*
-import java.io.FileNotFoundException
-import java.util.*
 
 
 class SingleCommunityActivity : AppCompatActivity() {
@@ -81,8 +72,8 @@ class SingleCommunityActivity : AppCompatActivity() {
         layoutManager_for_images.orientation = LinearLayoutManager.HORIZONTAL
         layoutManager_for_videos.orientation = LinearLayoutManager.HORIZONTAL
 
-        images_slider.layoutManager = layoutManager_for_images
-        video_slider.layoutManager = layoutManager_for_videos
+        old_images_slider.layoutManager = layoutManager_for_images
+        new_images_slider.layoutManager = layoutManager_for_videos
 
         add_image_button.setOnClickListener {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -100,9 +91,7 @@ class SingleCommunityActivity : AppCompatActivity() {
             var postID = ""
             CoroutineScope(Dispatchers.IO).launch {
                 postID = utils.addPost(Post("",currCommData.id,viewModel.you.uid, post_text_content_input.text.toString(),
-                    mutableListOf(), mutableListOf(), Timestamp.now(), mutableListOf(),
-                    mutableListOf()
-                ), currCommData.id)
+                    mutableListOf(), mutableListOf(), Timestamp.now(), mutableListOf(),0), currCommData.id)
                 if(!imageEncoded.equals("")) {
                     pushImagesToFirebase(imageEncoded.toUri(), 0, postID, currCommData.id)
                 } else if(imagesEncodedList.size > 0) {
@@ -120,7 +109,7 @@ class SingleCommunityActivity : AppCompatActivity() {
             }
             post_text_content_input.setText("")
             post_text_content_input.clearFocus()
-            images_slider.adapter = PostImageEditAdapter(mutableListOf())
+            old_images_slider.adapter = PostImageEditAdapter(mutableListOf(), true, "--blank--")
             //video_slider.adapter
         }
     }
@@ -180,9 +169,9 @@ class SingleCommunityActivity : AppCompatActivity() {
 
             }
             if(imagesEncodedList.size > 0) {
-                images_slider.adapter = PostImageEditAdapter(imagesEncodedList)
+                old_images_slider.adapter = PostImageEditAdapter(imagesEncodedList, true, "--blank--")
             } else if(!imageEncoded.equals("")) {
-                images_slider.adapter = PostImageEditAdapter(mutableListOf(imageEncoded))
+                old_images_slider.adapter = PostImageEditAdapter(mutableListOf(imageEncoded), true, "--blank--")
             } else {
                 Log.d("ERROR", "NO IMAGES PICKED")
             }

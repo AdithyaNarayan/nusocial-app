@@ -5,14 +5,13 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
@@ -23,11 +22,8 @@ import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Post
 import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
-import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.android.synthetic.main.activity_edit_post.*
-import kotlinx.android.synthetic.main.activity_single_community.*
-import kotlinx.android.synthetic.main.activity_update_info.*
 import kotlinx.android.synthetic.main.post_create.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,8 +33,9 @@ import kotlinx.coroutines.withContext
 class EditPostActivity : AppCompatActivity() {
     private lateinit var postData: Post
     private lateinit var owner: User
-    var imageEncoded: String = ""
-    var imagesEncodedList: MutableList<String> = mutableListOf()
+    private lateinit var you: User
+    private var imageEncoded: String = ""
+    private var imagesEncodedList: MutableList<String> = mutableListOf<String>()
     private val storage = FirebaseStorage.getInstance()
     private val utils = SocialToolsRepository(FirestoreUtils())
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +47,7 @@ class EditPostActivity : AppCompatActivity() {
 
         postData = intent.getParcelableExtra("POST_DATA")
         owner = intent.getParcelableExtra("OWNER_DATA")
+        you = intent.getParcelableExtra("USER_DATA")
         updateOldData()
     }
     fun updateOldData() {
@@ -57,15 +55,17 @@ class EditPostActivity : AppCompatActivity() {
         post_owner_name.text = owner.name
         post_text_content_input.setText(postData.textContent)
 
-        val layoutManager_for_images = LinearLayoutManager(this)
-        val layoutManager_for_videos = LinearLayoutManager(this)
-        layoutManager_for_images.orientation = LinearLayoutManager.HORIZONTAL
-        layoutManager_for_videos.orientation = LinearLayoutManager.HORIZONTAL
+        val layoutManager_for_new = LinearLayoutManager(this)
+        val layoutManager_for_old = LinearLayoutManager(this)
+        layoutManager_for_new.orientation = LinearLayoutManager.HORIZONTAL
+        layoutManager_for_old.orientation = LinearLayoutManager.HORIZONTAL
 
-        imagesEncodedList.addAll(postData.imageList)
-        images_slider.layoutManager = layoutManager_for_images
-        images_slider.adapter = PostImageAdapter(imagesEncodedList)
-        video_slider.layoutManager = layoutManager_for_videos
+        new_images_slider.layoutManager = layoutManager_for_new
+        new_images_slider.adapter = PostImageEditAdapter(imagesEncodedList, true, "--blank--")
+
+        old_images_slider.layoutManager = layoutManager_for_old
+        old_images_slider.adapter = PostImageEditAdapter(postData.imageList, false, postData.id)
+
 
         add_image_button.setOnClickListener {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -75,16 +75,13 @@ class EditPostActivity : AppCompatActivity() {
             }
         }
 
-        add_videos_button.setOnClickListener {
-
-        }
 
         publish_post_button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                utils.editPost(Post(postData.id,postData.communityID,owner.uid, post_text_content_input.text.toString(),
-                    mutableListOf(), mutableListOf(), Timestamp.now(), mutableListOf(),
-                    mutableListOf()
-                ), postData.communityID)
+                val newPost = Post(postData.id,postData.communityID,owner.uid, post_text_content_input.text.toString(),
+                    postData.imageList, mutableListOf(), Timestamp.now(), postData.userLikeList,postData.numComment
+                )
+                utils.editPost(newPost, postData.communityID)
                 if(!imageEncoded.equals("")) {
                     pushImagesToFirebase(imageEncoded.toUri(), 0, postData.id, postData.communityID)
                 } else if(imagesEncodedList.size > 0) {
@@ -94,6 +91,10 @@ class EditPostActivity : AppCompatActivity() {
                 }
                 //viewModel.allSingleCommPost = utils.getAllPostsOfCommunity(currCommData.id)
                 withContext(Dispatchers.Main) {
+                    setResult(
+                        Activity.RESULT_OK,
+                        Intent().putExtra("POST_DATA", newPost).putExtra("OWNER_DATA", owner).putExtra("USER_DATA", you)
+                    )
                     finish()
                 }
             }
@@ -156,10 +157,10 @@ class EditPostActivity : AppCompatActivity() {
 
             }
             if(imagesEncodedList.size > 0) {
-                images_slider.adapter = PostImageAdapter(imagesEncodedList)
+                new_images_slider.adapter = PostImageEditAdapter(imagesEncodedList, true, "--blank--")
             } else if(!imageEncoded.equals("")) {
                 imagesEncodedList.add(imageEncoded)
-                images_slider.adapter = PostImageAdapter(imagesEncodedList)
+                new_images_slider.adapter = PostImageEditAdapter(imagesEncodedList, true, "--blank--")
             } else {
                 Log.d("ERROR", "NO IMAGES PICKED")
             }
@@ -177,10 +178,14 @@ class EditPostActivity : AppCompatActivity() {
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     filePath.downloadUrl.addOnCompleteListener { url ->
-                        FirebaseFirestore.getInstance().collection("communities").document(commID).collection("posts")
+                        FirebaseFirestore.getInstance().collection("communities").document(commID)
+                            .collection("posts")
                             .document(postID)
                             .update("imageList", FieldValue.arrayUnion(url.result.toString()))
+                        Log.d("TEST_IMG_HERE", "Here is ${url.result.toString()}")
                     }
+                } else {
+                    Log.d("TEST_IMG_HERE", "HOW THE FUCK")
                 }
             }
     }

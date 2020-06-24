@@ -36,10 +36,8 @@ import com.teamnusocial.nusocial.ui.community.SingleCommunityActivity
 import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.android.synthetic.main.fragment_you.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
 
 
 class YouFragment : Fragment() {
@@ -67,12 +65,14 @@ class YouFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         modules_taking.layoutManager = GridLayoutManager(context, 4)
         communities_in.layoutManager = GridLayoutManager(context, 1)
+        updateInfo()
+    }
+    fun updateInfo() {
         val spin_kit_you = activity?.findViewById<SpinKitView>(R.id.spin_kit)!!
         lifecycleScope.launch {
             spin_kit_you.visibility = View.VISIBLE
             viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
             viewModel.allCommunitites = SocialToolsRepository(FirestoreUtils()).getAllCommunities()
-            //viewModel.allModulesAvailable = viewModel.allModulesOffered()
             viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> viewModel.you.communities.contains(comm.id) }.toMutableList()
             for(comm in viewModel.allYourCommunities) {
                 if(comm.module.moduleCode.equals("")) {
@@ -114,10 +114,6 @@ class YouFragment : Fragment() {
     }
 
     private fun updateUI() {
-        for(module in viewModel.allModulesAvailable) {
-            Log.d("TEST_API", "here is ${module.moduleName} and ${module.moduleCode}")
-        }
-
         you_name.text = viewModel.you.name
 
         course_you.text = viewModel.you.courseOfStudy
@@ -196,12 +192,35 @@ class YouFragment : Fragment() {
                 m_Text = input.text.toString()
                 var result = m_Text.split(",")
                 var realRes = mutableListOf<Module>()
-                for (string in result) {
-                    val moduleCode = string.replace("\\s".toRegex(), "")
-                    realRes.add(Module(moduleCode, "", listOf()))
+                CoroutineScope(Dispatchers.IO).launch {
+                    viewModel.allModulesAvailable = viewModel.allModulesOffered()
+                    for (string in result) {
+                        var isValid = false
+                        val moduleCode = string.replace("\\s".toRegex(), "")
+                        for(module in viewModel.allModulesAvailable) {
+                            if(moduleCode.equals(module.moduleCode)) {
+                                isValid = true
+                                realRes.add(module)
+                                break
+                            }
+                        }
+                        if(!isValid) {
+                            withContext(Dispatchers.Main) {
+                                var toast = Toast.makeText(
+                                    context,
+                                    "Some of the input modules were invalid",
+                                    Toast.LENGTH_SHORT
+                                )
+                                toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 0)
+                                toast.show()
+                            }
+                        }
+                    }
+                    if(realRes.size > 0) {
+                        updateModules(realRes)
+                        updateCommunity(realRes)
+                    }
                 }
-                updateModules(realRes)
-                updateCommunity(realRes)
             }
             builder.setNegativeButton("Cancel",
                 DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
@@ -240,7 +259,7 @@ class YouFragment : Fragment() {
                     if(community.module.moduleCode.equals(viewModel.you.modules[position].moduleCode)) {
                         intent.putExtra("COMMUNITY_DATA", community)
                         intent.putExtra("USER_DATA", viewModel.you)
-                        Log.d("TEST_AT_YOU", community.coverImageUrl)
+                        //Log.d("TEST_AT_YOU", community.coverImageUrl)
                         exist = true
                         break
                     }
@@ -274,7 +293,11 @@ class YouFragment : Fragment() {
         }
     }
     private fun updateCommunity(value: MutableList<Module>) {
+        val spin_kit_you = activity?.findViewById<SpinKitView>(R.id.spin_kit)!!
         CoroutineScope(Dispatchers.IO).launch {
+            withContext(Dispatchers.Main) {
+                spin_kit_you.visibility = View.VISIBLE
+            }
             for(module in value) {
                 if(!communityExits(module.moduleCode)) {
                     socialToolRepo.addCommunity(
@@ -284,11 +307,11 @@ class YouFragment : Fragment() {
                             mutableListOf()
                         ),
                         viewModel.you.uid
-                    )
+                    ).await()
                 } else {
                     var comm = viewModel.allCommunitites.find { comm -> comm.module.moduleCode.equals(module.moduleCode) }
                     if(comm != null) {
-                        socialToolRepo.addMemberToCommunity(viewModel.you.uid, comm.id)
+                        socialToolRepo.addMemberToCommunity(viewModel.you.uid, comm.id).await()
                     } else {
                         Log.d("ERROR_ADD_MOD","COMM DOES NOT EXIST")
                     }
@@ -297,10 +320,22 @@ class YouFragment : Fragment() {
             viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
             viewModel.allCommunitites = SocialToolsRepository(FirestoreUtils()).getAllCommunities()
             viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> viewModel.you.communities.contains(comm.id) }.toMutableList()
+            //Log.d("TEST_MOD", "SIze of allCommm ${viewModel.allCommunitites.size} and size of allYourComm ${viewModel.allYourCommunities.size}")
+            for(comm in viewModel.allYourCommunities) {
+                if(comm.module.moduleCode.equals("")) {
+                    //Log.d("TEST_MOD","here is ${comm.module.moduleCode} inside others")
+                    viewModel.otherCommunities.add(comm)
+                } else {
+                    //Log.d("TEST_MOD","here is ${comm.module.moduleCode} inside modules")
+                    viewModel.moduleCommunities.add(comm)
+                }
+            }
             withContext(Dispatchers.Main) {
                 modules_taking.adapter = ModulesAdapter(viewModel.you.modules.toTypedArray(), requireContext())
                 updateUI()
+                spin_kit_you.visibility = View.GONE
             }
+
         }
     }
     fun communityExits(moduleCode: String): Boolean {

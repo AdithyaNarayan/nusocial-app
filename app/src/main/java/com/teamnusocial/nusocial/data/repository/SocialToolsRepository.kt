@@ -89,7 +89,7 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
             }
             .addOnFailureListener { e ->
                 Log.d("POST_EDIT", "Error: ${e.message.toString()}")
-            }
+            }.await()
     }
     suspend fun addComment(value: Comment, postID: String, commID: String) = coroutineScope {
         utils
@@ -103,7 +103,7 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
                         .document(ref.id)
                         .update("id", ref.id)
 
-                    utils.getAllPosts(commID).document(postID).update("commentList", FieldValue.arrayUnion(ref.id))
+                    utils.getAllPosts(commID).document(postID).update("numComment", FieldValue.increment(1))
 
                 }
             }
