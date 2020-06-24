@@ -14,7 +14,10 @@ internal class OffsetHelperVertical() : RecyclerView.ItemDecoration() {
         super.getItemOffsets(outRect, view, parent, state)
         val dataSize = state.itemCount
         val position = parent.getChildAdapterPosition(view)
-        if (dataSize > 1 && position == dataSize - 1) {
+        if(dataSize == 1) {
+            outRect.set(0,320 , 0, 170)
+        }
+        else if (dataSize > 1 && position == dataSize - 1) {
             outRect.set(0, 0, 0, 170)
         } else if(dataSize > 1 && position == 0) {
             outRect.set(0,320 , 0, 30)

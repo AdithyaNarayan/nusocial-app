@@ -16,11 +16,13 @@ import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
 import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.github.ybq.android.spinkit.SpinKitView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
@@ -69,8 +71,11 @@ class YouFragment : Fragment() {
     }
     fun updateInfo() {
         val spin_kit_you = activity?.findViewById<SpinKitView>(R.id.spin_kit)!!
+        val bg_cover = activity?.findViewById<CardView>(R.id.loading_cover)!!
         lifecycleScope.launch {
             spin_kit_you.visibility = View.VISIBLE
+            bg_cover.visibility = View.VISIBLE
+
             viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
             viewModel.allCommunitites = SocialToolsRepository(FirestoreUtils()).getAllCommunities()
             viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> viewModel.you.communities.contains(comm.id) }.toMutableList()
@@ -83,12 +88,14 @@ class YouFragment : Fragment() {
             }
             updateUI()
             spin_kit_you.visibility = View.GONE
+            bg_cover.visibility = View.GONE
+
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1) if (resultCode == Activity.RESULT_OK) {
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             val selectedImage: Uri = data!!.data!!
             val filePath =
                 FirebaseStorage.getInstance().getReference("/images/${viewModel.you.uid}")
@@ -109,7 +116,24 @@ class YouFragment : Fragment() {
 
                     }
                 }
-
+        } else if(requestCode == 0 && resultCode == Activity.RESULT_OK) {
+            viewModel.you = data!!.getParcelableExtra("USER_DATA")
+            CoroutineScope(Dispatchers.IO).launch {
+                viewModel.allCommunitites = SocialToolsRepository(FirestoreUtils()).getAllCommunities()
+                viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> viewModel.you.communities.contains(comm.id) }.toMutableList()
+                for(comm in viewModel.allYourCommunities) {
+                    if(comm.module.moduleCode.equals("")) {
+                        //Log.d("TEST_MOD","here is ${comm.module.moduleCode} inside others")
+                        viewModel.otherCommunities.add(comm)
+                    } else {
+                        //Log.d("TEST_MOD","here is ${comm.module.moduleCode} inside modules")
+                        viewModel.moduleCommunities.add(comm)
+                    }
+                }
+                withContext(Dispatchers.Main) {
+                    updateUI()
+                }
+            }
         }
     }
 
@@ -237,7 +261,8 @@ class YouFragment : Fragment() {
 
         create_new_community.setOnClickListener {
             val intent = Intent(context, CreateNewCommunityActivity::class.java)
-            startActivity(intent)
+            intent.putExtra("USER_DATA", viewModel.you)
+            startActivityForResult(intent, 0)
         }
 
         Picasso
@@ -278,7 +303,7 @@ class YouFragment : Fragment() {
         communityAdapter.setClickListener(object : CommunityItemAdapter.ItemClickListener {
             override fun onItemClick(view: View?, position: Int) {
                 val intent = Intent(requireContext(), SingleCommunityActivity::class.java)
-                intent.putExtra("COMMUNITY_DATA", viewModel.you.communities[position])
+                intent.putExtra("COMMUNITY_DATA", viewModel.otherCommunities[position])
                 intent.putExtra("USER_DATA", viewModel.you)
                 startActivity(intent)
             }

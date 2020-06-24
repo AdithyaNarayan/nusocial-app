@@ -29,17 +29,17 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
         commList
 
     }
-    suspend fun getAllPostsOfCommunity(commID: String) = coroutineScope {
+    suspend fun getPostsOfCommunity(commID: String) = coroutineScope {
         val postList = listOf<Post>().toMutableList()
-        utils.getAllPosts(commID).get().addOnCompleteListener {
-            if(it.isSuccessful) {
+        utils.getCommunity(commID)
+            .collection("posts").get().addOnCompleteListener {
+            if (it.isSuccessful) {
                 it.result!!.documents.forEach { post ->
                     val postAsObject = post.toObject(Post::class.java)!!
-                    postAsObject.id = post.id
                     postList.add(postAsObject)
                 }
             } else {
-                Log.d("POST", it.exception!!.message.toString())
+                Log.d("COMM", it.exception!!.message.toString())
             }
         }.await()
         postList
@@ -111,11 +111,11 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
                 Log.d("COMMENT_ADD", "Error: ${e.message.toString()}")
             }
     }
-    suspend fun editComment(value: Comment, postID: String, commID: String) = coroutineScope {
+    suspend fun editComment(value: String,commentID:String, postID: String, commID: String) = coroutineScope {
         utils
             .getComments(commID, postID)
-            .document(value.id)
-            .set(value)
+            .document(commentID)
+            .update("textContent", value)
             .addOnSuccessListener { ref ->
                 Log.d("COMMENT_EDIT", "SUCCESS")
             }

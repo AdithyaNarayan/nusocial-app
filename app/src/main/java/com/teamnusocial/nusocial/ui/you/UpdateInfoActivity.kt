@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.teamnusocial.nusocial.HomeActivity
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.repository.UserRepository
@@ -24,9 +25,10 @@ class UpdateInfoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_update_info)
 
         /**top bar**/
-        setSupportActionBar(toolbarUpdateInfo)
+        val toolBar: Toolbar = findViewById(R.id.toolbarUpdateInfo)
+        toolBar.title = "Update personal info"
+        setSupportActionBar(toolBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         val curr_name = intent.getStringExtra("USER_NAME")
         val curr_course = intent.getStringExtra("USER_COURSE")
         val curr_year = intent.getIntExtra("USER_YEAR", 0)

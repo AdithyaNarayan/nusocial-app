@@ -21,6 +21,7 @@ import com.teamnusocial.nusocial.data.model.Post
 import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
 import com.teamnusocial.nusocial.ui.you.CustomSpinner
+import com.teamnusocial.nusocial.utils.CustomDialog
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import com.teamnusocial.nusocial.utils.getTimeAgo
 import kotlinx.coroutines.CoroutineScope
@@ -106,6 +107,9 @@ class CommentAdapter(val context_: Context, options: FirestoreRecyclerOptions<Co
                 ) {
                     when (allOptions.get(position)) {
                         "Edit" -> {
+                           val inputDialog = CustomDialog(context_, model.textContent, model.id, model.parentPostID, parentPost.communityID)
+                            inputDialog.show()
+                            dropdown_options.setSelection(0)
                         }
                         "Delete" -> {
                             CoroutineScope(Dispatchers.IO).launch {

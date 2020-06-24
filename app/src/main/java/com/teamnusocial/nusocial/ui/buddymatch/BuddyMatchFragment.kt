@@ -10,6 +10,7 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.github.ybq.android.spinkit.SpinKitView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Module
 import com.teamnusocial.nusocial.data.model.User
@@ -39,7 +41,6 @@ class BuddyMatchFragment : Fragment() {
     private lateinit var you: User
     private lateinit var inflater: LayoutInflater
     private lateinit var container: ViewGroup
-    var isBusy: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,13 +60,14 @@ class BuddyMatchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val spin_kit = activity?.findViewById<SpinKitView>(R.id.spin_kit)!!
+        val bg_cover = activity?.findViewById<CardView>(R.id.loading_cover)!!
             lifecycleScope.launch {
                 spin_kit.visibility = View.VISIBLE
-                isBusy = true
+                bg_cover.visibility = View.VISIBLE
                 buddyMatchViewModel.updateMatchedUsers(UserRepository(FirestoreUtils()).getUsers())
                 buddyMatchViewModel.updateYou(UserRepository(FirestoreUtils()).getCurrentUserAsUser())
                 spin_kit.visibility = View.GONE
-                isBusy = false
+                bg_cover.visibility = View.GONE
                 if (buddyMatchViewModel.you.value!!.courseOfStudy != "--blank--") {
                     populateMatchedUsers(
                         buddyMatchViewModel.matchedUsers.value!!,

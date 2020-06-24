@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>, val you: User, val commID: String): FirestoreRecyclerAdapter<Post, PostAdapter.PostHolder>(options) {
+class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: MutableList<Post>): RecyclerView.Adapter<PostNewsFeedAdapter.PostHolder>() {
     private val viewPool = RecyclerView.RecycledViewPool()
     private val utils = SocialToolsRepository(FirestoreUtils())
     class PostHolder(val layoutView: ConstraintLayout): RecyclerView.ViewHolder(layoutView)
@@ -41,15 +41,15 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
         )
     }
 
-    override fun onBindViewHolder(holder: PostHolder, position: Int, model: Post) {
+    override fun onBindViewHolder(holder: PostHolder, position: Int) {
         CoroutineScope(Dispatchers.IO).launch {
-            val owner = UserRepository(FirestoreUtils()).getUser(model.ownerUid)
+            val owner = UserRepository(FirestoreUtils()).getUser(allPosts[position].ownerUid)
             withContext(Dispatchers.Main) {
-                updatePostFunctions(owner, holder, position, model)
+                updatePostFunctions(owner, holder, position, allPosts[position], position)
             }
         }
     }
-    fun updatePostFunctions(owner: User, holder: PostHolder, position: Int, model: Post) {
+    fun updatePostFunctions(owner: User, holder: PostHolder, position: Int, model: Post, model_position: Int) {
         val context_ = context
         val dateTimePost = holder.layoutView.findViewById<TextView>(R.id.date_time_post)
         val textContent = holder.layoutView.findViewById<TextView>(R.id.text_content)
@@ -85,11 +85,11 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
         like_button.setOnCheckedChangeListener { button, isChecked ->
             if(isChecked) {
                 CoroutineScope(Dispatchers.IO).launch {
-                    utils.likeUpdateAdd(commID, model.id, you.uid)
+                    utils.likeUpdateAdd(model.communityID, model.id, you.uid)
                 }
             } else {
                 CoroutineScope(Dispatchers.IO).launch {
-                    utils.likeUpdateRemove(commID, model.id, you.uid)
+                    utils.likeUpdateRemove(model.communityID, model.id, you.uid)
                 }
             }
         }
@@ -163,8 +163,11 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
                     }
                     "Delete" -> {
                         CoroutineScope(Dispatchers.IO).launch {
-                            utils.deletePost(commID, model.id)
+                            utils.deletePost(model.communityID, model.id)
                         }
+                        allPosts.removeAt(model_position)
+                        notifyItemRemoved(model_position)
+                        notifyItemRangeChanged(model_position, allPosts.size)
                     }
                     else -> {}
                 }
@@ -172,4 +175,6 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
 
         }
     }
+
+    override fun getItemCount() = allPosts.size
 }

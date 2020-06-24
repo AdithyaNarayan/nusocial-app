@@ -172,6 +172,7 @@ class SinglePostActivity : AppCompatActivity() {
                         intent.putExtra("OWNER_DATA", viewModel.owner)
                         intent.putExtra("USER_DATA", viewModel.you)
                         startActivityForResult(intent, 0)
+                        post_options.setSelection(0)
                     }
                     "Delete" -> {
                         CoroutineScope(Dispatchers.IO).launch {

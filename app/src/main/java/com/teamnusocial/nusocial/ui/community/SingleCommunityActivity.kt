@@ -8,10 +8,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -42,9 +45,17 @@ class SingleCommunityActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_community)
+        /**data fetching**/
         currCommData = intent.getParcelableExtra("COMMUNITY_DATA")!!
         viewModel = ViewModelProvider(this).get(CommunityViewModel::class.java)
         viewModel.you = intent.getParcelableExtra("USER_DATA")!!
+
+        /**top bar**/
+        val toolBar: Toolbar = findViewById(R.id.tool_single_community)
+        toolBar.title = currCommData.name
+        setSupportActionBar(toolBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         val query =
             FirebaseFirestore.getInstance().collection("communities").document(currCommData.id).collection("posts").orderBy("timeStamp", Query.Direction.DESCENDING)
         allPostAdapter = PostAdapter(this,FirestoreRecyclerOptions.Builder<Post>()
@@ -55,6 +66,11 @@ class SingleCommunityActivity : AppCompatActivity() {
     }
     fun updateUI() {
         Picasso.get().load(currCommData.coverImageUrl).into(community_cover_pic)
+        community_cover_pic.setOnClickListener {
+            val photoPicker = Intent(Intent.ACTION_PICK)
+            photoPicker.type = "image/*"
+            startActivityForResult(photoPicker, 0)
+        }
         //Log.d("TEST_PIC", currCommData.coverImageUrl)
         comm_name.text = currCommData.name
         setUpCreateNewPost()
@@ -175,6 +191,30 @@ class SingleCommunityActivity : AppCompatActivity() {
             } else {
                 Log.d("ERROR", "NO IMAGES PICKED")
             }
+        } else if(requestCode == 0 && resultCode == Activity.RESULT_OK) {
+            val selectedImage: Uri = data!!.data!!
+            val filePath =
+                FirebaseStorage.getInstance().getReference("/community_cover_pic/${currCommData.id}")
+            filePath.putFile(selectedImage)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        filePath.downloadUrl.addOnCompleteListener { url ->
+                            FirebaseFirestore.getInstance().collection("communities")
+                                .document(currCommData.id)
+                                .update("coverImageUrl", url.result.toString())
+                            CoroutineScope(Dispatchers.IO).launch {
+                                viewModel.you =
+                                    UserRepository(FirestoreUtils()).getCurrentUserAsUser()
+                                withContext(Dispatchers.Main) {
+                                    currCommData.coverImageUrl = url.result.toString()
+                                    updateUI()
+                                }
+                            }
+                        }
+
+
+                    }
+                }
         }
     }
 
@@ -204,5 +244,14 @@ class SingleCommunityActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         if (this::allPostAdapter.isInitialized) allPostAdapter.stopListening()
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

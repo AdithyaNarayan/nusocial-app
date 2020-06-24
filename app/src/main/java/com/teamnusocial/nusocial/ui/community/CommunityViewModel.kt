@@ -6,6 +6,6 @@ import com.teamnusocial.nusocial.data.model.User
 
 class CommunityViewModel : ViewModel() {
     var you: User = User()
-    //var allPosts: MutableList<Post> = mutableListOf()
+    var allPosts: MutableList<Post> = mutableListOf()
     //var allSingleCommPost: MutableList<Post> = mutableListOf()
 }
