@@ -102,7 +102,6 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
                         .getComments(commID, postID)
                         .document(ref.id)
                         .update("id", ref.id)
-
                     utils.getAllPosts(commID).document(postID).update("numComment", FieldValue.increment(1))
 
                 }

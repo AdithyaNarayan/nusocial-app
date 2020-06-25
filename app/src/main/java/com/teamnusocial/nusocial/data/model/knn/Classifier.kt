@@ -60,7 +60,7 @@ class Classifier {
             } else {
                 hashMap[cluster] = 1
             }
-            listDistance[minIndex] = Double.MAX_VALUE
+            //listDistance[minIndex] = Double.MAX_VALUE
         }
         return getMatchedCluster(hashMap)
     }

@@ -22,7 +22,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.github.ybq.android.spinkit.SpinKitView
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
@@ -89,7 +88,6 @@ class YouFragment : Fragment() {
             updateUI()
             spin_kit_you.visibility = View.GONE
             bg_cover.visibility = View.GONE
-
         }
     }
 
@@ -284,7 +282,6 @@ class YouFragment : Fragment() {
                     if(community.module.moduleCode.equals(viewModel.you.modules[position].moduleCode)) {
                         intent.putExtra("COMMUNITY_DATA", community)
                         intent.putExtra("USER_DATA", viewModel.you)
-                        //Log.d("TEST_AT_YOU", community.coverImageUrl)
                         exist = true
                         break
                     }
@@ -360,7 +357,6 @@ class YouFragment : Fragment() {
                 updateUI()
                 spin_kit_you.visibility = View.GONE
             }
-
         }
     }
     fun communityExits(moduleCode: String): Boolean {

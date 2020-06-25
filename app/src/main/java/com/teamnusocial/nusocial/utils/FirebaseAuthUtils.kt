@@ -3,6 +3,7 @@ package com.teamnusocial.nusocial.utils
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.iid.FirebaseInstanceId
 import com.teamnusocial.nusocial.data.model.Gender
 import com.teamnusocial.nusocial.data.model.LocationLatLng
 import com.teamnusocial.nusocial.data.model.User
@@ -43,9 +44,13 @@ class FirebaseAuthUtils {
                 Timestamp(Date(0)),
                 mutableListOf(),
                 mutableListOf(),
+                mutableListOf(),
                 mutableListOf()
             )
         )
+        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
+            MyFirebaseMessagingService.addRegistrationToken(it.token)
+        }
     }
 
 }

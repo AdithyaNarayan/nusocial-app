@@ -45,6 +45,7 @@ class SingleCommunityActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_community)
+
         /**data fetching**/
         currCommData = intent.getParcelableExtra("COMMUNITY_DATA")!!
         viewModel = ViewModelProvider(this).get(CommunityViewModel::class.java)
@@ -108,6 +109,7 @@ class SingleCommunityActivity : AppCompatActivity() {
             CoroutineScope(Dispatchers.IO).launch {
                 postID = utils.addPost(Post("",currCommData.id,viewModel.you.uid, post_text_content_input.text.toString(),
                     mutableListOf(), mutableListOf(), Timestamp.now(), mutableListOf(),0), currCommData.id)
+
                 if(!imageEncoded.equals("")) {
                     pushImagesToFirebase(imageEncoded.toUri(), 0, postID, currCommData.id)
                 } else if(imagesEncodedList.size > 0) {

@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.github.ybq.android.spinkit.SpinKitView
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Module
 import com.teamnusocial.nusocial.data.model.User

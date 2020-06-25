@@ -5,7 +5,9 @@ import com.google.firebase.Timestamp
 data class TextMessage(
     val messageText: String,
     val timestamp: Timestamp,
-    val sender: String
+    val sender: String,
+    val senderName: String,
+    val receiver: String
 ) {
-    constructor() : this("", Timestamp(0,0), "")
+    constructor() : this("", Timestamp(0, 0), "", "", "")
 }

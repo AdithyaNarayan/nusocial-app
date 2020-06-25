@@ -32,6 +32,7 @@ class UserRepository(private val utils: FirestoreUtils) {
         }.await()
         userList
     }
+
     suspend fun updateCurrentLocation(location: Location, cluster: String) = coroutineScope {
         utils
             .getAllUsers()
@@ -45,6 +46,7 @@ class UserRepository(private val utils: FirestoreUtils) {
                 )
             )
     }
+
     suspend fun updateCurrentBuddies(newBuddy: String) = coroutineScope {
         utils
             .getAllUsers().document(utils.getCurrentUser()!!.uid)
@@ -53,6 +55,7 @@ class UserRepository(private val utils: FirestoreUtils) {
                 FieldValue.arrayUnion(newBuddy)
             )
     }
+
     suspend fun updateCurrentMatches(newMatch: String) = coroutineScope {
         utils
             .getAllUsers().document(utils.getCurrentUser()!!.uid)
@@ -61,6 +64,7 @@ class UserRepository(private val utils: FirestoreUtils) {
                 FieldValue.arrayUnion(newMatch)
             )
     }
+
     suspend fun updateStringField(newValue: String, field: String) = coroutineScope {
         utils
             .getAllUsers().document(utils.getCurrentUser()!!.uid)
@@ -69,6 +73,7 @@ class UserRepository(private val utils: FirestoreUtils) {
                 newValue
             )
     }
+
     suspend fun updateNumberField(newValue: Number, field: String) = coroutineScope {
         utils
             .getAllUsers().document(utils.getCurrentUser()!!.uid)
@@ -129,18 +134,17 @@ class UserRepository(private val utils: FirestoreUtils) {
     suspend fun createChatWith(userID: String) = utils.createChatWith(userID)
 
     suspend fun sendMessage(messageID: String, messageText: String) = coroutineScope {
-        utils.getMessages(messageID).collection("messages")
-            .add(
-                TextMessage(
-                    messageText,
-                    Timestamp.now(),
-                    utils.getCurrentUser()!!.uid
+        getUserAnd(utils.getCurrentUser()!!.uid) {
+            utils.getMessages(messageID).collection("messages")
+                .add(
+                    TextMessage(
+                        messageText,
+                        Timestamp.now(),
+                        it.uid,
+                        it.name,
+                        getOtherUserInMessage(messageID, it.uid)
+                    )
                 )
-            )
-        utils.getMessages(messageID).collection("messages").addSnapshotListener { querySnapshot, exception ->
-            if(querySnapshot!!.documents.size > 1) {
-                utils.getMessages(messageID).update("invisible","")
-            }
         }
     }
 
@@ -150,5 +154,19 @@ class UserRepository(private val utils: FirestoreUtils) {
 
     fun getMessageID(firstUser: User, secondUser: User) =
         if (firstUser.uid > secondUser.uid) "${firstUser.uid}_${secondUser.uid}" else "${secondUser.uid}_${firstUser.uid}"
+
+    private fun getOtherUserInMessage(messageID: String, userID: String) =
+        messageID.replace(userID, "").replace("_", "")
+
+
+    suspend fun getRegistrationTokensAnd(onComplete: (tokens: MutableList<String>) -> Unit) {
+        getUserAnd(utils.getCurrentUser()!!.uid) {
+            onComplete(it.registrationToken)
+        }
+    }
+
+    suspend fun setRegistrationTokens(tokens: MutableList<String>) {
+        utils.getCurrentUserAsDocument().update("registrationToken", tokens)
+    }
 }
 
