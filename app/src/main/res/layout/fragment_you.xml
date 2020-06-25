@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:id="@+id/you_fragment"
+    android:layout_marginTop="?attr/actionBarSize">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.you.YouFragment">
+
+    <TextView
+        android:id="@+id/number_of_buddies_you"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="--Blank--"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/course_you" />
+
+    <TextView
+        android:id="@+id/course_you"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="--Blank--"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.124"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/year_you" />
+
+    <TextView
+        android:id="@+id/year_you"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="--Blank--"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.124"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/you_name" />
+
+    <TextView
+        android:id="@+id/you_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:maxWidth="345dp"
+        android:text="--Blank--"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.132"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/you_image" />
+
+    <ImageView
+        android:id="@+id/you_image"
+        android:layout_width="0dp"
+        android:layout_height="212dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/add_module_button"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/centre_button_orange"
+        android:text="Add Module"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/modules_taking" />
+
+    <TextView
+        android:id="@+id/modules_taking_title"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/centre_background_orange"
+        android:padding="5dp"
+        android:text="Modules Taking"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/update_info_button" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/update_info_button"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/centre_button_orange"
+        android:text="Update Info"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/number_of_buddies_you" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/modules_taking"
+        android:layout_width="344dp"
+        android:layout_height="156dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/corner_card_background_blue"
+        android:padding="5dp"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/add_module_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/modules_taking_title" />
+
+    <TextView
+        android:id="@+id/communities_in_title"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/centre_background_orange"
+        android:padding="5dp"
+        android:text="Other Communities"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_module_button" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/communities_in"
+        android:layout_width="344dp"
+        android:layout_height="156dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/corner_card_background_blue"
+        android:padding="5dp"
+        android:scrollbars="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/communities_in_title" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/create_new_community"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/centre_button_orange"
+        android:text="Update Info"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/communities_in" />
+
+    <com.teamnusocial.nusocial.ui.you.CustomSpinner
+        android:id="@+id/general_dropdown"
+        style="@style/Widget.AppCompat.Spinner"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/ic_general_dropdown"
+        android:dropDownWidth="200dp"
+        android:dropDownVerticalOffset="?attr/dropdownListPreferredItemHeight"
+        android:paddingEnd="14dp"
+        android:popupBackground="@color/orange"
+        android:popupElevation="3dp"
+        android:stateListAnimator="@drawable/spinner_sla"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.93"
+        app:layout_constraintStart_toEndOf="@+id/you_name"
+        app:layout_constraintTop_toBottomOf="@+id/you_image" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

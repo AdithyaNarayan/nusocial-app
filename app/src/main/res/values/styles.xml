@@ -1,0 +1,41 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:fontFamily">@font/regular</item>
+
+    </style>
+
+    <style name="BottomButton">
+        <item name="cornerSizeTopLeft">64dp</item>
+    </style>
+
+    <style name="SideButton">
+        <item name="cornerSizeTopRight">32dp</item>
+        <item name="cornerSizeBottomRight">32dp</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:fontFamily">@font/bold</item>
+    </style>
+
+    <style name="ToolBarStyle" parent="Theme.AppCompat">
+        <item name="android:textColorPrimary">@android:color/black</item>
+        <item name="android:textColorSecondary">@android:color/black</item>
+    </style>
+
+    <style name="MessagesBoxStyle" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/MessagesCustomCorners</item>
+    </style>
+
+    <style name="MessagesCustomCorners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">48dp</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeBottomRight">48dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
+
+
+
+</resources>
