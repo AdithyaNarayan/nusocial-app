@@ -108,7 +108,7 @@ class SingleCommunityActivity : AppCompatActivity() {
             var postID = ""
             CoroutineScope(Dispatchers.IO).launch {
                 postID = utils.addPost(Post("",currCommData.id,viewModel.you.uid, post_text_content_input.text.toString(),
-                    mutableListOf(), mutableListOf(), Timestamp.now(), mutableListOf(),0), currCommData.id)
+                    mutableListOf(), mutableListOf(), Timestamp.now(), mutableListOf()), currCommData.id)
 
                 if(!imageEncoded.equals("")) {
                     pushImagesToFirebase(imageEncoded.toUri(), 0, postID, currCommData.id)

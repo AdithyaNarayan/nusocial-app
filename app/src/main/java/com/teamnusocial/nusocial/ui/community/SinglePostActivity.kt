@@ -84,7 +84,12 @@ class SinglePostActivity : AppCompatActivity() {
         /**basic stat**/
         val like_number = currPost.userLikeList.size
         like_stat.text = "${currPost.userLikeList.size} like(s)"
-        comment_stat.text = "${currPost.numComment} comments(s)"
+        CoroutineScope(Dispatchers.IO).launch {
+            val numComment = utils.getNumberCommentsOfPost(currPost.id, currPost.communityID)
+            withContext(Dispatchers.Main) {
+                comment_stat.text = "${numComment} comments(s)"
+            }
+        }
 
         val postImageAdapter =
             PostImageAdapter(currPost.imageList)

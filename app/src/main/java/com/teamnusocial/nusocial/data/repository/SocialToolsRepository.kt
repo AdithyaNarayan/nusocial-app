@@ -44,20 +44,12 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
         }.await()
         postList
     }
-    suspend fun getAllCommentsOfPost(postID: String, commID: String) = coroutineScope {
-        val commentList = listOf<Comment>().toMutableList()
-        utils.getComments(commID, postID).get().addOnCompleteListener {
-            if(it.isSuccessful) {
-                it.result!!.documents.forEach { comment ->
-                    val commentAsObject = comment.toObject(Comment::class.java)!!
-                    commentAsObject.id = comment.id
-                    commentList.add(commentAsObject)
-                }
-            } else {
-                Log.d("COMMENT", it.exception!!.message.toString())
-            }
+    suspend fun getNumberCommentsOfPost(postID: String, commID: String) = coroutineScope {
+        var size = 0
+        utils.getComments(commID, postID).get().addOnSuccessListener {
+            size = it.size()
         }.await()
-        commentList
+        size
     }
     suspend fun addPost(value: Post, commID: String) = coroutineScope {
         var postID = ""
@@ -103,7 +95,6 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
                         .document(ref.id)
                         .update("id", ref.id)
                     utils.getAllPosts(commID).document(postID).update("numComment", FieldValue.increment(1))
-
                 }
             }
             .addOnFailureListener { e ->

@@ -66,7 +66,12 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
 
         /**basic stat**/
         like_stat.text = "${currPost.userLikeList.size} like(s)"
-        comment_stat.text = "${currPost.numComment} comments(s)"
+        CoroutineScope(Dispatchers.IO).launch {
+            val numComment = utils.getNumberCommentsOfPost(model.id, model.communityID)
+            withContext(Dispatchers.Main) {
+                comment_stat.text = "${numComment} comments(s)"
+            }
+        }
 
 
         /**set up image slider**/

@@ -79,8 +79,7 @@ class EditPostActivity : AppCompatActivity() {
         publish_post_button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 val newPost = Post(postData.id,postData.communityID,owner.uid, post_text_content_input.text.toString(),
-                    postData.imageList, mutableListOf(), Timestamp.now(), postData.userLikeList,postData.numComment
-                )
+                    postData.imageList, mutableListOf(), Timestamp.now(), postData.userLikeList)
                 utils.editPost(newPost, postData.communityID)
                 if(!imageEncoded.equals("")) {
                     pushImagesToFirebase(imageEncoded.toUri(), 0, postData.id, postData.communityID)

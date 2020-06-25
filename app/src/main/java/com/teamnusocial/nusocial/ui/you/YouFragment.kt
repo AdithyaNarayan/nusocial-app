@@ -78,6 +78,8 @@ class YouFragment : Fragment() {
             viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
             viewModel.allCommunitites = SocialToolsRepository(FirestoreUtils()).getAllCommunities()
             viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> viewModel.you.communities.contains(comm.id) }.toMutableList()
+            viewModel.moduleCommunities.clear()
+            viewModel.otherCommunities.clear()
             for(comm in viewModel.allYourCommunities) {
                 if(comm.module.moduleCode.equals("")) {
                     viewModel.otherCommunities.add(comm)

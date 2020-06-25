@@ -10,8 +10,11 @@ import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.github.ybq.android.spinkit.SpinKitView
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Post
 import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
@@ -42,6 +45,7 @@ class CommunityFragment : Fragment() {
             spin_kit.visibility = View.VISIBLE
             bg_cover.visibility = View.VISIBLE
             viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
+            viewModel.allPosts.clear()
             for(commID in viewModel.you.communities) {
                 viewModel.allPosts.addAll(utils.getPostsOfCommunity(commID))
             }

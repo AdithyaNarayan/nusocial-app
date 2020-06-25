@@ -65,8 +65,14 @@ class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: Mut
         val currPost = model
 
         /**basic stat**/
-        like_stat.text = "${currPost.userLikeList.size} like(s)"
-        comment_stat.text = "${currPost.numComment} comments(s)"
+        var numLike = currPost.userLikeList.size
+        like_stat.text = "${numLike} like(s)"
+        CoroutineScope(Dispatchers.IO).launch {
+            val numComment = utils.getNumberCommentsOfPost(model.id, model.communityID)
+            withContext(Dispatchers.Main) {
+                comment_stat.text = "${numComment} comments(s)"
+            }
+        }
 
 
         /**set up image slider**/
@@ -86,10 +92,16 @@ class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: Mut
             if(isChecked) {
                 CoroutineScope(Dispatchers.IO).launch {
                     utils.likeUpdateAdd(model.communityID, model.id, you.uid)
+                    withContext(Dispatchers.Main) {
+                        like_stat.text = "${numLike} like(s)"
+                    }
                 }
             } else {
                 CoroutineScope(Dispatchers.IO).launch {
                     utils.likeUpdateRemove(model.communityID, model.id, you.uid)
+                    withContext(Dispatchers.Main) {
+                        like_stat.text = "${numLike - 1} like(s)"
+                    }
                 }
             }
         }
