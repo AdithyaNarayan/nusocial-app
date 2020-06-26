@@ -83,6 +83,7 @@ class SinglePostActivity : AppCompatActivity() {
     fun setUpPostFunctions(currPost: Post) {
         /**basic stat**/
         var like_number = currPost.userLikeList.size
+
         like_stat.text = "${currPost.userLikeList.size} like(s)"
         CoroutineScope(Dispatchers.IO).launch {
             val numComment = utils.getNumberCommentsOfPost(currPost.id, currPost.communityID)

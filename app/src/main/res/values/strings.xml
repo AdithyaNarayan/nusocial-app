@@ -29,5 +29,8 @@
     <string name="time">time</string>
     <string name="send_a_message">Send a Message</string>
     <string name="you">You</string>
+    <string name="search">Search</string>
+    <string name="users">Users</string>
+    <string name="posts">Posts</string>
 
 </resources>

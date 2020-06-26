@@ -90,7 +90,6 @@ class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: Mut
                 }
             }
         }
-
         /**set up image slider**/
         val postImageAdapter =
             PostImageAdapter(currPost.imageList)

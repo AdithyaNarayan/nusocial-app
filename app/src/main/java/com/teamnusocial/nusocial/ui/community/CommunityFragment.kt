@@ -1,5 +1,6 @@
 package com.teamnusocial.nusocial.ui.community
 
+import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -53,11 +54,18 @@ class CommunityFragment : Fragment() {
             spin_kit.visibility = View.GONE
             bg_cover.visibility = View.GONE
         }
+
+        search_button.setOnClickListener {
+            val intent = Intent(context, SearchActivity::class.java)
+            intent.putExtra("searchTerm", search_term.text.toString().toLowerCase())
+            startActivity(intent)
+        }
     }
-    fun updateUI() {
-        val allPosts = viewModel.allPosts.sortedBy { it.timeStamp }.reversed().toMutableList()
+
+    private fun updateUI() {
+        val allPosts = viewModel.allPosts.sortedBy { it.timeStamp }.reversed()
         val postAdapter =
-            PostNewsFeedAdapter(requireContext(),viewModel.you, allPosts.toMutableList())
+            PostNewsFeedAdapter(requireContext(), viewModel.you, allPosts.toMutableList())
         val layoutManager = LinearLayoutManager(context)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         personal_posts.layoutManager = layoutManager

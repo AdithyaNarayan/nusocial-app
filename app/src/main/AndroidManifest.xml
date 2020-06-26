@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.you.OtherUserActivity"></activity>
+        <activity android:name=".ui.community.SearchActivity"></activity>
+        <activity android:name=".ui.you.OtherUserActivity" />
         <activity android:name=".ui.community.EditCommunityActivity" />
         <activity android:name=".ui.community.EditPostActivity" />
         <activity android:name=".ui.you.CreateNewCommunityActivity" />
