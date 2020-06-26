@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/navigation_buddymatch"
+        android:icon="@drawable/ic_match"
+        android:title="@string/title_buddymatch" />
+
+    <item
+        android:id="@+id/navigation_broadcast"
+        android:icon="@drawable/ic_broad_cast"
+        android:title="@string/title_broadcast" />
+
+    <item
+        android:id="@+id/navigation_community"
+        android:icon="@drawable/ic_home"
+        android:title="@string/title_community" />
+
+    <item
+        android:id="@+id/navigation_messages"
+        android:icon="@drawable/ic_msg"
+        android:title="@string/title_messages" />
+
+    <item
+        android:id="@+id/navigation_you"
+        android:icon="@drawable/ic_you"
+        android:title="@string/title_you"
+        />
+
+</menu>
