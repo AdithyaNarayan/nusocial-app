@@ -85,6 +85,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tool_single_community" />
+
         <androidx.cardview.widget.CardView
             android:id="@+id/loading_cover"
             android:layout_width="match_parent"

@@ -25,9 +25,8 @@
         <activity android:name=".ui.buddymatch.BuddyProfileActivity" />
         <activity android:name=".ui.messages.MessageChatActivity">
             <intent-filter>
-                <action android:name="MessageChatActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="MessageChatActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
 

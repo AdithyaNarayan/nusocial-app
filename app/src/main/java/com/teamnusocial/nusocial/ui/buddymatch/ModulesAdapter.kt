@@ -9,9 +9,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Module
-import com.teamnusocial.nusocial.ui.you.CommunityItemAdapter
 
 class ModulesAdapter(var mData: MutableList<Module>, var context: Context?) : RecyclerView.Adapter<ModulesAdapter.TextHolder>() {
+
     private lateinit var clickListener: ModulesAdapter.ItemClickListener
     inner class TextHolder internal constructor(val textView: LinearLayout): RecyclerView.ViewHolder(textView), View.OnClickListener {
         override fun onClick(view: View?) {

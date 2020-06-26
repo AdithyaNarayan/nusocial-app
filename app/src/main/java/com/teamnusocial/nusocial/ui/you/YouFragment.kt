@@ -157,7 +157,6 @@ class YouFragment : Fragment() {
 
         val updateInfoButton = update_info_button
         var m_Text = ""
-
         setUpDropDown()
 
         add_module_button.setOnClickListener {

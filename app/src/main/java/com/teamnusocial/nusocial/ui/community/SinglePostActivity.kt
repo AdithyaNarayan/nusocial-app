@@ -111,14 +111,14 @@ class SinglePostActivity : AppCompatActivity() {
         like_button.setOnCheckedChangeListener { button, isChecked ->
             if(isChecked) {
                 CoroutineScope(Dispatchers.IO).launch {
-                    utils.likeUpdateAdd(currPost.communityID, currPost.id, viewModel.owner.uid)
+                    utils.likeUpdateAdd(currPost.communityID, currPost.id, viewModel.you.uid)
                     withContext(Dispatchers.Main) {
                         like_stat.text = "${like_number} like(s)"
                     }
                 }
             } else {
                 CoroutineScope(Dispatchers.IO).launch {
-                    utils.likeUpdateRemove(currPost.communityID, currPost.id, viewModel.owner.uid)
+                    utils.likeUpdateRemove(currPost.communityID, currPost.id, viewModel.you.uid)
                     withContext(Dispatchers.Main) {
                         like_stat.text = "${like_number - 1} like(s)"
                     }
@@ -199,7 +199,7 @@ class SinglePostActivity : AppCompatActivity() {
 
         send_comment_button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                utils.addComment(Comment("",viewModel.you.uid,viewModel.you.name,viewModel.you.profilePicturePath, Timestamp.now(), currPost.id, input_comment.text.toString(),
+                utils.addComment(Comment("",viewModel.you.uid,viewModel.you.name,viewModel.you.profilePicturePath, Timestamp.now(), currPost.id, currPost.communityID, input_comment.text.toString(),
                     mutableListOf()), currPost.id, currPost.communityID)
                 withContext(Dispatchers.Main) {
                     input_comment.setText("")

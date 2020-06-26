@@ -67,6 +67,7 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
         }.await()
         size
     }
+
     suspend fun addPost(value: Post, commID: String) = coroutineScope {
         var postID = ""
         utils
@@ -94,6 +95,7 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
                 Log.d("POST_EDIT", "Error: ${e.message.toString()}")
             }.await()
     }
+
     suspend fun addComment(value: Comment, postID: String, commID: String) = coroutineScope {
         utils
             .getComments(commID, postID)
@@ -105,7 +107,6 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
                         .getComments(commID, postID)
                         .document(ref.id)
                         .update("id", ref.id)
-                    utils.getAllPosts(commID).document(postID).update("numComment", FieldValue.increment(1))
                 }
             }
             .addOnFailureListener { e ->
@@ -145,6 +146,7 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
             }
         //Log.d("CHECK123", "ID is here ${refID}")
     }
+
     suspend fun addMemberToCommunity(userID: String, commID: String) = coroutineScope {
         utils
             .getAllCommunities()
@@ -159,14 +161,17 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
                 }
             }
     }
+
     suspend fun likeUpdateAdd(commID: String, postID: String, userID: String) = coroutineScope {
         //Log.d("TEST_REAL", "here is ${postID} and ${userID}")
         utils.getAllPosts(commID).document(postID).update("userLikeList", FieldValue.arrayUnion(userID))
     }
+
     suspend fun likeUpdateRemove(commID: String, postID: String, userID: String) = coroutineScope {
         //Log.d("TEST_REAL", "here is ${postID} and ${userID}")
         utils.getAllPosts(commID).document(postID).update("userLikeList", FieldValue.arrayRemove(userID))
     }
+
     suspend fun commentUpdate(commID: String, postID: String, comment: Comment) = coroutineScope {
         var commentID = ""
         utils.getComments(commID, postID).add(comment).addOnSuccessListener {
@@ -177,6 +182,7 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
         }.await()
         commentID
     }
+
     suspend fun deleteComment(commID: String, postID: String, commentID: String) = coroutineScope {
         utils.getComments(commID, postID).document(commentID).delete()
             .addOnSuccessListener {
@@ -189,6 +195,7 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
                 Log.d("DELETE_COMMENT", "FAILED")
             }
     }
+
     suspend fun deletePost(commID: String, postID: String) = coroutineScope {
         utils.getAllPosts(commID).document(postID).delete()
             .addOnSuccessListener {

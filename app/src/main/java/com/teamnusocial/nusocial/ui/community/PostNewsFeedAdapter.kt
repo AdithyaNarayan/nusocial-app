@@ -12,8 +12,6 @@ import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Post
@@ -79,8 +77,6 @@ class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: Mut
             navigateToYouPage(model.ownerUid)
         }
 
-
-
         /**set up image slider**/
         val postImageAdapter =
             PostImageAdapter(currPost.imageList)
@@ -127,7 +123,6 @@ class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: Mut
         avatar.setOnClickListener {
             navigateToYouPage(model.ownerUid)
         }
-
 
         /**set up dropdown**/
         var allOptions = arrayListOf<String>("Choose an action","Edit","Delete")
