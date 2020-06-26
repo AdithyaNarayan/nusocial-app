@@ -82,7 +82,7 @@ class SinglePostActivity : AppCompatActivity() {
     }
     fun setUpPostFunctions(currPost: Post) {
         /**basic stat**/
-        val like_number = currPost.userLikeList.size
+        var like_number = currPost.userLikeList.size
         like_stat.text = "${currPost.userLikeList.size} like(s)"
         CoroutineScope(Dispatchers.IO).launch {
             val numComment = utils.getNumberCommentsOfPost(currPost.id, currPost.communityID)
@@ -110,18 +110,16 @@ class SinglePostActivity : AppCompatActivity() {
 
         like_button.setOnCheckedChangeListener { button, isChecked ->
             if(isChecked) {
+                like_stat.text = "${++like_number} like(s)"
+                currPost.userLikeList.add(viewModel.you.uid)
                 CoroutineScope(Dispatchers.IO).launch {
                     utils.likeUpdateAdd(currPost.communityID, currPost.id, viewModel.you.uid)
-                    withContext(Dispatchers.Main) {
-                        like_stat.text = "${like_number} like(s)"
-                    }
                 }
             } else {
+                like_stat.text = "${--like_number} like(s)"
+                currPost.userLikeList.remove(viewModel.you.uid)
                 CoroutineScope(Dispatchers.IO).launch {
                     utils.likeUpdateRemove(currPost.communityID, currPost.id, viewModel.you.uid)
-                    withContext(Dispatchers.Main) {
-                        like_stat.text = "${like_number - 1} like(s)"
-                    }
                 }
             }
         }

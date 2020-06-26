@@ -13,7 +13,8 @@ data class Post(
     var imageList: MutableList<String>,
     var videoList: MutableList<String>,
     var timeStamp: Timestamp,
-    var userLikeList: MutableList<String>
+    var userLikeList: MutableList<String>,
+    var parentCommName: String
 ): Parcelable {
     constructor() : this(
         "",
@@ -23,6 +24,7 @@ data class Post(
         mutableListOf(),
         mutableListOf(),
         Timestamp(0,0),
-        mutableListOf()
+        mutableListOf(),
+        ""
     )
 }

@@ -55,7 +55,7 @@ class CommunityFragment : Fragment() {
         }
     }
     fun updateUI() {
-        val allPosts = viewModel.allPosts.sortedBy { it.timeStamp }
+        val allPosts = viewModel.allPosts.sortedBy { it.timeStamp }.reversed().toMutableList()
         val postAdapter =
             PostNewsFeedAdapter(requireContext(),viewModel.you, allPosts.toMutableList())
         val layoutManager = LinearLayoutManager(context)

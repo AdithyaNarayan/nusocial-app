@@ -126,63 +126,79 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
 
         /**set up dropdown**/
         var allOptions = arrayListOf<String>("Choose an action","Edit","Delete")
-        val arrayAdapter = object: ArrayAdapter<String>(context_, android.R.layout.simple_spinner_item, allOptions) {
-            override fun getDropDownView(
-                position: Int,
-                convertView: View?,
-                parent: ViewGroup
-            ): View {
-                var res =  super.getDropDownView(position, convertView, parent) as TextView
-                if(position == 0) {
-                    res.setBackgroundResource(R.drawable.centre_background)
-                }
-                return res
-            }
-        }
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        dropdown_options.adapter = arrayAdapter
-
-        /**animation for dropdown**/
-        val rotateAnim = RotateAnimation(0F, 180F, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
-        rotateAnim.duration = 200
-        rotateAnim.setInterpolator(LinearInterpolator())
-        dropdown_options.setSpinnerEventsListener(object :
-            CustomSpinner.OnSpinnerEventsListener {
-            override fun onSpinnerOpened() {
-                dropdown_options.isSelected = true
-                dropdown_options.startAnimation(rotateAnim)
-            }
-
-            override fun onSpinnerClosed() {
-                dropdown_options.isSelected = false
-                dropdown_options.startAnimation(rotateAnim)
-            }
-        })
-        dropdown_options.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-
-            }
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                when(allOptions.get(position)) {
-                    "Edit" -> {
-                        val intent = Intent(context, EditPostActivity::class.java)
-                        intent.putExtra("POST_DATA", model)
-                        intent.putExtra("OWNER_DATA", owner)
-                        intent.putExtra("USER_DATA", you)
-                        context.startActivity(intent)
-                        dropdown_options.setSelection(0)
+        if(you.uid.equals(owner.uid)) {
+            val arrayAdapter = object :
+                ArrayAdapter<String>(context_, android.R.layout.simple_spinner_item, allOptions) {
+                override fun getDropDownView(
+                    position: Int,
+                    convertView: View?,
+                    parent: ViewGroup
+                ): View {
+                    var res = super.getDropDownView(position, convertView, parent) as TextView
+                    if (position == 0) {
+                        res.setBackgroundResource(R.drawable.centre_background)
                     }
-                    "Delete" -> {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            utils.deletePost(commID, model.id)
+                    return res
+                }
+            }
+            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            dropdown_options.adapter = arrayAdapter
+
+            /**animation for dropdown**/
+            val rotateAnim = RotateAnimation(
+                0F,
+                180F,
+                Animation.RELATIVE_TO_SELF,
+                0.5f,
+                Animation.RELATIVE_TO_SELF,
+                0.5f
+            )
+            rotateAnim.duration = 200
+            rotateAnim.setInterpolator(LinearInterpolator())
+            dropdown_options.setSpinnerEventsListener(object :
+                CustomSpinner.OnSpinnerEventsListener {
+                override fun onSpinnerOpened() {
+                    dropdown_options.isSelected = true
+                    dropdown_options.startAnimation(rotateAnim)
+                }
+
+                override fun onSpinnerClosed() {
+                    dropdown_options.isSelected = false
+                    dropdown_options.startAnimation(rotateAnim)
+                }
+            })
+            dropdown_options.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    when (allOptions.get(position)) {
+                        "Edit" -> {
+                            val intent = Intent(context, EditPostActivity::class.java)
+                            intent.putExtra("POST_DATA", model)
+                            intent.putExtra("OWNER_DATA", owner)
+                            intent.putExtra("USER_DATA", you)
+                            context.startActivity(intent)
+                            dropdown_options.setSelection(0)
+                        }
+                        "Delete" -> {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                utils.deletePost(commID, model.id)
+                            }
+                        }
+                        else -> {
                         }
                     }
-                    else -> {}
                 }
-            }
 
-        }
+            }
+        } else dropdown_options.visibility = View.GONE
     }
     fun navigateToYouPage(userID: String) {
         val intent = Intent(context, OtherUserActivity::class.java)
