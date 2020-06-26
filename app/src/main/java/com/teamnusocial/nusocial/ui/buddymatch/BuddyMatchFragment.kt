@@ -241,6 +241,13 @@ class BuddyMatchFragment : Fragment() {
                 UserRepository(FirestoreUtils()).updateCurrentMatches(currUser.uid)
             }
         }
-
+        CoroutineScope(Dispatchers.IO).launch {
+            val userRepo = UserRepository(FirestoreUtils())
+            userRepo.createChatWith(currUser.uid)
+            userRepo.sendMessage(
+                userRepo.getMessageID(you, currUser),
+                "Hey! I matched with you through BuddyMatch!"
+            )
+        }
     }
 }
