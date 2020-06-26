@@ -12,6 +12,7 @@ data class Comment(
   var ownerProfileImageUrl: String,
   var timeStamp: Timestamp,
   var parentPostID: String,
+  var parentCommunityID: String,
   var textContent: String,
   var imageList: MutableList<String>
 ): Parcelable {
@@ -21,6 +22,7 @@ data class Comment(
     "https://image.flaticon.com/icons/png/512/64/64572.png",
     "--Blank--",
     Timestamp(0,0),
+    "",
     "",
     "--blank--",
     mutableListOf()
