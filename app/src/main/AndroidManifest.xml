@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.teamnusocial.nusocial">
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:name=".DependencyInjectionApplication"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".ui.community.EditPostActivity"></activity>
+        <activity android:name=".ui.you.CreateNewCommunityActivity" />
+        <activity android:name=".ui.community.SingleCommunityActivity" />
+        <activity android:name=".ui.community.SinglePostActivity" />
+        <activity android:name=".ui.you.UpdateInfoActivity" />
+        <activity android:name=".ui.buddymatch.BuddyProfileActivity" />
+        <activity android:name=".ui.messages.MessageChatActivity">
+            <intent-filter>
+                <action android:name="MessageChatActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_api_key" />
+
+        <activity android:name=".HomeActivity" />
+        <activity android:name=".ui.auth.SignUpActivity" />
+        <activity android:name=".ui.auth.SignInActivity" />
+        <activity android:name=".ui.auth.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service android:name=".ui.broadcast.LocationTrackingService" />
+        <service
+            android:name=".utils.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+    </application>
+
+</manifest>
