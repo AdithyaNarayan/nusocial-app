@@ -21,6 +21,7 @@ import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.you.CustomSpinner
+import com.teamnusocial.nusocial.ui.you.OtherUserActivity
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import com.teamnusocial.nusocial.utils.getTimeAgo
 import de.hdodenhof.circleimageview.CircleImageView
@@ -74,6 +75,11 @@ class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: Mut
             }
         }
 
+        postOwnerName.setOnClickListener {
+            navigateToYouPage(model.ownerUid)
+        }
+
+
 
         /**set up image slider**/
         val postImageAdapter =
@@ -90,18 +96,14 @@ class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: Mut
 
         like_button.setOnCheckedChangeListener { button, isChecked ->
             if(isChecked) {
+                like_stat.text = "${++numLike} like(s)"
                 CoroutineScope(Dispatchers.IO).launch {
                     utils.likeUpdateAdd(model.communityID, model.id, you.uid)
-                    withContext(Dispatchers.Main) {
-                        like_stat.text = "${numLike} like(s)"
-                    }
                 }
             } else {
+                like_stat.text = "${--numLike} like(s)"
                 CoroutineScope(Dispatchers.IO).launch {
                     utils.likeUpdateRemove(model.communityID, model.id, you.uid)
-                    withContext(Dispatchers.Main) {
-                        like_stat.text = "${numLike - 1} like(s)"
-                    }
                 }
             }
         }
@@ -122,6 +124,9 @@ class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: Mut
         postOwnerName.text = owner.name
         Picasso.get().load(owner.profilePicturePath)
             .into(avatar)
+        avatar.setOnClickListener {
+            navigateToYouPage(model.ownerUid)
+        }
 
 
         /**set up dropdown**/
@@ -186,6 +191,11 @@ class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: Mut
             }
 
         }
+    }
+    fun navigateToYouPage(userID: String) {
+        val intent = Intent(context, OtherUserActivity::class.java)
+        intent.putExtra("USER_ID", userID)
+        context.startActivity(intent)
     }
 
     override fun getItemCount() = allPosts.size

@@ -177,13 +177,13 @@ class BuddyMatchFragment : Fragment() {
         name_buddymatch.text = currUser.name
         major_buddymatch.text = currUser.courseOfStudy
         curr_year_buddymatch.text = if(currUser.yearOfStudy < 5) "Year " + currUser.yearOfStudy.toString() else "Graduate"
-        var matchedModules = currUser.modules.filter { module -> isMatched(module) }.toList()
+        var matchedModules = currUser.modules.filter { module -> isMatched(module) }.toMutableList()
 
         /****/
 
         /**matched modules**/
         matched_modules_buddymatch.layoutManager = GridLayoutManager(context, 3)
-        var modulesAdapter = ModulesAdapter(matchedModules.toTypedArray(), context)
+        var modulesAdapter = ModulesAdapter(matchedModules, context)
         modulesAdapter.setClickListener(object : ModulesAdapter.ItemClickListener {
             override fun onItemClick(view: View?, position: Int) {
                 val intent = Intent(requireContext(), SingleCommunityActivity::class.java)

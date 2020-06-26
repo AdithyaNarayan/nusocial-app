@@ -34,6 +34,7 @@ import com.teamnusocial.nusocial.ui.auth.SignInActivity
 import com.teamnusocial.nusocial.ui.buddymatch.MaskTransformation
 import com.teamnusocial.nusocial.ui.buddymatch.ModulesAdapter
 import com.teamnusocial.nusocial.ui.community.SingleCommunityActivity
+import com.teamnusocial.nusocial.utils.CustomTextViewDialog
 import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.android.synthetic.main.fragment_you.*
@@ -121,6 +122,8 @@ class YouFragment : Fragment() {
             CoroutineScope(Dispatchers.IO).launch {
                 viewModel.allCommunitites = SocialToolsRepository(FirestoreUtils()).getAllCommunities()
                 viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> viewModel.you.communities.contains(comm.id) }.toMutableList()
+                viewModel.moduleCommunities.clear()
+                viewModel.otherCommunities.clear()
                 for(comm in viewModel.allYourCommunities) {
                     if(comm.module.moduleCode.equals("")) {
                         //Log.d("TEST_MOD","here is ${comm.module.moduleCode} inside others")
@@ -154,7 +157,169 @@ class YouFragment : Fragment() {
 
         val updateInfoButton = update_info_button
         var m_Text = ""
-        val listOfActions = arrayOf("Choose an action","Log out")
+
+        setUpDropDown()
+
+        add_module_button.setOnClickListener {
+            val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+            builder.setTitle("Add Modules")
+            val input = EditText(context)
+            input.inputType = InputType.TYPE_CLASS_TEXT
+            builder.setView(input)
+            builder.setPositiveButton(
+                "OK"
+            ) { dialog, which ->
+                m_Text = input.text.toString()
+                var result = m_Text.split(",")
+                var realRes = mutableListOf<Module>()
+                CoroutineScope(Dispatchers.IO).launch {
+                    viewModel.allModulesAvailable = viewModel.allModulesOffered()
+                    for (string in result) {
+                        var isValid = false
+                        val moduleCode = string.replace("\\s".toRegex(), "").toUpperCase()
+                        for(module in viewModel.allModulesAvailable) {
+                            if(moduleCode.equals(module.moduleCode)) {
+                                isValid = true
+                                realRes.add(module)
+                                break
+                            }
+                        }
+                        if(!isValid) {
+                            withContext(Dispatchers.Main) {
+                                var toast = Toast.makeText(
+                                    context,
+                                    "Some of the input modules were invalid",
+                                    Toast.LENGTH_SHORT
+                                )
+                                toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 0)
+                                toast.show()
+                            }
+                        }
+                    }
+                    if(realRes.size > 0) {
+                        updateModules(realRes)
+                        updateCommunity(realRes)
+                    }
+                }
+            }
+            builder.setNegativeButton("Cancel",
+                DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
+            builder.show()
+        }
+        updateInfoButton.setOnClickListener {
+            var intent = Intent(context, UpdateInfoActivity::class.java)
+            intent.putExtra("USER_DATA", viewModel.you)
+            startActivity(intent)
+        }
+
+        create_new_community.setOnClickListener {
+            val intent = Intent(context, CreateNewCommunityActivity::class.java)
+            intent.putExtra("USER_DATA", viewModel.you)
+            startActivityForResult(intent, 0)
+        }
+
+        Picasso
+            .get()
+            .load(viewModel.you.profilePicturePath)
+            .centerCrop()
+            .transform(MaskTransformation(requireContext(), R.drawable.more_info_img_frame))
+            .fit()
+            .into(you_image)
+
+
+        /**all modules**/
+        var modulesAdapter = ModulesAdapter(viewModel.you.modules, requireContext())
+        modulesAdapter.setClickListener(object : ModulesAdapter.ItemClickListener {
+            override fun onItemClick(view: View?, position: Int) {
+                val intent = Intent(requireContext(), SingleCommunityActivity::class.java)
+                var exist = false
+                for(community in viewModel.moduleCommunities) {
+                    if(community.module.moduleCode.equals(viewModel.you.modules[position].moduleCode)) {
+                        intent.putExtra("COMMUNITY_DATA", community)
+                        intent.putExtra("USER_DATA", viewModel.you)
+                        exist = true
+                        break
+                    }
+                }
+                if(!exist) {
+                    var toast = Toast.makeText(context, "No such community !", Toast.LENGTH_SHORT)
+                    toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 0)
+                    toast.show()
+                } else {
+                    startActivity(intent)
+                }
+            }
+        })
+        modules_taking.adapter = modulesAdapter
+
+        /**All other communities**/
+        var communityAdapter = CommunityItemAdapter(viewModel.otherCommunities, requireContext())
+        communityAdapter.setClickListener(object : CommunityItemAdapter.ItemClickListener {
+            override fun onItemClick(view: View?, position: Int) {
+                val intent = Intent(requireContext(), SingleCommunityActivity::class.java)
+                intent.putExtra("COMMUNITY_DATA", viewModel.otherCommunities[position])
+                intent.putExtra("USER_DATA", viewModel.you)
+                startActivity(intent)
+            }
+        })
+        communities_in.adapter = communityAdapter
+        /****/
+    }
+
+    private fun updateModules(value: MutableList<Module>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            UserRepository(FirestoreUtils()).updateModules(value)
+        }
+    }
+    private fun updateCommunity(value: MutableList<Module>) {
+        val spin_kit_you = activity?.findViewById<SpinKitView>(R.id.spin_kit)!!
+        CoroutineScope(Dispatchers.IO).launch {
+            withContext(Dispatchers.Main) {
+                spin_kit_you.visibility = View.VISIBLE
+            }
+            for(module in value) {
+                if(!communityExits(module.moduleCode)) {
+                    socialToolRepo.addCommunity(
+                        Community(
+                            "", module.moduleCode,
+                            mutableListOf(viewModel.you.uid),module,"https://miro.medium.com/max/2580/1*4B6JM5TCU8hckm4WKYxPLQ.jpeg",
+                            mutableListOf(),""
+                        ),
+                        viewModel.you.uid
+                    ).await()
+                } else {
+                    var comm = viewModel.allCommunitites.find { comm -> comm.module.moduleCode.equals(module.moduleCode) }
+                    if(comm != null) {
+                        socialToolRepo.addMemberToCommunity(viewModel.you.uid, comm.id).await()
+                    } else {
+                        Log.d("ERROR_ADD_MOD","COMM DOES NOT EXIST")
+                    }
+                }
+            }
+            viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
+            viewModel.allCommunitites = SocialToolsRepository(FirestoreUtils()).getAllCommunities()
+            viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> viewModel.you.communities.contains(comm.id) }.toMutableList()
+            //Log.d("TEST_MOD", "SIze of allCommm ${viewModel.allCommunitites.size} and size of allYourComm ${viewModel.allYourCommunities.size}")
+            viewModel.otherCommunities.clear()
+            viewModel.moduleCommunities.clear()
+            for(comm in viewModel.allYourCommunities) {
+                if(comm.module.moduleCode.equals("")) {
+                    //Log.d("TEST_MOD","here is ${comm.module.moduleCode} inside others")
+                    viewModel.otherCommunities.add(comm)
+                } else {
+                    //Log.d("TEST_MOD","here is ${comm.module.moduleCode} inside modules")
+                    viewModel.moduleCommunities.add(comm)
+                }
+            }
+            withContext(Dispatchers.Main) {
+                modules_taking.adapter = ModulesAdapter(viewModel.you.modules, requireContext())
+                updateUI()
+                spin_kit_you.visibility = View.GONE
+            }
+        }
+    }
+    fun setUpDropDown() {
+        val listOfActions = arrayOf("Choose an action","Log out", "Show ID")
         val arrayAdapter = object: ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, listOfActions) {
             override fun getDropDownView(
                 position: Int,
@@ -195,170 +360,20 @@ class YouFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 when(listOfActions.get(position)) {
                     "Log out" -> {
-                            FirebaseAuthUtils().logOut()
-                            var intent = Intent(context, SignInActivity::class.java)
-                            startActivity(intent)
+                        FirebaseAuthUtils().logOut()
+                        var intent = Intent(context, SignInActivity::class.java)
+                        startActivity(intent)
                     }
-                    else -> {}
-                }
-            }
+                    "Show ID" -> {
+                        val textViewDialog = CustomTextViewDialog(requireContext(), viewModel.you.uid, "Your ID")
+                        textViewDialog.show()
+                    }
+                    else -> {
 
-        }
-        add_module_button.setOnClickListener {
-            val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-            builder.setTitle("Add Modules")
-            val input = EditText(context)
-            input.inputType = InputType.TYPE_CLASS_TEXT
-            builder.setView(input)
-            builder.setPositiveButton(
-                "OK"
-            ) { dialog, which ->
-                m_Text = input.text.toString()
-                var result = m_Text.split(",")
-                var realRes = mutableListOf<Module>()
-                CoroutineScope(Dispatchers.IO).launch {
-                    viewModel.allModulesAvailable = viewModel.allModulesOffered()
-                    for (string in result) {
-                        var isValid = false
-                        val moduleCode = string.replace("\\s".toRegex(), "")
-                        for(module in viewModel.allModulesAvailable) {
-                            if(moduleCode.equals(module.moduleCode)) {
-                                isValid = true
-                                realRes.add(module)
-                                break
-                            }
-                        }
-                        if(!isValid) {
-                            withContext(Dispatchers.Main) {
-                                var toast = Toast.makeText(
-                                    context,
-                                    "Some of the input modules were invalid",
-                                    Toast.LENGTH_SHORT
-                                )
-                                toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 0)
-                                toast.show()
-                            }
-                        }
-                    }
-                    if(realRes.size > 0) {
-                        updateModules(realRes)
-                        updateCommunity(realRes)
                     }
                 }
             }
-            builder.setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
-            builder.show()
-        }
-        updateInfoButton.setOnClickListener {
-            var intent = Intent(context, UpdateInfoActivity::class.java)
-            intent.putExtra("USER_NAME", viewModel.you.name)
-            intent.putExtra("USER_YEAR", viewModel.you.yearOfStudy)
-            intent.putExtra("USER_COURSE", viewModel.you.courseOfStudy)
-            intent.putExtra("USER_ABOUT", viewModel.you.about)
-            startActivity(intent)
-        }
 
-        create_new_community.setOnClickListener {
-            val intent = Intent(context, CreateNewCommunityActivity::class.java)
-            intent.putExtra("USER_DATA", viewModel.you)
-            startActivityForResult(intent, 0)
-        }
-
-        Picasso
-            .get()
-            .load(viewModel.you.profilePicturePath)
-            .centerCrop()
-            .transform(MaskTransformation(requireContext(), R.drawable.more_info_img_frame))
-            .fit()
-            .into(you_image)
-
-
-        /**all modules**/
-        var modulesAdapter = ModulesAdapter(viewModel.you.modules.toTypedArray(), requireContext())
-        modulesAdapter.setClickListener(object : ModulesAdapter.ItemClickListener {
-            override fun onItemClick(view: View?, position: Int) {
-                val intent = Intent(requireContext(), SingleCommunityActivity::class.java)
-                var exist = false
-                for(community in viewModel.moduleCommunities) {
-                    if(community.module.moduleCode.equals(viewModel.you.modules[position].moduleCode)) {
-                        intent.putExtra("COMMUNITY_DATA", community)
-                        intent.putExtra("USER_DATA", viewModel.you)
-                        exist = true
-                        break
-                    }
-                }
-                if(!exist) {
-                    var toast = Toast.makeText(context, "No such community !", Toast.LENGTH_SHORT)
-                    toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 0)
-                    toast.show()
-                } else {
-                    startActivity(intent)
-                }
-            }
-        })
-        modules_taking.adapter = modulesAdapter
-        var communityAdapter = CommunityItemAdapter(viewModel.otherCommunities.toTypedArray(), requireContext())
-        communityAdapter.setClickListener(object : CommunityItemAdapter.ItemClickListener {
-            override fun onItemClick(view: View?, position: Int) {
-                val intent = Intent(requireContext(), SingleCommunityActivity::class.java)
-                intent.putExtra("COMMUNITY_DATA", viewModel.otherCommunities[position])
-                intent.putExtra("USER_DATA", viewModel.you)
-                startActivity(intent)
-            }
-        })
-        communities_in.adapter = communityAdapter
-        /****/
-    }
-
-    private fun updateModules(value: MutableList<Module>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            UserRepository(FirestoreUtils()).updateModules(value)
-        }
-    }
-    private fun updateCommunity(value: MutableList<Module>) {
-        val spin_kit_you = activity?.findViewById<SpinKitView>(R.id.spin_kit)!!
-        CoroutineScope(Dispatchers.IO).launch {
-            withContext(Dispatchers.Main) {
-                spin_kit_you.visibility = View.VISIBLE
-            }
-            for(module in value) {
-                if(!communityExits(module.moduleCode)) {
-                    socialToolRepo.addCommunity(
-                        Community(
-                            "", module.moduleCode,
-                            mutableListOf(viewModel.you.uid),module,"https://miro.medium.com/max/2580/1*4B6JM5TCU8hckm4WKYxPLQ.jpeg",
-                            mutableListOf()
-                        ),
-                        viewModel.you.uid
-                    ).await()
-                } else {
-                    var comm = viewModel.allCommunitites.find { comm -> comm.module.moduleCode.equals(module.moduleCode) }
-                    if(comm != null) {
-                        socialToolRepo.addMemberToCommunity(viewModel.you.uid, comm.id).await()
-                    } else {
-                        Log.d("ERROR_ADD_MOD","COMM DOES NOT EXIST")
-                    }
-                }
-            }
-            viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
-            viewModel.allCommunitites = SocialToolsRepository(FirestoreUtils()).getAllCommunities()
-            viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> viewModel.you.communities.contains(comm.id) }.toMutableList()
-            //Log.d("TEST_MOD", "SIze of allCommm ${viewModel.allCommunitites.size} and size of allYourComm ${viewModel.allYourCommunities.size}")
-            for(comm in viewModel.allYourCommunities) {
-                if(comm.module.moduleCode.equals("")) {
-                    //Log.d("TEST_MOD","here is ${comm.module.moduleCode} inside others")
-                    viewModel.otherCommunities.add(comm)
-                } else {
-                    //Log.d("TEST_MOD","here is ${comm.module.moduleCode} inside modules")
-                    viewModel.moduleCommunities.add(comm)
-                }
-            }
-            withContext(Dispatchers.Main) {
-                modules_taking.adapter = ModulesAdapter(viewModel.you.modules.toTypedArray(), requireContext())
-                updateUI()
-                spin_kit_you.visibility = View.GONE
-            }
         }
     }
     fun communityExits(moduleCode: String): Boolean {

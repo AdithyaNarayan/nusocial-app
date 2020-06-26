@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CustomDialog(val context_: Context, val oldString: String, val commentID: String, val postID: String, val commID: String): Dialog(context_) {
+class CustomTextInputDialog(val context_: Context, val oldString: String, val commentID: String, val postID: String, val commID: String): Dialog(context_) {
     private lateinit var confirm_button: Button
     private lateinit var cancel_button: Button
     lateinit var input_text: EditText

@@ -21,6 +21,7 @@ import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.you.CustomSpinner
+import com.teamnusocial.nusocial.ui.you.OtherUserActivity
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import com.teamnusocial.nusocial.utils.getTimeAgo
 import de.hdodenhof.circleimageview.CircleImageView
@@ -115,6 +116,12 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
         postOwnerName.text = owner.name
         Picasso.get().load(owner.profilePicturePath)
             .into(avatar)
+        avatar.setOnClickListener {
+            navigateToYouPage(owner.uid)
+        }
+        postOwnerName.setOnClickListener {
+            navigateToYouPage(owner.uid)
+        }
 
 
         /**set up dropdown**/
@@ -176,5 +183,10 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
             }
 
         }
+    }
+    fun navigateToYouPage(userID: String) {
+        val intent = Intent(context, OtherUserActivity::class.java)
+        intent.putExtra("USER_ID", userID)
+        context.startActivity(intent)
     }
 }

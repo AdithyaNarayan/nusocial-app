@@ -25,17 +25,23 @@
             app:layout_constraintTop_toTopOf="parent"
             app:theme="@style/ToolBarStyle"
             app:titleTextColor="@color/black" />
-        <Button
-            android:id="@+id/update_comm_info_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+
+        <com.teamnusocial.nusocial.ui.you.CustomSpinner
+            android:id="@+id/single_comm_dropdown"
+            style="@style/Widget.AppCompat.Spinner"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginEnd="12dp"
-            android:backgroundTint="@color/blue"
-            android:text="Update"
-            android:textSize="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tool_single_community" />
+            android:background="@drawable/ic_general_dropdown"
+            android:dropDownWidth="200dp"
+            android:dropDownVerticalOffset="?attr/dropdownListPreferredItemHeight"
+            android:paddingEnd="14dp"
+            android:popupBackground="@color/orange"
+            android:popupElevation="3dp"
+            android:stateListAnimator="@drawable/spinner_sla"
+            app:layout_constraintBottom_toBottomOf="@+id/tool_single_community"
+            app:layout_constraintEnd_toEndOf="@+id/tool_single_community"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/comm_name"
@@ -79,6 +85,28 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tool_single_community" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/loading_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:backgroundTint="#90FCAD85"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.github.ybq.android.spinkit.SpinKitView
+            android:id="@+id/spin_kit"
+            style="@style/SpinKitView.Large.CubeGrid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:SpinKit_Color="@color/blue_transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,7 +19,6 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
             if (it.isSuccessful) {
                 it.result!!.documents.forEach { community ->
                     val communityAsObject = community.toObject(Community::class.java)!!
-                    communityAsObject.id = community.id
                     commList.add(communityAsObject)
                 }
             } else {
@@ -28,6 +27,22 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
         }.await()
         commList
 
+    }
+    suspend fun getCommunityAsObject(commID: String) = coroutineScope {
+        var comm = Community()
+        utils.getCommunity(commID).get().addOnSuccessListener {
+            comm = it.toObject(Community::class.java)!!
+        }.await()
+        comm
+    }
+    suspend fun updateCommName(commID: String, newName: String) = coroutineScope {
+        utils.getCommunity(commID).update("name", newName)
+    }
+    suspend fun updateCommAbout(commID: String, newAbout: String) = coroutineScope {
+        utils.getCommunity(commID).update("about", newAbout)
+    }
+    suspend fun updateCommAdmin(commID: String, userID: String) = coroutineScope {
+        utils.getCommunity(commID).update("allAdminsID", FieldValue.arrayUnion(userID))
     }
     suspend fun getPostsOfCommunity(commID: String) = coroutineScope {
         val postList = listOf<Post>().toMutableList()
@@ -46,6 +61,7 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
     }
     suspend fun getNumberCommentsOfPost(postID: String, commID: String) = coroutineScope {
         var size = 0
+        if(postID == "") return@coroutineScope 0
         utils.getComments(commID, postID).get().addOnSuccessListener {
             size = it.size()
         }.await()
@@ -59,12 +75,7 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
             .addOnSuccessListener { ref ->
                 Log.d("POST_ADD", "At ${ref.id}")
                 postID = ref.id
-                CoroutineScope(Dispatchers.IO).launch {
-                    utils
-                        .getAllPosts(commID)
-                        .document(postID)
-                        .update("id", postID)
-                }
+                ref.update("id", ref.id)
             }
             .addOnFailureListener { e ->
                 Log.d("POST_ADD", "Error: ${e.message.toString()}")
@@ -120,6 +131,7 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
             .add(value)
             .addOnSuccessListener { ref ->
                 refID = ref.id
+                ref.update("id", refID)
                 Log.d("COMMUNITY_ADD", "At ${ref.id}")
                 CoroutineScope(Dispatchers.IO).launch {
                     utils

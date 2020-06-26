@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Community
 
-class CommunityItemAdapter(var mData: Array<Community>, var context: Context?) : RecyclerView.Adapter<CommunityItemAdapter.TextHolder>() {
+class CommunityItemAdapter(var mData: MutableList<Community>, var context: Context?) : RecyclerView.Adapter<CommunityItemAdapter.TextHolder>() {
     private lateinit var clickListener: CommunityItemAdapter.ItemClickListener
     inner class TextHolder internal constructor(val textView: LinearLayout): RecyclerView.ViewHolder(textView), View.OnClickListener {
         override fun onClick(view: View?) {

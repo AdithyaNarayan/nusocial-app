@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#03A9F4"
+    tools:context=".ui.community.EditCommunityActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/edit_comm_page">
+
+    <TextView
+        android:id="@+id/notes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="Input user IDs and separate IDs with comma"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.045"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/confirm_edit_button" />
+
+    <EditText
+        android:id="@+id/about_input_comm"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/rounded_edit_text"
+        android:elevation="8dp"
+        android:fontFamily="@font/light"
+        android:hint="---Blank---"
+        android:maxWidth="288dp"
+        android:maxHeight="300dp"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="12dp"
+        android:scrollbars="vertical"
+        android:textColor="@color/black"
+        android:textColorHint="#74768f"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/About"
+        app:layout_constraintTop_toBottomOf="@+id/change_name_comm" />
+
+    <TextView
+        android:id="@+id/About"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
+        android:text="About"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/change_name_comm" />
+
+    <EditText
+        android:id="@+id/remove_user_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/rounded_edit_text"
+        android:elevation="8dp"
+        android:fontFamily="@font/light"
+        android:hint="---Blank---"
+        android:maxWidth="288dp"
+        android:maxHeight="300dp"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="12dp"
+        android:scrollbars="vertical"
+        android:textColor="@color/black"
+        android:textColorHint="#74768f"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/remove_user_title"
+        app:layout_constraintTop_toBottomOf="@+id/add_user_input" />
+
+    <EditText
+        android:id="@+id/add_admins_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/rounded_edit_text"
+        android:elevation="8dp"
+        android:fontFamily="@font/light"
+        android:hint="---Blank---"
+        android:maxWidth="288dp"
+        android:maxHeight="300dp"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="12dp"
+        android:scrollbars="vertical"
+        android:textColor="@color/black"
+        android:textColorHint="#74768f"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/remove_user_title"
+        app:layout_constraintTop_toBottomOf="@+id/remove_user_input" />
+
+    <TextView
+        android:id="@+id/add_user_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="30dp"
+        android:text="Add users"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/about_input_comm" />
+
+    <EditText
+        android:id="@+id/add_user_input"
+        android:layout_width="0dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/rounded_edit_text"
+        android:elevation="8dp"
+        android:fontFamily="@font/light"
+        android:hint="---Blank---"
+        android:maxWidth="288dp"
+        android:maxHeight="300dp"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="12dp"
+        android:scrollbars="vertical"
+        android:textColor="@color/black"
+        android:textColorHint="#74768f"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/add_user_title"
+        app:layout_constraintTop_toBottomOf="@+id/about_input_comm" />
+
+    <TextView
+        android:id="@+id/remove_user_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:text="Remove users"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_user_input" />
+
+    <TextView
+        android:id="@+id/add_admin_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:text="Add admins"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/remove_user_input" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_edit_comm"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:title="More Info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:theme="@style/ToolBarStyle" />
+
+    <Button
+        android:id="@+id/confirm_edit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#FF9800"
+        android:text="Update"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_admins_input" />
+
+    <TextView
+        android:id="@+id/changeNameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="92dp"
+        android:text="Name"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/change_name_comm"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="4dp"
+        android:autofillHints=""
+        android:background="@drawable/rounded_edit_text"
+        android:elevation="8dp"
+        android:fontFamily="@font/light"
+        android:hint="name"
+        android:inputType="textEmailAddress"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="12dp"
+        android:textColor="@color/black"
+        android:textColorHint="#74768f"
+        android:windowSoftInputMode="adjustResize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/changeNameTitle"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>

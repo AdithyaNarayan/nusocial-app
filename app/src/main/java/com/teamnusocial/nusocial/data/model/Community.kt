@@ -10,7 +10,8 @@ data class Community(
     public var allMembersID: MutableList<String>,
     public var module: Module,
     public var coverImageUrl: String,
-    public var allAdminsID: MutableList<String>
+    public var allAdminsID: MutableList<String>,
+    public var about: String
 ) : Parcelable {
     constructor(): this(
         "",
@@ -18,6 +19,7 @@ data class Community(
         mutableListOf(),
         Module(),
         "https://lh3.googleusercontent.com/proxy/Xdn8e0QgBdV7nl1Vj8u60dPAEM5xZjZ2R4S6e21W4DZM3mOUHBBm5L2MIW4W5iu0rxRrDaDrb3l-O_5C9zp_mP6IowDRmAkKhe7vpFA3NHb3UjuGdzrb",
-        mutableListOf()
+        mutableListOf(),
+        ""
     )
 }

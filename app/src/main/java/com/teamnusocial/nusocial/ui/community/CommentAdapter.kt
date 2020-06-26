@@ -2,6 +2,7 @@ package com.teamnusocial.nusocial.ui.community
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +22,8 @@ import com.teamnusocial.nusocial.data.model.Post
 import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
 import com.teamnusocial.nusocial.ui.you.CustomSpinner
-import com.teamnusocial.nusocial.utils.CustomDialog
+import com.teamnusocial.nusocial.ui.you.OtherUserActivity
+import com.teamnusocial.nusocial.utils.CustomTextInputDialog
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import com.teamnusocial.nusocial.utils.getTimeAgo
 import kotlinx.coroutines.CoroutineScope
@@ -41,12 +43,22 @@ class CommentAdapter(val context_: Context, options: FirestoreRecyclerOptions<Co
 
     override fun onBindViewHolder(holder: CommentHolder, position: Int, model: Comment) {
         val comment_stat = (context_ as Activity).findViewById<TextView>(R.id.comment_stat)
+        val avatar = holder.commentLayout.findViewById<ImageView>(R.id.profile_image_comment)
+        val name = holder.commentLayout.findViewById<TextView>(R.id.comment_owner_name)
         var comment = model
         holder.commentLayout.findViewById<TextView>(R.id.text_content_comment).text = comment.textContent
-        holder.commentLayout.findViewById<TextView>(R.id.comment_owner_name).text = comment.ownerName
+        name.text = comment.ownerName
+        name.setOnClickListener {
+            navigateToYouPage(model.ownerUid)
+        }
 
         holder.commentLayout.findViewById<TextView>(R.id.date_time_comment).text = getTimeAgo(comment.timeStamp.seconds)
-        Picasso.get().load(model.ownerProfileImageUrl).into(holder.commentLayout.findViewById<ImageView>(R.id.profile_image_comment))
+        Picasso.get().load(model.ownerProfileImageUrl).into(avatar)
+        avatar.setOnClickListener {
+            navigateToYouPage(model.ownerUid)
+        }
+
+
         var dropdown_options = holder.commentLayout.findViewById<CustomSpinner>(R.id.comment_options)
         /**set up dropdown**/
         var toast = Toast.makeText(context_, "You cannot carry out this action", Toast.LENGTH_SHORT)
@@ -107,7 +119,7 @@ class CommentAdapter(val context_: Context, options: FirestoreRecyclerOptions<Co
                 ) {
                     when (allOptions.get(position)) {
                         "Edit" -> {
-                           val inputDialog = CustomDialog(context_, model.textContent, model.id, model.parentPostID, parentPost.communityID)
+                           val inputDialog = CustomTextInputDialog(context_, model.textContent, model.id, model.parentPostID, parentPost.communityID)
                             inputDialog.show()
                             dropdown_options.setSelection(0)
                         }
@@ -131,5 +143,10 @@ class CommentAdapter(val context_: Context, options: FirestoreRecyclerOptions<Co
             }
         }
 
+    }
+    fun navigateToYouPage(userID: String) {
+        val intent = Intent(context_, OtherUserActivity::class.java)
+        intent.putExtra("USER_ID", userID)
+        context_.startActivity(intent)
     }
 }

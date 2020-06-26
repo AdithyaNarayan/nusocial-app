@@ -10,7 +10,10 @@ import com.teamnusocial.nusocial.data.model.Module
 import com.teamnusocial.nusocial.data.model.TextMessage
 import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.utils.FirestoreUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class UserRepository(private val utils: FirestoreUtils) {
@@ -91,6 +94,15 @@ class UserRepository(private val utils: FirestoreUtils) {
                     FieldValue.arrayUnion(module)
                 )
         }
+    }
+    suspend fun removeModule(module: Module, commID:String, userID: String) = coroutineScope {
+        utils.getAllUsers().document(userID).update("modules", FieldValue.arrayRemove(module))
+    }
+    suspend fun removeCommFromUser(commID: String, userID: String) = coroutineScope {
+        utils.getAllUsers().document(userID).update("communities", FieldValue.arrayRemove(commID))
+    }
+    suspend fun removeMemberFromComm(commID: String, userID: String) = coroutineScope {
+        utils.getAllCommunities().document(commID).update("allMembersID", FieldValue.arrayRemove(userID))
     }
 
     suspend fun getCurrentUserAsDocument() = utils.getCurrentUserAsDocument()
