@@ -77,9 +77,6 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
                 Log.d("POST_ADD", "At ${ref.id}")
                 postID = ref.id
                 ref.update("id", ref.id)
-            }
-            .addOnFailureListener { e ->
-                Log.d("POST_ADD", "Error: ${e.message.toString()}")
             }.await()
         postID
     }
