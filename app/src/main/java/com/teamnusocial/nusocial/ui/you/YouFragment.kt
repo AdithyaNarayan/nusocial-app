@@ -161,13 +161,17 @@ class YouFragment : Fragment() {
 
         add_module_button.setOnClickListener {
             val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-            builder.setTitle("Add Modules")
-            val input = EditText(context)
-            input.inputType = InputType.TYPE_CLASS_TEXT
-            builder.setView(input)
-            builder.setPositiveButton(
-                "OK"
-            ) { dialog, which ->
+            val dialog_view = inflater.inflate(R.layout.custom_dialog, null)
+            builder.setView(dialog_view)
+            dialog_view.findViewById<TextView>(R.id.dialog_title).text = "Add modules"
+            val input = dialog_view.findViewById<EditText>(R.id.edit_comment_input)
+            val button_confirm = dialog_view.findViewById<Button>(R.id.confirm_edit_comment_button)
+            val button_cancel = dialog_view.findViewById<Button>(R.id.cancel_edit_comment_button)
+            val dialog = builder.create()
+            if(dialog.window != null) {
+                dialog.window!!.attributes.windowAnimations = R.style.dialog_animation_fade
+            }
+            button_confirm.setOnClickListener {
                 m_Text = input.text.toString()
                 var result = m_Text.split(",")
                 var realRes = mutableListOf<Module>()
@@ -201,9 +205,10 @@ class YouFragment : Fragment() {
                     }
                 }
             }
-            builder.setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
-            builder.show()
+            button_cancel.setOnClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
         }
         updateInfoButton.setOnClickListener {
             var intent = Intent(context, UpdateInfoActivity::class.java)

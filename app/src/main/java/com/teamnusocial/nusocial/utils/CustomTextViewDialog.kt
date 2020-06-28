@@ -32,5 +32,4 @@ class CustomTextViewDialog(val context_: Context, val content: String, val title
             dismiss()
         }
     }
-
 }

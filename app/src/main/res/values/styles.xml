@@ -35,6 +35,11 @@
         <item name="cornerSizeBottomRight">48dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
+    <style
+        name="dialog_animation_fade" >
+        <item name="android:windowEnterAnimation">@anim/bounce</item>
+        <item name="android:windowExitAnimation">@anim/fade_out</item>
+    </style>
 
 
 

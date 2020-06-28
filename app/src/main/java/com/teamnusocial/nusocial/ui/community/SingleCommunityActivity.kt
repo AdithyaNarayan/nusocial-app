@@ -160,6 +160,9 @@ class SingleCommunityActivity : AppCompatActivity() {
                     }
                     "About" -> {
                         val about_dialog = CustomTextViewDialog(this@SingleCommunityActivity, currCommData.about, "About this community")
+                        if(about_dialog.window != null) {
+                            about_dialog.window!!.attributes.windowAnimations = R.style.dialog_animation_fade
+                        }
                         about_dialog.show()
                         single_comm_dropdown.setSelection(0)
                     }
