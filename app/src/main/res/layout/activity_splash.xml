@@ -47,7 +47,7 @@
         android:fontFamily="@font/bold"
         android:text="@string/app_intro"
         android:textColor="@color/white"
-        android:textSize="14sp"
+        android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appNameTextView" />

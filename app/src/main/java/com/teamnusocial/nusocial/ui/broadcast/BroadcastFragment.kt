@@ -236,24 +236,26 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
     }
 
     private fun updateRadiusOnMap(center: LatLng, radius: Int) {
-        if(context == null) return
-        circleOptions = CircleOptions()
-            .center(center)
-            .radius(radius.toDouble())
-            .strokeWidth(1.0f)
-            .strokeColor(ContextCompat.getColor(requireContext(), R.color.orange))
-            .fillColor(ContextCompat.getColor(requireContext(), R.color.blue_transparent))
+        if (context != null) {
+            circleOptions = CircleOptions()
+                .center(center)
+                .radius(radius.toDouble())
+                .strokeWidth(1.0f)
+                .strokeColor(ContextCompat.getColor(requireContext(), R.color.orange))
+                .fillColor(ContextCompat.getColor(requireContext(), R.color.blue_transparent))
+        }
     }
 
     private fun updateMarkerOnMap(location: LatLng) {
-        if(context == null) return
-        markerOptions = MarkerOptions()
-            .position(location)
-            .icon(locationPinBitmap)
-        cameraPosition = CameraPosition.Builder()
-            .target(location)
-            .zoom(16f)
-            .build()
+        if (context != null) {
+            markerOptions = MarkerOptions()
+                .position(location)
+                .icon(locationPinBitmap)
+            cameraPosition = CameraPosition.Builder()
+                .target(location)
+                .zoom(16f)
+                .build()
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -280,7 +282,7 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
     }
 
     private fun updateLocationInBackend() {
-        if(context == null) return
+        if (context == null) return
         val lm: LocationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -345,7 +347,7 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
     }
 
     private fun updateUsersOnMap(users: List<User>) {
-        if(context == null) return
+        if (context == null) return
         users.forEach {
             userMarkerOptions.add(
                 MarkerOptions()

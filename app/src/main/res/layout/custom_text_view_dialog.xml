@@ -27,6 +27,7 @@
             android:text="About this community"
             android:textColor="@color/black"
             android:textSize="20dp"
+            android:textIsSelectable="true"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
