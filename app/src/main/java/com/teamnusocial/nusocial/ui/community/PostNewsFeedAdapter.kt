@@ -58,6 +58,7 @@ class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: Mut
         val dropdown_options = holder.layoutView.findViewById<CustomSpinner>(R.id.post_options)
         val comment_button = holder.layoutView.findViewById<Button>(R.id.comment_button)
         val like_button = holder.layoutView.findViewById<CheckBox>(R.id.like_button)
+        val parent_comm_button = holder.layoutView.findViewById<Button>(R.id.parent_comm_button)
         //val share_button = holder.layoutView.findViewById<Button>(R.id.share_button)
         val like_stat = holder.layoutView.findViewById<TextView>(R.id.like_stat)
         val comment_stat = holder.layoutView.findViewById<TextView>(R.id.comment_stat)
@@ -75,6 +76,20 @@ class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: Mut
 
         postOwnerName.setOnClickListener {
             navigateToYouPage(model.ownerUid)
+        }
+
+        parent_comm_button.visibility = View.VISIBLE
+        parent_comm_button.text = model.parentCommName
+        parent_comm_button.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                val commData = utils.getCommunityAsObject(model.communityID)
+                withContext(Dispatchers.Main) {
+                    val intent = Intent(context_, SingleCommunityActivity::class.java)
+                    intent.putExtra("COMMUNITY_DATA", commData)
+                    intent.putExtra("USER_DATA", you)
+                    context_.startActivity(intent)
+                }
+            }
         }
 
         /**set up image slider**/
