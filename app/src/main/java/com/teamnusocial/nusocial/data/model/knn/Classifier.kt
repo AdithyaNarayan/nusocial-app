@@ -46,7 +46,6 @@ class Classifier {
         for (i in 0..k) {
             var min = Double.MAX_VALUE
             var minIndex = -1
-            Log.d("BROADCAST", listDistance.toString())
 
             for (j in listDistance.indices) {
                 if (listDistance[j] < min) {
@@ -60,7 +59,7 @@ class Classifier {
             } else {
                 hashMap[cluster] = 1
             }
-            //listDistance[minIndex] = Double.MAX_VALUE
+            listDistance[minIndex] = Double.MAX_VALUE
         }
         return getMatchedCluster(hashMap)
     }

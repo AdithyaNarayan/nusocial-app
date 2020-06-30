@@ -32,5 +32,7 @@
     <string name="search">Search</string>
     <string name="users">Users</string>
     <string name="posts">Posts</string>
+    <string name="profilepicture">profilePicture</string>
+    <string name="course">course</string>
 
 </resources>

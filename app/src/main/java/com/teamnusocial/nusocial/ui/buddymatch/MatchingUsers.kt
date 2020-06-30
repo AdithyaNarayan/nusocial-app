@@ -13,9 +13,11 @@ class UserComparator(val you: User,val allUsers: MutableList<User>) : Comparator
     override fun compare(o1: User?, o2: User?): Int {
         val compareWithO1 = compareWithYou(o1)
         val compareWithO2 = compareWithYou(o2)
-        if(compareWithO1 > compareWithO2) return 1
-        else if(compareWithO1 < compareWithO2) return -1
-        else return 0
+        return when {
+            compareWithO1 > compareWithO2 -> 1
+            compareWithO1 < compareWithO2 -> -1
+            else -> 0
+        }
     }
     fun compareWithYou(another: User?): Double {
         var matchedModules: Int = 0
@@ -106,7 +108,7 @@ class MatchingUsers(val allUsers: MutableList<User>, var you: User) {
             if(matchedUsers.size - index < 9) {
                 for(i in index+1..matchedUsers.size) {
                     var end = matchedUsers.size - 1
-                    var start = index
+                    val start = index
                     while(end > start) {
                         val k = java.util.Random().nextInt(end--)
                         val t = matchedUsers[end]

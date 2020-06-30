@@ -26,6 +26,17 @@ import java.time.LocalDate
 class BroadcastViewModel(private val repository: UserRepository) : ViewModel() {
 
     init {
+
+    }
+
+    var closestNeighboursList: MutableLiveData<MutableList<User>> = MutableLiveData(mutableListOf())
+    var currentUserLocation = MutableLiveData(LatLng(0.0, 0.0))
+    var broadcastRadius = MutableLiveData<Int>().apply {
+        value = 200
+    }
+    var profileImg = MutableLiveData<Bitmap>()
+
+    suspend fun getNeighbours() = coroutineScope {
         val classifier = Classifier()
         CoroutineScope(Dispatchers.IO).launch {
             val currentUser = repository.getCurrentUserAsUser()
@@ -37,14 +48,6 @@ class BroadcastViewModel(private val repository: UserRepository) : ViewModel() {
             }
         }
     }
-
-    var closestNeighboursList: MutableLiveData<MutableList<User>> = MutableLiveData(mutableListOf())
-    var currentUserLocation = MutableLiveData(LatLng(0.0, 0.0))
-    var broadcastRadius = MutableLiveData<Int>().apply {
-        value = 200
-    }
-    var profileImg = MutableLiveData<Bitmap>()
-
     suspend fun getUsers() = repository.getUsers()
 
     fun updateRadius(progress: Int) {

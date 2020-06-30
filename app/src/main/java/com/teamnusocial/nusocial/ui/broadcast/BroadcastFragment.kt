@@ -10,7 +10,6 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.location.LocationManager
 import android.os.Bundle
-import android.text.format.DateUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -37,15 +36,14 @@ import com.karumi.dexter.listener.single.PermissionListener
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.ui.auth.SignInActivity
-import com.teamnusocial.nusocial.ui.community.CommunityFragment
 import kotlinx.android.synthetic.main.content_broadcast_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_broadcast.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
-import java.net.URL
-import java.time.LocalDate
 import java.util.*
 
 
@@ -75,6 +73,7 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
     ): View? {
         broadcastViewModel =
             ViewModelProvider(this, factory).get(BroadcastViewModel::class.java)
+
         val root = inflater.inflate(R.layout.fragment_broadcast, container, false)
         /*CoroutineScope(Dispatchers.IO).launch {
             val bitmap = BitmapFactory.decodeStream(
@@ -96,11 +95,13 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
         })
         broadcastViewModel.closestNeighboursList.observe(requireActivity(), Observer {
             if (it.size > 0) {
-                updateUsersOnMap(it)
-                if (isAdded) {
-                    val mapFragment =
-                        childFragmentManager.findFragmentById(R.id.broadcastMap) as SupportMapFragment
-                    mapFragment.getMapAsync(this)
+                for (i in 0..5) {
+                    updateUsersOnMap(it)
+                    if (isAdded) {
+                        val mapFragment =
+                            childFragmentManager.findFragmentById(R.id.broadcastMap) as SupportMapFragment
+                        mapFragment.getMapAsync(this)
+                    }
                 }
             }
         })
@@ -123,6 +124,9 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        CoroutineScope(Dispatchers.IO).launch {
+            broadcastViewModel.getNeighbours()
+        }
         sheetBehavior =
             BottomSheetBehavior.from(broadcastBottomSheetLayout)
         sheetBehavior.addBottomSheetCallback(object :
@@ -349,11 +353,13 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
     private fun updateUsersOnMap(users: List<User>) {
         if (context == null) return
         users.forEach {
-            userMarkerOptions.add(
-                MarkerOptions()
-                    .position(it.location.getAsLatLng())
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.user_pin))
-            )
+            if (it.location.getAsLatLng() != LatLng(0.0, 0.0)) {
+                userMarkerOptions.add(
+                    MarkerOptions()
+                        .position(it.location.getAsLatLng())
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.user_pin))
+                )
+            }
         }
     }
 

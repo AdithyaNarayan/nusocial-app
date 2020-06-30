@@ -39,7 +39,6 @@
             app:layout_constraintHorizontal_bias="0.403"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/about_more_info" />
-
         <TextView
             android:id="@+id/about_more_info"
             android:layout_width="wrap_content"

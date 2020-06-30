@@ -377,6 +377,7 @@ class SingleCommunityActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
     fun addKeyboardToggleListener(onKeyboardToggleAction: (shown: Boolean) -> Unit): KeyboardToggleListener? {
         val root = findViewById<View>(android.R.id.content)
         val listener = KeyboardToggleListener(root, onKeyboardToggleAction)

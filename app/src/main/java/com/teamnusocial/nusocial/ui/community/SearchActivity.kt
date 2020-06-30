@@ -10,21 +10,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 //import com.algolia.search.model.APIKey
 //import com.algolia.search.model.ApplicationID
 //import com.algolia.search.model.IndexName
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
+// import io.ktor.client.features.logging.LogLevel
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Post
-import com.teamnusocial.nusocial.data.model.TextMessage
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.buddymatch.OffsetHelperVertical
-import com.teamnusocial.nusocial.ui.messages.MessageChatRecyclerViewAdapter
 import com.teamnusocial.nusocial.utils.FirestoreUtils
-// import io.ktor.client.features.logging.LogLevel
-import kotlinx.android.synthetic.main.activity_message_chat.*
 import kotlinx.android.synthetic.main.activity_search.*
-import kotlinx.android.synthetic.main.fragment_community.*
 import kotlinx.coroutines.*
+import java.util.*
 
 class SearchActivity : AppCompatActivity() {
     val data = mutableListOf<Post>()
@@ -43,6 +38,18 @@ class SearchActivity : AppCompatActivity() {
 //        )
 //        val index = client.initIndex(IndexName("posts_search"))
 //        val searcher = SearcherSingleIndex(index)
+
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val adapter = UserAdapter(UserRepository(FirestoreUtils()).getUsers().filter {
+                searchTerm!! in it.name.toLowerCase(Locale.ROOT)
+            })
+            withContext(Dispatchers.Main) {
+                usersRecyclerView.adapter = adapter
+                usersRecyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
+            }
+        }
+
         CoroutineScope(Dispatchers.IO).launch {
             UserRepository(FirestoreUtils()).getUserAnd(FirestoreUtils().getCurrentUser()!!.uid) { user ->
                 Log.d("SEARCH", 1.toString())
@@ -53,13 +60,15 @@ class SearchActivity : AppCompatActivity() {
                             it.result!!.documents.filter { post ->
                                 post["communityID"] in user.communities
                             }.filter { post ->
-                                searchTerm!! in post["textContent"].toString().toLowerCase()
+
+                                searchTerm!! in post["textContent"].toString()
+                                    .toLowerCase(Locale.ROOT)
                             }.forEach { post ->
                                 data.add(post.toObject(Post::class.java)!!)
                             }
                             CoroutineScope(Dispatchers.Main).launch {
                                 Log.d("SEARCH", 3.toString())
-                                updateUI()
+                                updatePostsUI()
                             }
                         }
                     }
@@ -67,7 +76,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun updateUI() = coroutineScope {
+    private suspend fun updatePostsUI() = coroutineScope {
         UserRepository(FirestoreUtils()).getUserAnd(FirestoreUtils().getCurrentUser()!!.uid) {
             Log.d("SEARCH", data.toString())
             val postAdapter =

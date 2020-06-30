@@ -28,7 +28,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
 class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: MutableList<Post>): RecyclerView.Adapter<PostNewsFeedAdapter.PostHolder>() {
     private val viewPool = RecyclerView.RecycledViewPool()
     private val utils = SocialToolsRepository(FirestoreUtils())
