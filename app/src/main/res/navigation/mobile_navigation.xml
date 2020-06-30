@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_buddymatch">
+
+    <fragment
+        android:id="@+id/navigation_buddymatch"
+        android:name="com.teamnusocial.nusocial.ui.buddymatch.BuddyMatchFragment"
+        android:label="@string/title_buddymatch"
+        tools:layout="@layout/fragment_buddymatch" />
+
+    <fragment
+        android:id="@+id/navigation_broadcast"
+        android:name="com.teamnusocial.nusocial.ui.broadcast.BroadcastFragment"
+        android:label="@string/title_broadcast"
+        tools:layout="@layout/fragment_broadcast" />
+
+    <fragment
+        android:id="@+id/navigation_community"
+        android:name="com.teamnusocial.nusocial.ui.community.CommunityFragment"
+        android:label="@string/title_community"
+        tools:layout="@layout/fragment_community" />
+
+    <fragment
+        android:id="@+id/navigation_messages"
+        android:name="com.teamnusocial.nusocial.ui.messages.MessagesFragment"
+        android:label="@string/title_messages"
+        tools:layout="@layout/fragment_messages" />
+
+    <fragment
+        android:id="@+id/navigation_you"
+        android:name="com.teamnusocial.nusocial.ui.you.YouFragment"
+        android:label="@string/title_you"
+        tools:layout="@layout/fragment_you" />
+</navigation>
