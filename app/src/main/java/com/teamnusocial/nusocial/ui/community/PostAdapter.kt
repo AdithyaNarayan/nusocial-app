@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>, val you: User, val commID: String): FirestoreRecyclerAdapter<Post, PostAdapter.PostHolder>(options) {
+class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>, val you: User, val commID: String, val listOfAdminsID: MutableList<String>): FirestoreRecyclerAdapter<Post, PostAdapter.PostHolder>(options) {
     private val viewPool = RecyclerView.RecycledViewPool()
     private val utils = SocialToolsRepository(FirestoreUtils())
     class PostHolder(val layoutView: ConstraintLayout): RecyclerView.ViewHolder(layoutView)
@@ -126,7 +126,7 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
 
         /**set up dropdown**/
         var allOptions = arrayListOf<String>("Choose an action","Edit","Delete")
-        if(you.uid.equals(owner.uid)) {
+        if(you.uid.equals(owner.uid) || listOfAdminsID.contains(you.uid)) {
             val arrayAdapter = object :
                 ArrayAdapter<String>(context_, android.R.layout.simple_spinner_item, allOptions) {
                 override fun getDropDownView(

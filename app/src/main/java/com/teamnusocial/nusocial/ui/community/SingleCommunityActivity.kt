@@ -45,6 +45,7 @@ import com.teamnusocial.nusocial.ui.you.CustomSpinner
 import com.teamnusocial.nusocial.utils.CustomTextViewDialog
 import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
 import com.teamnusocial.nusocial.utils.FirestoreUtils
+import com.teamnusocial.nusocial.utils.KeyboardToggleListener
 import kotlinx.android.synthetic.main.activity_single_community.*
 import kotlinx.android.synthetic.main.fragment_you.*
 import kotlinx.android.synthetic.main.post_create.*
@@ -79,7 +80,7 @@ class SingleCommunityActivity : AppCompatActivity() {
             FirebaseFirestore.getInstance().collection("communities").document(currCommData.id).collection("posts").orderBy("timeStamp", Query.Direction.DESCENDING)
         allPostAdapter = PostAdapter(this,FirestoreRecyclerOptions.Builder<Post>()
             .setQuery(query, Post::class.java)
-            .build(), viewModel.you, currCommData.id)
+            .build(), viewModel.you, currCommData.id, currCommData.allAdminsID)
         updateUI()
 
     }
@@ -182,6 +183,11 @@ class SingleCommunityActivity : AppCompatActivity() {
     fun setUpCreateNewPost() {
         Picasso.get().load(viewModel.you.profilePicturePath).into(profile_image)
         post_owner_name.text = viewModel.you.name
+        addKeyboardToggleListener { shown ->
+            if(!shown) {
+                post_text_content_input.clearFocus()
+            }
+        }
 
         val layoutManager_for_images = LinearLayoutManager(this)
         val layoutManager_for_videos = LinearLayoutManager(this)
@@ -369,6 +375,14 @@ class SingleCommunityActivity : AppCompatActivity() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+    fun addKeyboardToggleListener(onKeyboardToggleAction: (shown: Boolean) -> Unit): KeyboardToggleListener? {
+        val root = findViewById<View>(android.R.id.content)
+        val listener = KeyboardToggleListener(root, onKeyboardToggleAction)
+        return root?.viewTreeObserver?.run {
+            addOnGlobalLayoutListener(listener)
+            listener
         }
     }
 }

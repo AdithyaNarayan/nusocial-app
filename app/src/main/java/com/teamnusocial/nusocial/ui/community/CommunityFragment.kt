@@ -1,5 +1,6 @@
 package com.teamnusocial.nusocial.ui.community
 
+import android.app.Activity
 import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -23,6 +24,7 @@ import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.buddymatch.OffsetHelperHorizontal
 import com.teamnusocial.nusocial.ui.buddymatch.OffsetHelperVertical
 import com.teamnusocial.nusocial.utils.FirestoreUtils
+import com.teamnusocial.nusocial.utils.KeyboardToggleListener
 import kotlinx.android.synthetic.main.fragment_community.*
 import kotlinx.coroutines.launch
 
@@ -71,7 +73,18 @@ class CommunityFragment : Fragment() {
         personal_posts.layoutManager = layoutManager
         personal_posts.addItemDecoration(OffsetHelperVertical())
         personal_posts.adapter = postAdapter
-
+        addKeyboardToggleListener { shown ->
+            if(!shown) {
+                search_term.clearFocus()
+            }
+        }
     }
-
+    fun addKeyboardToggleListener(onKeyboardToggleAction: (shown: Boolean) -> Unit): KeyboardToggleListener? {
+        val root = activity?.findViewById<View>(android.R.id.content)
+        val listener = KeyboardToggleListener(root, onKeyboardToggleAction)
+        return root?.viewTreeObserver?.run {
+            addOnGlobalLayoutListener(listener)
+            listener
+        }
+    }
 }

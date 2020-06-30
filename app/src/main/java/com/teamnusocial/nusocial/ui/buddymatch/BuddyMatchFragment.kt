@@ -186,8 +186,9 @@ class BuddyMatchFragment : Fragment() {
         var modulesAdapter = ModulesAdapter(matchedModules, context)
         modulesAdapter.setClickListener(object : ModulesAdapter.ItemClickListener {
             override fun onItemClick(view: View?, position: Int) {
-                val intent = Intent(requireContext(), SingleCommunityActivity::class.java)
-                startActivity(intent)
+                var toast = Toast.makeText(context, "Go to your personal page to access the community", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 0)
+                toast.show()
             }
         })
         matched_modules_buddymatch.adapter = modulesAdapter

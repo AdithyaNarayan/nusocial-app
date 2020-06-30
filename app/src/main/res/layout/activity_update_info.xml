@@ -14,10 +14,11 @@
 
         <EditText
             android:id="@+id/about_input"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="25dp"
+            android:layout_marginEnd="28dp"
             android:background="@drawable/rounded_edit_text"
             android:elevation="8dp"
             android:fontFamily="@font/light"
@@ -29,6 +30,7 @@
             android:scrollbars="vertical"
             android:textColor="@color/black"
             android:textColorHint="#74768f"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/About"
             app:layout_constraintTop_toBottomOf="@+id/change_year_dropdown" />
 
@@ -36,7 +38,7 @@
             android:id="@+id/About"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="36dp"
             android:text="About"
             android:textSize="20sp"
@@ -71,19 +73,19 @@
             android:id="@+id/changeNameTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="88dp"
             android:text="Name"
             android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/changeName"
-            app:layout_constraintHorizontal_bias="0.303"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/changeName"
-            android:layout_width="288dp"
-            android:layout_height="43dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="32dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="84dp"
             android:layout_marginEnd="28dp"
             android:autofillHints=""
@@ -92,30 +94,32 @@
             android:fontFamily="@font/light"
             android:hint="name"
             android:inputType="textEmailAddress"
+            android:padding="10dp"
             android:paddingHorizontal="12dp"
             android:textColor="@color/black"
             android:textColorHint="#74768f"
             android:windowSoftInputMode="adjustResize"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/changeNameTitle"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/changeCourseTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="44dp"
             android:text="Course"
             android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/changeCourse"
-            app:layout_constraintHorizontal_bias="0.39"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/changeNameTitle" />
 
         <EditText
             android:id="@+id/changeCourse"
-            android:layout_width="288dp"
-            android:layout_height="43dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="32dp"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="28dp"
             android:layout_marginEnd="28dp"
             android:autofillHints=""
@@ -124,11 +128,13 @@
             android:fontFamily="@font/light"
             android:hint="course of study"
             android:inputType="textEmailAddress"
+            android:padding="10dp"
             android:paddingHorizontal="12dp"
             android:textColor="@color/black"
             android:textColorHint="#74768f"
             android:windowSoftInputMode="adjustResize"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/changeCourseTitle"
             app:layout_constraintTop_toBottomOf="@+id/changeName" />
 
 
@@ -136,12 +142,10 @@
             android:id="@+id/changeYearOfStudyTitle"
             android:layout_width="141dp"
             android:layout_height="31dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="48dp"
             android:text="Year of study"
             android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/change_year_dropdown"
-            app:layout_constraintHorizontal_bias="0.2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/changeCourseTitle" />
 
@@ -177,10 +181,11 @@
         <com.teamnusocial.nusocial.ui.you.CustomSpinner
             android:id="@+id/change_year_dropdown"
             style="@style/Widget.AppCompat.Spinner"
-            android:layout_width="200dp"
+            android:layout_width="0dp"
             android:layout_height="?attr/dropdownListPreferredItemHeight"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="28dp"
-            android:layout_marginEnd="52dp"
+            android:layout_marginEnd="28dp"
             android:background="@drawable/spinner_bg"
             android:dropDownWidth="200dp"
             android:dropDownVerticalOffset="?attr/dropdownListPreferredItemHeight"
@@ -189,6 +194,7 @@
             android:popupElevation="3dp"
             android:stateListAnimator="@drawable/spinner_sla"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/changeYearOfStudyTitle"
             app:layout_constraintTop_toBottomOf="@+id/changeCourse" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

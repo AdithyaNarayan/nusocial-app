@@ -10,9 +10,11 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/new_images_slider"
-        android:layout_width="390dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="2dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/old_images_slider" />
@@ -43,9 +45,11 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/old_images_slider"
-        android:layout_width="390dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.523"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,9 +70,11 @@
 
     <EditText
         android:id="@+id/post_text_content_input"
-        android:layout_width="390dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
         android:hint="Type somthing..."
         android:paddingHorizontal="10dp"
         android:paddingVertical="10dp"

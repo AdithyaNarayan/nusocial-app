@@ -76,7 +76,6 @@ class SearchActivity : AppCompatActivity() {
             val layoutManager = LinearLayoutManager(this@SearchActivity)
             layoutManager.orientation = LinearLayoutManager.VERTICAL
             postsRecyclerView.layoutManager = layoutManager
-            postsRecyclerView.addItemDecoration(OffsetHelperVertical())
         }
     }
 }
