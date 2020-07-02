@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.community.SearchActivity"></activity>
+        <activity android:name=".ui.messages.GroupChatSelectorActivity"></activity>
+        <activity android:name=".ui.community.SearchActivity" />
         <activity android:name=".ui.you.OtherUserActivity" />
         <activity android:name=".ui.community.EditCommunityActivity" />
         <activity android:name=".ui.community.EditPostActivity" />
@@ -26,8 +27,9 @@
         <activity android:name=".ui.buddymatch.BuddyProfileActivity" />
         <activity android:name=".ui.messages.MessageChatActivity">
             <intent-filter>
-                <action android:name="MessageChatActivity"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="MessageChatActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 

@@ -11,7 +11,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.ktx.toObject
 import com.teamnusocial.nusocial.R
+import com.teamnusocial.nusocial.data.model.MessageConfig
 import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.utils.FirestoreUtils
@@ -27,7 +29,7 @@ class MessagesFragment : Fragment() {
     private lateinit var viewModel: MessagesViewModel
     private lateinit var adapter: MessagesRecyclerViewAdapter
     private var messageIDList = mutableListOf<String>()
-    private val list: MutableList<Pair<String, String>> = mutableListOf()
+    private val list: MutableList<MessageConfig> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,9 +60,13 @@ class MessagesFragment : Fragment() {
                     }
                 }
         }
+
+        addChatButton.setOnClickListener {
+            startActivity(Intent(requireContext(), GroupChatSelectorActivity::class.java))
+        }
     }
 
-    private fun updateRecyclerView(list: List<Pair<String, String>>) {
+    private fun updateRecyclerView(list: List<MessageConfig>) {
         if (messageUsersRecyclerView == null) {
             return
         }
@@ -72,7 +78,11 @@ class MessagesFragment : Fragment() {
             override fun onItemClick(view: View?, position: Int) {
                 val intent = Intent(requireContext(), MessageChatActivity::class.java)
                 intent.putExtra("messageID", messageIDList[position])
-                intent.putExtra("messageName", list[position].second)
+                if (list[position].recipients.size < 2) {
+                    intent.putExtra("messageName", list[position].recipients[0].second)
+                } else {
+                    intent.putExtra("messageName", list[position].name)
+                }
                 startActivity(intent)
             }
         })
@@ -83,14 +93,14 @@ class MessagesFragment : Fragment() {
             .addOnCompleteListener {
                 it.result!!.documents.forEach { document ->
                     messageIDList.add(document.id)
-                    val listRecipients = document["recipients"] as List<*>
-                    var pair: Pair<String, String> = Pair("", "")
-                    listRecipients.forEach { recipient ->
-                        if ((recipient as HashMap<String, String>)["first"] != FirestoreUtils().getCurrentUser()!!.uid) {
-                            pair = Pair(recipient["first"]!!, recipient["second"]!!)
-                        }
-                    }
-                    list.add(pair)
+                    val messageConfig = document.toObject(MessageConfig::class.java)!!
+
+                    messageConfig.recipients = messageConfig.recipients.filter { recipient ->
+                        recipient.first != FirestoreUtils().getCurrentUser()!!.uid
+                    }.toMutableList()
+
+                    list.add(messageConfig)
+                    return@forEach
                 }
                 Log.d("MESSAGES", list.toString())
                 updateRecyclerView(list)

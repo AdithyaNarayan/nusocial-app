@@ -34,5 +34,7 @@
     <string name="posts">Posts</string>
     <string name="profilepicture">profilePicture</string>
     <string name="course">course</string>
+    <string name="add">add</string>
+    <string name="group_name">Group Name</string>
 
 </resources>

@@ -147,6 +147,8 @@ class UserRepository(private val utils: FirestoreUtils) {
 
     suspend fun createChatWith(userID: String) = utils.createChatWith(userID)
 
+    suspend fun createGroupChatWith(name: String, users: List<String>) = utils.createGroupChatWith(name, users)
+
     suspend fun sendMessage(messageID: String, messageText: String) = coroutineScope {
         getUserAnd(utils.getCurrentUser()!!.uid) {
             utils.getMessages(messageID).collection("messages")

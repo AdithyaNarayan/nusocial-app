@@ -1,11 +1,13 @@
 package com.teamnusocial.nusocial.utils
 
-import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.*
-import com.teamnusocial.nusocial.data.model.*
-import kotlinx.coroutines.*
-import kotlinx.coroutines.tasks.await
+import com.google.firebase.firestore.FirebaseFirestore
+import com.teamnusocial.nusocial.data.model.MessageConfig
+import com.teamnusocial.nusocial.data.model.MyPair
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 class FirestoreUtils {
     private val firestoreInstance = FirebaseFirestore.getInstance()
@@ -24,6 +26,7 @@ class FirestoreUtils {
             .collection("users")
             .document(getCurrentUser()!!.uid)
     }
+
     suspend fun getUserAsDocument(userID: String) = coroutineScope {
         return@coroutineScope firestoreInstance
             .collection("users")
@@ -42,12 +45,14 @@ class FirestoreUtils {
             .collection("communities")
             .document(communityID)
     }
+
     suspend fun getAllPosts(communityID: String) = coroutineScope {
         return@coroutineScope firestoreInstance
             .collection("communities")
             .document(communityID)
             .collection("posts")
     }
+
     suspend fun getComments(communityID: String, postID: String) = coroutineScope {
         return@coroutineScope firestoreInstance
             .collection("communities")
@@ -56,10 +61,12 @@ class FirestoreUtils {
             .document(postID)
             .collection("comments")
     }
+
     suspend fun getAllCommunities() =
         coroutineScope {
             firestoreInstance.collection("communities")
         }
+
     //
     fun getMessages(messageID: String) =
         firestoreInstance.collection("messagesChannel").document(messageID)
@@ -73,21 +80,40 @@ class FirestoreUtils {
                     firestoreInstance.collection("messagesChannel")
                         .document(messageID).set(
                             MessageConfig(
-                                listOf(
-                                    Pair(
+                                mutableListOf(
+                                    MyPair(
                                         otherUser.result!!["uid"] as String,
                                         otherUser.result!!["name"] as String
                                     ),
-                                    Pair(
+                                    MyPair(
                                         currentUser.result!!["uid"] as String,
                                         currentUser.result!!["name"] as String
                                     )
-                                ), ""
+                                ), "", ""
                             )
                         )
                 }
             }
         }
 
+    }
+
+    suspend fun createGroupChatWith(name: String, users: List<String>) = coroutineScope {
+
+        val list = mutableListOf<MyPair>()
+
+        users.forEach { userID ->
+            getUserAsDocument(userID).get().addOnSuccessListener {
+                list.add(MyPair(userID, it["name"] as String))
+                notifyUpdateOfList(name, list, users.size)
+            }
+        }
+
+    }
+
+    private fun notifyUpdateOfList(name: String, list: List<MyPair>, size: Int) {
+        if (list.size == size) {
+            firestoreInstance.collection("messagesChannel").add(MessageConfig(list.toMutableList(), "", name))
+        }
     }
 }
