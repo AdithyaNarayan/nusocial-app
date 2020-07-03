@@ -56,7 +56,7 @@ import kotlinx.coroutines.*
 
 class SingleCommunityActivity : AppCompatActivity() {
     private lateinit var currCommData: Community
-    private lateinit var commJoinTime: Timestamp
+    //private lateinit var commJoinTime: Timestamp
     var imageEncoded: String = ""
     var imagesEncodedList: MutableList<String> = mutableListOf()
     private lateinit var listOfActions: Array<String>
@@ -71,7 +71,7 @@ class SingleCommunityActivity : AppCompatActivity() {
 
         /**data fetching**/
         currCommData = intent.getParcelableExtra("COMMUNITY_DATA")!!
-        commJoinTime = intent.getParcelableExtra("COMM_TIME")!!
+        //commJoinTime = intent.getParcelableExtra("COMM_TIME")!!
         viewModel = ViewModelProvider(this).get(CommunityViewModel::class.java)
         viewModel.you = intent.getParcelableExtra("USER_DATA")!!
 
@@ -154,7 +154,7 @@ class SingleCommunityActivity : AppCompatActivity() {
                 when(listOfActions.get(position)) {
                     "Leave" -> {
                         CoroutineScope(Dispatchers.IO).launch {
-                            userRepo.removeCommFromUser(Pair(currCommData.id, commJoinTime), viewModel.you.uid)
+                            userRepo.removeCommFromUser(currCommData.id, viewModel.you.uid)
                             userRepo.removeMemberFromComm(currCommData.id, viewModel.you.uid)
                             if(currCommData.allAdminsID.contains(viewModel.you.uid)) {
                                 userRepo.removeAdminFromComm(currCommData.id, viewModel.you.uid)
@@ -177,7 +177,7 @@ class SingleCommunityActivity : AppCompatActivity() {
                     }
                     "Advanced" -> {
                         val intent = Intent(this@SingleCommunityActivity, EditCommunityActivity::class.java)
-                        intent.putExtra("COMM_TIME", commJoinTime)
+                        //intent.putExtra("COMM_TIME", commJoinTime)
                         intent.putExtra("COMM_DATA", currCommData)
                         intent.putExtra("USER_DATA", viewModel.you)
                         startActivityForResult(intent, 2)

@@ -50,7 +50,7 @@ class CommunityFragment : Fragment() {
             viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
             viewModel.allPosts.clear()
             for(commID in viewModel.you.communities) {
-                viewModel.allPosts.addAll(utils.getPostsOfCommunity(commID.first))
+                viewModel.allPosts.addAll(utils.getPostsOfCommunity(commID))
             }
             updateUI()
             spin_kit.visibility = View.GONE

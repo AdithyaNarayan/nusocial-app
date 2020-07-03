@@ -23,7 +23,7 @@ import kotlinx.coroutines.withContext
 class EditCommunityActivity : AppCompatActivity() {
     private lateinit var commData: Community
     private lateinit var you: User
-    private lateinit var commJoinTime: Timestamp
+   // private lateinit var commJoinTime: Timestamp
     private var socialRepo = SocialToolsRepository(FirestoreUtils())
     private var userRepo = UserRepository(FirestoreUtils())
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,7 +78,7 @@ class EditCommunityActivity : AppCompatActivity() {
                     val good_id = id.replace("\\s".toRegex(), "")
                     if(commData.allMembersID.contains(good_id)) {
                         userRepo.removeMemberFromComm(commData.id, good_id)
-                        userRepo.removeCommFromUser(Pair(commData.id, commJoinTime), good_id)
+                        userRepo.removeCommFromUser(commData.id, good_id)
                     }
                 }
                 for(id in list_of_admin_to_add) {

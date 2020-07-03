@@ -7,11 +7,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.teamnusocial.nusocial.R
+import com.teamnusocial.nusocial.data.model.MessageConfig
 
 
 class MessagesRecyclerViewAdapter(
     val context: Context?,
-    val data: List<Pair<String, String>>
+    val data: List<MessageConfig>
 ) :
     RecyclerView.Adapter<MessagesRecyclerViewAdapter.ViewHolder>() {
     private val inflater = LayoutInflater.from(context)
@@ -29,8 +30,13 @@ class MessagesRecyclerViewAdapter(
         holder: MessagesRecyclerViewAdapter.ViewHolder,
         position: Int
     ) {
-        val userName = data[position].second
-        holder.userNameTextView.text = userName
+        val username =
+            if (data[position].recipients.size >= 2) {
+                data[position].name
+            } else {
+                data[position].recipients[0].second
+            }
+        holder.userNameTextView.text = username
     }
 
     override fun getItemCount(): Int {
@@ -47,10 +53,6 @@ class MessagesRecyclerViewAdapter(
         init {
             itemView.setOnClickListener(this)
         }
-    }
-
-    fun getItem(id: Int): String {
-        return data[id].second
     }
 
     fun setClickListener(itemClickListener: ItemClickListener) {

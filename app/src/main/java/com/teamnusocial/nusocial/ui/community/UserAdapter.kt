@@ -1,14 +1,8 @@
 package com.teamnusocial.nusocial.ui.community
 
-import android.content.ContentProvider
-import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.User
 

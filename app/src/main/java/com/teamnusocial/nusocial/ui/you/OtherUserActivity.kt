@@ -48,7 +48,7 @@ class OtherUserActivity : AppCompatActivity() {
             bg_cover.visibility = View.VISIBLE
             viewModel.you = UserRepository(FirestoreUtils()).getUser(userID)
             viewModel.allCommunitites = SocialToolsRepository(FirestoreUtils()).getAllCommunities()
-            viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> isYourComm(comm.id) }.toMutableList()
+            viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> viewModel.you.communities.contains(comm.id) }.toMutableList()
             viewModel.moduleCommunities.clear()
             viewModel.otherCommunities.clear()
             for(comm in viewModel.allYourCommunities) {
@@ -63,12 +63,7 @@ class OtherUserActivity : AppCompatActivity() {
             bg_cover.visibility = View.GONE
         }
     }
-    fun isYourComm(commID: String): Boolean {
-        for(comm in viewModel.you.communities) {
-            if(comm.first == commID) return true
-        }
-        return false
-    }
+
     fun updateUI() {
         Picasso
             .get()

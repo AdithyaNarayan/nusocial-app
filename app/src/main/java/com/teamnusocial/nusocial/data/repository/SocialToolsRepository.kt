@@ -136,7 +136,7 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
                     utils
                         .getAllUsers()
                         .document(userID)
-                        .update("communities", FieldValue.arrayUnion(Pair(refID, Timestamp.now())))
+                        .update("communities", FieldValue.arrayUnion(refID))
                 }
             }
             .addOnFailureListener { e ->
@@ -155,7 +155,7 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
                     utils
                         .getAllUsers()
                         .document(userID)
-                        .update("communities", FieldValue.arrayUnion(Pair(commID, Timestamp.now())))
+                        .update("communities", FieldValue.arrayUnion(commID))
                 }
             }
     }

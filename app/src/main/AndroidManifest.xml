@@ -16,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.community.NewCommActivity"></activity>
+        <activity android:name=".ui.messages.GroupChatSelectorActivity"></activity>
         <activity android:name=".ui.community.SearchActivity" />
         <activity android:name=".ui.you.OtherUserActivity" />
         <activity android:name=".ui.community.EditCommunityActivity" />

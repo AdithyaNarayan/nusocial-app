@@ -23,9 +23,11 @@ class YouViewModel : ViewModel() {
         .addCallAdapterFactory(CoroutineCallAdapterFactory())
         .build()
         .create(AllModulesAvailable::class.java)
+
     suspend fun allModulesOffered() = coroutineScope {
         val modules = service.retrieveModules("2019-2020").await()
         modules
     }
+
 }
 

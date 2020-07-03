@@ -2,19 +2,18 @@ package com.teamnusocial.nusocial.data.model
 
 import android.os.Parcelable
 import com.google.firebase.Timestamp
-import com.squareup.okhttp.Dispatcher
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.util.*
+
 enum class Gender {
     MALE, FEMALE, OTHERS
 }
+
 @Parcelize
 data class User(
     public var uid: String,
@@ -29,9 +28,9 @@ data class User(
     public val about: String,
     public val lastBroadcasted: Timestamp,
     public val seenAndMatch: MutableList<String>,
-    public var communities: MutableList<Pair<String, Timestamp>>,
+    public var communities: MutableList<String>,
     public var registrationToken: MutableList<String>,
-    public var notesForAdmin: MutableList<Pair<String, Boolean>>
+    public var notesForAdmin: MutableList<MyPair>
 ) : Comparable<User>, Parcelable {
     constructor() : this(
         "",
@@ -63,21 +62,26 @@ data class User(
         }
 
         for (module1 in another!!.modules) {
-            for(module2 in you.modules) {
-                if(module1 == module2) {
+            for (module2 in you.modules) {
+                if (module1 == module2) {
                     matchedModules++
                 }
             }
         }
 
-        matchedCourse = if(another!!.courseOfStudy == you.courseOfStudy) 1 else 0
+        matchedCourse = if (another!!.courseOfStudy == you.courseOfStudy) 1 else 0
         matchedAcadYears = Math.abs(another!!.yearOfStudy - you.yearOfStudy)
-        matchedGender = if(another!!.gender == you.gender) 1 else 0
+        matchedGender = if (another!!.gender == you.gender) 1 else 0
 
-        return formula(matchedModules,matchedCourse, matchedAcadYears, matchedGender)
+        return formula(matchedModules, matchedCourse, matchedAcadYears, matchedGender)
     }
 
-    fun formula(matchedModules: Int,matchedCourse: Int, matchedAcadYears: Int, matchedGender: Int): Double {
+    fun formula(
+        matchedModules: Int,
+        matchedCourse: Int,
+        matchedAcadYears: Int,
+        matchedGender: Int
+    ): Double {
         val moduleMatch = 5.0
         val courseMatch = 0.2
         val acadYearMatch = 0.1
@@ -89,8 +93,8 @@ data class User(
         val this_and_curr = compareWithYou(this)
         val other_and_curr = compareWithYou(other)
 
-        if(this_and_curr < other_and_curr) return -1
-        else if(this_and_curr > other_and_curr) return 1
+        if (this_and_curr < other_and_curr) return -1
+        else if (this_and_curr > other_and_curr) return 1
         else return 0
 
     }
