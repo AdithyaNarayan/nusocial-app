@@ -99,11 +99,14 @@ class UserRepository(private val utils: FirestoreUtils) {
     suspend fun removeModule(module: Module, commID:String, userID: String) = coroutineScope {
         utils.getAllUsers().document(userID).update("modules", FieldValue.arrayRemove(module))
     }
-    suspend fun removeCommFromUser(commID: String, userID: String) = coroutineScope {
-        utils.getAllUsers().document(userID).update("communities", FieldValue.arrayRemove(commID))
+    suspend fun removeCommFromUser(comm: Pair<String, Timestamp>, userID: String) = coroutineScope {
+        utils.getAllUsers().document(userID).update("communities", FieldValue.arrayRemove(comm))
     }
     suspend fun removeMemberFromComm(commID: String, userID: String) = coroutineScope {
         utils.getAllCommunities().document(commID).update("allMembersID", FieldValue.arrayRemove(userID))
+    }
+    suspend fun removeAdminFromComm(commID: String, adminID: String) = coroutineScope {
+        utils.getAllCommunities().document(commID).update("allAdminsID", FieldValue.arrayRemove(adminID))
     }
 
 

@@ -3,7 +3,9 @@ package com.teamnusocial.nusocial.data.model
 import android.os.Parcelable
 import com.google.firebase.Timestamp
 import kotlinx.android.parcel.Parcelize
-
+enum class PostType {
+    Poll, Question, Sharing, Discussion, Announcement
+}
 @Parcelize
 data class Post(
     var id: String,
@@ -14,7 +16,8 @@ data class Post(
     var videoList: MutableList<String>,
     var timeStamp: Timestamp,
     var userLikeList: MutableList<String>,
-    var parentCommName: String
+    var parentCommName: String,
+    var postType: PostType
 ): Parcelable {
     constructor() : this(
         "",
@@ -25,6 +28,7 @@ data class Post(
         mutableListOf(),
         Timestamp(0,0),
         mutableListOf(),
-        ""
+        "",
+        PostType.Question
     )
 }

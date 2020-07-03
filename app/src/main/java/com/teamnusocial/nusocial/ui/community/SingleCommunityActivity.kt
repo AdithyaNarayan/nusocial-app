@@ -38,6 +38,7 @@ import com.teamnusocial.nusocial.HomeActivity
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Community
 import com.teamnusocial.nusocial.data.model.Post
+import com.teamnusocial.nusocial.data.model.PostType
 import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.auth.SignInActivity
@@ -47,6 +48,7 @@ import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import com.teamnusocial.nusocial.utils.KeyboardToggleListener
 import kotlinx.android.synthetic.main.activity_single_community.*
+import kotlinx.android.synthetic.main.activity_update_info.*
 import kotlinx.android.synthetic.main.fragment_you.*
 import kotlinx.android.synthetic.main.post_create.*
 import kotlinx.coroutines.*
@@ -54,6 +56,7 @@ import kotlinx.coroutines.*
 
 class SingleCommunityActivity : AppCompatActivity() {
     private lateinit var currCommData: Community
+    private lateinit var commJoinTime: Timestamp
     var imageEncoded: String = ""
     var imagesEncodedList: MutableList<String> = mutableListOf()
     private lateinit var listOfActions: Array<String>
@@ -61,12 +64,14 @@ class SingleCommunityActivity : AppCompatActivity() {
     private val utils = SocialToolsRepository(FirestoreUtils())
     private val userRepo = UserRepository(FirestoreUtils())
     private lateinit var allPostAdapter: FirestoreRecyclerAdapter<Post, PostAdapter.PostHolder>
+    private var typeOfNewPost = PostType.Question
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_community)
 
         /**data fetching**/
         currCommData = intent.getParcelableExtra("COMMUNITY_DATA")!!
+        commJoinTime = intent.getParcelableExtra("COMM_TIME")!!
         viewModel = ViewModelProvider(this).get(CommunityViewModel::class.java)
         viewModel.you = intent.getParcelableExtra("USER_DATA")!!
 
@@ -149,8 +154,11 @@ class SingleCommunityActivity : AppCompatActivity() {
                 when(listOfActions.get(position)) {
                     "Leave" -> {
                         CoroutineScope(Dispatchers.IO).launch {
-                            userRepo.removeCommFromUser(currCommData.id, viewModel.you.uid)
+                            userRepo.removeCommFromUser(Pair(currCommData.id, commJoinTime), viewModel.you.uid)
                             userRepo.removeMemberFromComm(currCommData.id, viewModel.you.uid)
+                            if(currCommData.allAdminsID.contains(viewModel.you.uid)) {
+                                userRepo.removeAdminFromComm(currCommData.id, viewModel.you.uid)
+                            }
                             if(!currCommData.module.moduleCode.equals("")) {
                                 userRepo.removeModule(currCommData.module, currCommData.id, viewModel.you.uid)
                             }
@@ -169,6 +177,7 @@ class SingleCommunityActivity : AppCompatActivity() {
                     }
                     "Advanced" -> {
                         val intent = Intent(this@SingleCommunityActivity, EditCommunityActivity::class.java)
+                        intent.putExtra("COMM_TIME", commJoinTime)
                         intent.putExtra("COMM_DATA", currCommData)
                         intent.putExtra("USER_DATA", viewModel.you)
                         startActivityForResult(intent, 2)
@@ -180,9 +189,43 @@ class SingleCommunityActivity : AppCompatActivity() {
             }
         }
     }
+    fun setUpTypeOptions() {
+        val listOfType = arrayOf("Question","Sharing","Discussion","Poll","Announcement")
+        val arrayAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listOfType)
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        post_type_dropdown.adapter = arrayAdapter
+
+        post_type_dropdown.setSpinnerEventsListener(object :
+            CustomSpinner.OnSpinnerEventsListener {
+            override fun onSpinnerOpened() {
+                post_type_dropdown.isSelected = true
+            }
+
+            override fun onSpinnerClosed() {
+                post_type_dropdown.isSelected = false
+            }
+        })
+        post_type_dropdown.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when(listOfType.get(position)) {
+                    "Question" -> typeOfNewPost = PostType.Question
+                    "Sharing" -> typeOfNewPost = PostType.Sharing
+                    "Discussion" -> typeOfNewPost = PostType.Discussion
+                    "Poll" -> typeOfNewPost = PostType.Poll
+                    else -> typeOfNewPost = PostType.Announcement
+                }
+            }
+
+        }
+    }
     fun setUpCreateNewPost() {
         Picasso.get().load(viewModel.you.profilePicturePath).into(profile_image)
         post_owner_name.text = viewModel.you.name
+        setUpTypeOptions()
         addKeyboardToggleListener { shown ->
             if(!shown) {
                 post_text_content_input.clearFocus()
@@ -213,7 +256,7 @@ class SingleCommunityActivity : AppCompatActivity() {
             var postID = ""
             CoroutineScope(Dispatchers.IO).launch {
                 postID = utils.addPost(Post("",currCommData.id,viewModel.you.uid, post_text_content_input.text.toString(),
-                    mutableListOf(), mutableListOf(), Timestamp.now(), mutableListOf(), currCommData.name), currCommData.id)
+                    mutableListOf(), mutableListOf(), Timestamp.now(), mutableListOf(), currCommData.name, typeOfNewPost), currCommData.id)
 
                 if(!imageEncoded.equals("")) {
                     pushImagesToFirebase(imageEncoded.toUri(), 0, postID, currCommData.id)

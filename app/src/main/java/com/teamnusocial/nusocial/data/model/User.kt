@@ -29,9 +29,9 @@ data class User(
     public val about: String,
     public val lastBroadcasted: Timestamp,
     public val seenAndMatch: MutableList<String>,
-    public var communities: MutableList<String>,
-    public var otherCommunity: MutableList<String>,
-    public var registrationToken: MutableList<String>
+    public var communities: MutableList<Pair<String, Timestamp>>,
+    public var registrationToken: MutableList<String>,
+    public var notesForAdmin: MutableList<Pair<String, Boolean>>
 ) : Comparable<User>, Parcelable {
     constructor() : this(
         "",

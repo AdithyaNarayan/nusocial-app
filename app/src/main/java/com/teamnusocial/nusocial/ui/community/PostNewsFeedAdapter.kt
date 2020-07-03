@@ -60,16 +60,22 @@ class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: Mut
         val parent_comm_button = holder.layoutView.findViewById<Button>(R.id.parent_comm_button)
         val like_stat = holder.layoutView.findViewById<TextView>(R.id.like_stat)
         val comment_stat = holder.layoutView.findViewById<TextView>(R.id.comment_stat)
+        val type_of_post = holder.layoutView.findViewById<TextView>(R.id.type_of_post)
         val currPost = model
 
         /**basic stat**/
         var numLike = currPost.userLikeList.size
-        like_stat.text = "${numLike} like(s)"
+        like_stat.text = "${numLike}"
         CoroutineScope(Dispatchers.IO).launch {
             val numComment = utils.getNumberCommentsOfPost(model.id, model.communityID)
             withContext(Dispatchers.Main) {
-                comment_stat.text = "${numComment} comments(s)"
+                comment_stat.text = "${numComment}"
             }
+        }
+        try {
+            type_of_post.text = currPost.postType.name
+        } catch (e: Exception) {
+            type_of_post.text = "Question"
         }
 
         postOwnerName.setOnClickListener {
@@ -105,13 +111,13 @@ class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: Mut
 
         like_button.setOnCheckedChangeListener { button, isChecked ->
             if(isChecked) {
-                like_stat.text = "${++numLike} like(s)"
+                like_stat.text = "${++numLike}"
                 currPost.userLikeList.add(you.uid)
                 CoroutineScope(Dispatchers.IO).launch {
                     utils.likeUpdateAdd(model.communityID, model.id, you.uid)
                 }
             } else {
-                like_stat.text = "${--numLike} like(s)"
+                like_stat.text = "${--numLike}"
                 currPost.userLikeList.remove(you.uid)
                 CoroutineScope(Dispatchers.IO).launch {
                     utils.likeUpdateRemove(model.communityID, model.id, you.uid)

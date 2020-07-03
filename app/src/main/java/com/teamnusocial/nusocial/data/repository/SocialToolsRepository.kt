@@ -2,6 +2,7 @@ package com.teamnusocial.nusocial.data.repository
 
 import android.location.Location
 import android.util.Log
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.teamnusocial.nusocial.data.model.*
@@ -135,7 +136,7 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
                     utils
                         .getAllUsers()
                         .document(userID)
-                        .update("communities", FieldValue.arrayUnion(refID))
+                        .update("communities", FieldValue.arrayUnion(Pair(refID, Timestamp.now())))
                 }
             }
             .addOnFailureListener { e ->
@@ -154,7 +155,7 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
                     utils
                         .getAllUsers()
                         .document(userID)
-                        .update("communities", FieldValue.arrayUnion(commID))
+                        .update("communities", FieldValue.arrayUnion(Pair(commID, Timestamp.now())))
                 }
             }
     }

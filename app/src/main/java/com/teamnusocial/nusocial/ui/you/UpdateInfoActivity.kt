@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.Timestamp
 import com.teamnusocial.nusocial.HomeActivity
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Module
@@ -36,7 +37,7 @@ import kotlinx.coroutines.withContext
 class UpdateInfoActivity : AppCompatActivity() {
     private lateinit var user: User
     private var utils = UserRepository(FirestoreUtils())
-    private var modulesToRemove = mutableListOf<Pair<Module, String>>()
+    private var modulesToRemove = mutableListOf<Pair<Module, Pair<String, Timestamp>>>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_update_info)
@@ -132,9 +133,9 @@ class UpdateInfoActivity : AppCompatActivity() {
     fun removeModules() {
         CoroutineScope(Dispatchers.IO).launch {
             for(module in modulesToRemove) {
-                utils.removeModule(module.first, module.second, user.uid)
+                utils.removeModule(module.first, module.second.first, user.uid)
                 utils.removeCommFromUser(module.second, user.uid)
-                utils.removeMemberFromComm(module.second, user.uid)
+                utils.removeMemberFromComm(module.second.first, user.uid)
             }
         }
     }

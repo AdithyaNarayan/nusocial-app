@@ -20,6 +20,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Post
+import com.teamnusocial.nusocial.data.model.PostType
 import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
 import com.teamnusocial.nusocial.utils.FirestoreUtils
@@ -79,7 +80,7 @@ class EditPostActivity : AppCompatActivity() {
         publish_post_button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 val newPost = Post(postData.id,postData.communityID,owner.uid, post_text_content_input.text.toString(),
-                    postData.imageList, mutableListOf(), Timestamp.now(), postData.userLikeList, postData.parentCommName)
+                    postData.imageList, mutableListOf(), Timestamp.now(), postData.userLikeList, postData.parentCommName, PostType.Question)
                 utils.editPost(newPost, postData.communityID)
                 if(!imageEncoded.equals("")) {
                     pushImagesToFirebase(imageEncoded.toUri(), 0, postData.id, postData.communityID)

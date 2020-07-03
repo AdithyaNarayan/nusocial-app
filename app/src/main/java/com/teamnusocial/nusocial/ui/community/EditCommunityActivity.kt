@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
+import com.google.firebase.Timestamp
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Community
 import com.teamnusocial.nusocial.data.model.User
@@ -22,6 +23,7 @@ import kotlinx.coroutines.withContext
 class EditCommunityActivity : AppCompatActivity() {
     private lateinit var commData: Community
     private lateinit var you: User
+    private lateinit var commJoinTime: Timestamp
     private var socialRepo = SocialToolsRepository(FirestoreUtils())
     private var userRepo = UserRepository(FirestoreUtils())
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,7 +78,7 @@ class EditCommunityActivity : AppCompatActivity() {
                     val good_id = id.replace("\\s".toRegex(), "")
                     if(commData.allMembersID.contains(good_id)) {
                         userRepo.removeMemberFromComm(commData.id, good_id)
-                        userRepo.removeCommFromUser(commData.id, good_id)
+                        userRepo.removeCommFromUser(Pair(commData.id, commJoinTime), good_id)
                     }
                 }
                 for(id in list_of_admin_to_add) {

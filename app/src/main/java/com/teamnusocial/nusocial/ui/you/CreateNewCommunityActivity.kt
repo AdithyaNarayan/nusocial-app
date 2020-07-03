@@ -36,7 +36,7 @@ class CreateNewCommunityActivity : AppCompatActivity() {
         create_button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 utils.addCommunity(Community("", change_name_comm.text.toString(),
-                    mutableListOf<String>(you.uid), Module("","", listOf()),"https://socialveo.co/frontend/assets/images/default-user-cover.png", mutableListOf(you.uid), about_input_comm.text.toString() ),you.uid)
+                    mutableListOf<String>(you.uid), Module("","", listOf()),"https://socialveo.co/frontend/assets/images/default-user-cover.png", mutableListOf(you.uid), about_input_comm.text.toString(),false),you.uid)
                     .addOnSuccessListener {
                         CoroutineScope(Dispatchers.IO).launch {
                             you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()

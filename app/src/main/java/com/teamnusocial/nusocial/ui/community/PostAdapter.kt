@@ -60,20 +60,24 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
         val dropdown_options = holder.layoutView.findViewById<CustomSpinner>(R.id.post_options)
         val comment_button = holder.layoutView.findViewById<Button>(R.id.comment_button)
         val like_button = holder.layoutView.findViewById<CheckBox>(R.id.like_button)
-        //val share_button = holder.layoutView.findViewById<Button>(R.id.share_button)
+        val type_of_post = holder.layoutView.findViewById<TextView>(R.id.type_of_post)
         val like_stat = holder.layoutView.findViewById<TextView>(R.id.like_stat)
         val comment_stat = holder.layoutView.findViewById<TextView>(R.id.comment_stat)
         val currPost = model
 
         /**basic stat**/
-        like_stat.text = "${currPost.userLikeList.size} like(s)"
+        like_stat.text = "${currPost.userLikeList.size}"
         CoroutineScope(Dispatchers.IO).launch {
             val numComment = utils.getNumberCommentsOfPost(model.id, model.communityID)
             withContext(Dispatchers.Main) {
-                comment_stat.text = "${numComment} comments(s)"
+                comment_stat.text = "${numComment}"
             }
         }
-
+        try {
+            type_of_post.text = currPost.postType.name
+        } catch (e: Exception) {
+            type_of_post.text = "Question"
+        }
 
         /**set up image slider**/
         val postImageAdapter =

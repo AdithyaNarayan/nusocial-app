@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/post_bg"
+    android:backgroundTint="#0A33D8"
     android:paddingBottom="10dp">
 
     <Button
@@ -15,10 +16,31 @@
         android:layout_marginTop="8dp"
         android:backgroundTint="@android:color/holo_blue_bright"
         android:text="Add videos"
+        android:textColor="@color/white"
         android:textSize="10dp"
+        app:cornerRadius="20dp"
         app:layout_constraintEnd_toStartOf="@+id/publish_post_button"
         app:layout_constraintStart_toEndOf="@+id/add_image_button"
         app:layout_constraintTop_toBottomOf="@+id/new_images_slider" />
+
+    <com.teamnusocial.nusocial.ui.you.CustomSpinner
+        android:id="@+id/post_type_dropdown"
+        style="@style/Widget.AppCompat.Spinner"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/spinner_bg"
+        android:dropDownWidth="200dp"
+        android:paddingRight="14dp"
+        android:popupBackground="@color/orange"
+        android:popupElevation="3dp"
+        android:stateListAnimator="@drawable/spinner_sla"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/post_owner_name"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/new_images_slider"
@@ -39,7 +61,9 @@
         android:layout_marginEnd="14dp"
         android:backgroundTint="@color/blue_transparent"
         android:text="Publish"
+        android:textColor="@color/white"
         android:textSize="10dp"
+        app:cornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_images_slider" />
 
@@ -51,7 +75,9 @@
         android:layout_marginTop="8dp"
         android:backgroundTint="@color/blue"
         android:text="Add images"
+        android:textColor="@color/white"
         android:textSize="10dp"
+        app:cornerRadius="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_images_slider" />
 
@@ -74,7 +100,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="--Blank--"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.03"
         app:layout_constraintStart_toEndOf="@+id/profile_image"
@@ -90,7 +116,7 @@
         android:hint="Type somthing..."
         android:paddingHorizontal="10dp"
         android:paddingVertical="10dp"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textColorHint="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -17,6 +17,9 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.MarginLayoutParamsCompat
+import androidx.core.view.marginEnd
+import androidx.core.view.marginStart
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -53,6 +56,11 @@ class SinglePostActivity : AppCompatActivity() {
         setSupportActionBar(toolBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        /**change bg**/
+        main_post.setBackgroundResource(R.drawable.post_bg_rect)
+        var marginParams = main_post.layoutParams as ViewGroup.MarginLayoutParams
+        marginParams.marginStart = 0
+        marginParams.marginEnd = 0
         /**set up view model**/
         viewModel = ViewModelProvider(this).get(SinglePostViewModel::class.java)
         currPost = intent.getParcelableExtra<Post>("POST_DATA")

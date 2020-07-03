@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.github.ybq.android.spinkit.SpinKitView
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
@@ -69,6 +70,12 @@ class YouFragment : Fragment() {
         communities_in.layoutManager = GridLayoutManager(context, 1)
         updateInfo()
     }
+    fun isYourComm(commID: String) : Boolean {
+        for(comm in viewModel.you.communities) {
+            if(comm.first == commID) return true
+        }
+        return false
+    }
     fun updateInfo() {
         val spin_kit_you = activity?.findViewById<SpinKitView>(R.id.spin_kit)!!
         val bg_cover = activity?.findViewById<CardView>(R.id.loading_cover)!!
@@ -78,7 +85,7 @@ class YouFragment : Fragment() {
 
             viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
             viewModel.allCommunitites = SocialToolsRepository(FirestoreUtils()).getAllCommunities()
-            viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> viewModel.you.communities.contains(comm.id) }.toMutableList()
+            viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> isYourComm(comm.id) }.toMutableList()
             viewModel.moduleCommunities.clear()
             viewModel.otherCommunities.clear()
             for(comm in viewModel.allYourCommunities) {
@@ -121,7 +128,7 @@ class YouFragment : Fragment() {
             viewModel.you = data!!.getParcelableExtra("USER_DATA")
             CoroutineScope(Dispatchers.IO).launch {
                 viewModel.allCommunitites = SocialToolsRepository(FirestoreUtils()).getAllCommunities()
-                viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> viewModel.you.communities.contains(comm.id) }.toMutableList()
+                viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> isYourComm(comm.id) }.toMutableList()
                 viewModel.moduleCommunities.clear()
                 viewModel.otherCommunities.clear()
                 for(comm in viewModel.allYourCommunities) {
@@ -138,6 +145,12 @@ class YouFragment : Fragment() {
                 }
             }
         }
+    }
+    fun getTimeToDelete(commID: String): Timestamp {
+        for(comm in viewModel.you.communities) {
+            if(comm.first == commID) return comm.second
+        }
+        return Timestamp.now()
     }
 
     private fun updateUI() {
@@ -239,6 +252,7 @@ class YouFragment : Fragment() {
                 var exist = false
                 for(community in viewModel.moduleCommunities) {
                     if(community.module.moduleCode.equals(viewModel.you.modules[position].moduleCode)) {
+                        intent.putExtra("COMM_TIME", getTimeToDelete(community.id))
                         intent.putExtra("COMMUNITY_DATA", community)
                         intent.putExtra("USER_DATA", viewModel.you)
                         exist = true
@@ -261,6 +275,7 @@ class YouFragment : Fragment() {
         communityAdapter.setClickListener(object : CommunityItemAdapter.ItemClickListener {
             override fun onItemClick(view: View?, position: Int) {
                 val intent = Intent(requireContext(), SingleCommunityActivity::class.java)
+                intent.putExtra("COMM_TIME", getTimeToDelete(viewModel.otherCommunities[position].id))
                 intent.putExtra("COMMUNITY_DATA", viewModel.otherCommunities[position])
                 intent.putExtra("USER_DATA", viewModel.you)
                 startActivity(intent)
@@ -287,7 +302,7 @@ class YouFragment : Fragment() {
                         Community(
                             "", module.moduleCode,
                             mutableListOf(viewModel.you.uid),module,"https://miro.medium.com/max/2580/1*4B6JM5TCU8hckm4WKYxPLQ.jpeg",
-                            mutableListOf(),""
+                            mutableListOf(),"",false
                         ),
                         viewModel.you.uid
                     ).await()
@@ -302,7 +317,7 @@ class YouFragment : Fragment() {
             }
             viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
             viewModel.allCommunitites = SocialToolsRepository(FirestoreUtils()).getAllCommunities()
-            viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> viewModel.you.communities.contains(comm.id) }.toMutableList()
+            viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> isYourComm(comm.id) }.toMutableList()
             //Log.d("TEST_MOD", "SIze of allCommm ${viewModel.allCommunitites.size} and size of allYourComm ${viewModel.allYourCommunities.size}")
             viewModel.otherCommunities.clear()
             viewModel.moduleCommunities.clear()
