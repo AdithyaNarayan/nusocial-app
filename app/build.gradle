@@ -8,6 +8,7 @@ plugins {
 }
 
 android {
+    useLibrary 'org.apache.http.legacy'
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
@@ -119,5 +120,9 @@ dependencies {
     // implementation "com.algolia:algoliasearch-client-kotlin-android:1.4.0"
     // implementation "com.algolia:instantsearch-android:2.4.0"
 
+
+    // HTTP
+    // implementation 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient-android', version: '4.3.5.1'
 
 }

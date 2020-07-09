@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
 import com.teamnusocial.nusocial.R
+import com.teamnusocial.nusocial.data.model.MessageType
 import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.model.knn.Classifier
 import com.teamnusocial.nusocial.data.repository.UserRepository
@@ -84,7 +85,7 @@ class BroadcastViewModel(private val repository: UserRepository) : ViewModel() {
             }.forEach {
                 CoroutineScope(Dispatchers.IO).launch {
                     repository.createChatWith(it.uid)
-                    repository.sendMessage(repository.getMessageID(currUser, it), messageText)
+                    repository.sendMessage(repository.getMessageID(currUser, it), messageText, MessageType.TEXT)
                     repository.makeInvisibleTo(currUser.uid, repository.getMessageID(currUser, it))
                 }
             }

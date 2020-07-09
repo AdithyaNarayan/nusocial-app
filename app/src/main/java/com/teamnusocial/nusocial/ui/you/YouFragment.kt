@@ -77,7 +77,6 @@ class YouFragment : Fragment() {
         lifecycleScope.launch {
             spin_kit_you.visibility = View.VISIBLE
             bg_cover.visibility = View.VISIBLE
-           // viewModel.allModulesAvailable = viewModel.allModulesOffered()
             viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
             viewModel.allCommunitites = SocialToolsRepository(FirestoreUtils()).getAllCommunities()
             viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> viewModel.you.communities.contains(comm.id) }.toMutableList()

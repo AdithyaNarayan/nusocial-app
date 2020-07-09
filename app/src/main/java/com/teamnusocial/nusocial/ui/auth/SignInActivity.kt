@@ -127,12 +127,7 @@ class SignInActivity : AppCompatActivity(), KodeinAware {
         }
 
         nusnetSignInButton.setOnClickListener {
-            Snackbar
-                .make(
-                    signInRootView,
-                    "Feature has not been implemented yet",
-                    Snackbar.LENGTH_SHORT
-                ).show()
+            startActivity(Intent(this@SignInActivity, LumiNUSActivity::class.java))
         }
 
 

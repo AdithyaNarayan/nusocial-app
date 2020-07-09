@@ -231,7 +231,7 @@ class BuddyMatchFragment : Fragment() {
             }
         })
     }
-    fun matchBuddy(currUser: User) {
+    private fun matchBuddy(currUser: User) {
         if(currUser.seenAndMatch.contains(you.uid)) {
             CoroutineScope(Dispatchers.IO).launch {
                 UserRepository(FirestoreUtils()).updateCurrentBuddies(currUser.uid)
@@ -245,7 +245,7 @@ class BuddyMatchFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             val userRepo = UserRepository(FirestoreUtils())
             userRepo.createChatWith(currUser.uid)
-            userRepo.sendMessage(
+            userRepo.sendAdminMessage(
                 userRepo.getMessageID(you, currUser),
                 "Hey! I matched with you through BuddyMatch!"
             )
