@@ -77,7 +77,7 @@ class YouFragment : Fragment() {
         lifecycleScope.launch {
             spin_kit_you.visibility = View.VISIBLE
             bg_cover.visibility = View.VISIBLE
-
+           // viewModel.allModulesAvailable = viewModel.allModulesOffered()
             viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
             viewModel.allCommunitites = SocialToolsRepository(FirestoreUtils()).getAllCommunities()
             viewModel.allYourCommunities = viewModel.allCommunitites.filter { comm -> viewModel.you.communities.contains(comm.id) }.toMutableList()
@@ -177,9 +177,9 @@ class YouFragment : Fragment() {
                 var result = m_Text.split(",")
                 var realRes = mutableListOf<Module>()
                 CoroutineScope(Dispatchers.IO).launch {
-                    //viewModel.allModulesAvailable = viewModel.allModulesOffered()
+                    viewModel.allModulesAvailable = viewModel.allModulesOffered()
                     for (string in result) {
-                        var isValid = true
+                        var isValid = false
                         val moduleCode = string.replace("\\s".toRegex(), "").toUpperCase()
                         for(module in viewModel.allModulesAvailable) {
                             if(moduleCode.equals(module.moduleCode)) {
