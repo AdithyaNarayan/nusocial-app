@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "691432966606",
+    "firebase_url": "https://nusocial-7c7e8.firebaseio.com",
+    "project_id": "nusocial-7c7e8",
+    "storage_bucket": "nusocial-7c7e8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:691432966606:android:e0eabde1d398537775039f",
+        "android_client_info": {
+          "package_name": "com.teamnusocial.nusocial"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "691432966606-n9k5ft1foda0r1a5fssj6a1krqieac2f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5HqgyPythmFcoM1p5fAj-LDxqYO72Ygk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "691432966606-n9k5ft1foda0r1a5fssj6a1krqieac2f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

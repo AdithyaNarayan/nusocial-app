@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="40dp"
+    android:layout_marginTop="8dp">
+
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/senderWrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:neumorph_shapeType="flat"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/messageSender"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="6dp" />
+    </soup.neumorphism.NeumorphCardView>
+    <TextView
+        android:id="@+id/time"
+        android:paddingTop="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:fontFamily="@font/regular"
+        android:text="@string/time"
+        android:textSize="11dp"
+        android:textColor="#222222"
+        app:layout_constraintEnd_toStartOf="@id/senderWrapper"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/time">
+
+        <soup.neumorphism.NeumorphCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="12dp"
+            android:paddingEnd="30dp"
+            tools:ignore="RtlSymmetry"
+            app:neumorph_shapeType="pressed">
+
+            <TextView
+                android:id="@+id/messageText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:fontFamily="@font/regular"
+                android:text="@string/username"
+                android:textColor="#688598"
+                android:textSize="16sp" />
+        </soup.neumorphism.NeumorphCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
