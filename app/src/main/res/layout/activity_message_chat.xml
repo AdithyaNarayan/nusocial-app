@@ -4,84 +4,176 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     tools:context=".ui.messages.MessageChatActivity">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/topBarChat"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@drawable/top_bar"
-        android:theme="@style/ToolbarTheme"
-        app:contentInsetStart="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
+    <soup.neumorphism.NeumorphFloatingActionButton
+        android:id="@+id/messageBackButton"
+        style="@style/Widget.Neumorph.FloatingActionButton"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_margin="12dp"
+        android:scaleType="center"
+        android:src="@drawable/ic_baseline_arrow_back_ios_24"
+        android:tint="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:titleTextColor="@color/black" />
+        app:neumorph_shapeAppearance="@style/FABShape"
+        tools:ignore="RtlSymmetry" />
+
+    <TextView
+        android:id="@+id/messageNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/bold"
+        android:paddingTop="30dp"
+        android:text="@string/name"
+        android:textColor="@color/black"
+        android:textSize="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/messageBackButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messageChatRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomMessageBar"
+        app:layout_constraintTop_toBottomOf="@+id/messageBackButton" />
 
-        android:layout_marginBottom="96dp"
-        app:layout_constraintBottom_toTopOf="@id/sendMessageEditText" />
+    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+    <!--        android:id="@+id/sendMessageButton"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_gravity="end|bottom"-->
+    <!--        android:layout_margin="16dp"-->
+    <!--        android:contentDescription="@string/send"-->
+    <!--        android:src="@drawable/ic_baseline_send_24"-->
+    <!--        android:tint="@color/orange"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent" />-->
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/sendMessageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="16dp"
-        android:contentDescription="@string/send"
-        android:src="@drawable/ic_baseline_send_24"
-        android:tint="@color/orange"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    <!--    <com.google.android.material.textfield.TextInputEditText-->
+    <!--        android:id="@+id/sendMessageEditText"-->
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/sendMessageEditText"
+    <!--        android:layout_width="0dp"-->
 
-        android:layout_width="0dp"
+    <!--        android:layout_height="66dp"-->
+    <!--        android:layout_marginHorizontal="32dp"-->
+    <!--        android:layout_marginBottom="16dp"-->
+    <!--        android:background="@drawable/rounded_edit_text"-->
+    <!--        android:elevation="8dp"-->
+    <!--        android:fontFamily="@font/light"-->
+    <!--        android:hint="@string/send_a_message"-->
+    <!--        android:inputType="text"-->
+    <!--        android:paddingHorizontal="12dp"-->
+    <!--        android:textColor="#000000"-->
+    <!--        android:textColorHint="#74768f"-->
+    <!--        android:windowSoftInputMode="adjustResize"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toStartOf="@id/sendMessageButton"-->
 
-        android:layout_height="66dp"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/rounded_edit_text"
-        android:elevation="8dp"
-        android:fontFamily="@font/light"
-        android:hint="@string/send_a_message"
-        android:inputType="text"
-        android:paddingHorizontal="12dp"
-        android:textColor="#000000"
-        android:textColorHint="#74768f"
-        android:windowSoftInputMode="adjustResize"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/sendMessageButton"
+    <!--        app:layout_constraintStart_toEndOf="@+id/sendFileButton" />-->
 
-        app:layout_constraintStart_toEndOf="@+id/sendFileButton" />
+    <!--    <ImageButton-->
+    <!--        android:id="@+id/sendImageButton"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="16dp"-->
+    <!--        android:layout_marginTop="23dp"-->
+    <!--        android:contentDescription="@string/send"-->
+    <!--        android:src="@drawable/ic_baseline_image_24"-->
+    <!--        android:text=""-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/messageChatRecyclerView" />-->
 
-    <ImageButton
-        android:id="@+id/sendImageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="23dp"
-        android:contentDescription="@string/send"
-        android:src="@drawable/ic_baseline_image_24"
-        android:text=""
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/messageChatRecyclerView" />
+    <!--    <ImageButton-->
+    <!--        android:id="@+id/sendFileButton"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="16dp"-->
+    <!--        android:layout_marginTop="23dp"-->
+    <!--        android:contentDescription="@string/send"-->
+    <!--        android:src="@drawable/ic_baseline_cloud_upload_24"-->
+    <!--        android:text=""-->
+    <!--        app:layout_constraintStart_toEndOf="@id/sendImageButton"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/messageChatRecyclerView" />-->
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/bottomMessageBar"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    <ImageButton
-        android:id="@+id/sendFileButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="23dp"
-        android:contentDescription="@string/send"
-        android:src="@drawable/ic_baseline_cloud_upload_24"
-        android:text=""
-        app:layout_constraintStart_toEndOf="@id/sendImageButton"
-        app:layout_constraintTop_toBottomOf="@+id/messageChatRecyclerView" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <soup.neumorphism.NeumorphFloatingActionButton
+                android:id="@+id/sendImageButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="12dp"
+                android:scaleType="center"
+                android:src="@drawable/ic_baseline_image_24"
+                android:tint="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:neumorph_shapeAppearance="@style/FABShape"
+                app:neumorph_shapeType="pressed" />
+
+            <soup.neumorphism.NeumorphFloatingActionButton
+                android:id="@+id/sendFileButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="12dp"
+                android:scaleType="center"
+                android:src="@drawable/ic_baseline_cloud_upload_24"
+                android:tint="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/sendImageButton"
+                app:layout_constraintTop_toTopOf="parent"
+                app:neumorph_shapeAppearance="@style/FABShape"
+                app:neumorph_shapeType="pressed" />
+
+            <soup.neumorphism.NeumorphFloatingActionButton
+                android:id="@+id/sendMessageButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="12dp"
+                android:scaleType="center"
+                android:src="@drawable/ic_baseline_send_24"
+                android:tint="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:neumorph_shapeAppearance="@style/FABShape"
+                app:neumorph_shapeType="pressed" />
+
+            <EditText
+                android:id="@+id/sendMessageEditText"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="6dp"
+                android:fontFamily="@font/light"
+                android:hint="@string/send_a_message"
+                android:inputType="text"
+                android:paddingHorizontal="12dp"
+                android:textColor="#000000"
+                android:textColorHint="#74768f"
+                android:windowSoftInputMode="adjustResize"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/sendMessageButton"
+                app:layout_constraintStart_toEndOf="@+id/sendFileButton"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </soup.neumorphism.NeumorphCardView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

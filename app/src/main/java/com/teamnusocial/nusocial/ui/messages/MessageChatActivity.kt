@@ -4,9 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
+
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
@@ -20,6 +21,7 @@ import kotlinx.android.synthetic.main.activity_message_chat.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 
@@ -28,6 +30,7 @@ class MessageChatActivity : AppCompatActivity() {
         private const val PICK_IMAGE_REQUEST = 71
         private const val PICK_FILE_REQUEST = 72
     }
+
     private lateinit var adapter: FirestoreRecyclerAdapter<TextMessage, MessageHolder>
     private lateinit var filePath: Uri
     private lateinit var messageID: String
@@ -36,8 +39,11 @@ class MessageChatActivity : AppCompatActivity() {
         setContentView(R.layout.activity_message_chat)
         messageID = intent.getStringExtra("messageID")!!
         val messageName = intent.getStringExtra("messageName")
-        topBarChat.title = messageName
 
+        messageNameTextView.text = messageName
+        messageBackButton.setOnClickListener {
+            this.onBackPressed()
+        }
         val firestoreUtils = FirestoreUtils()
         sendMessageButton.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
@@ -46,8 +52,12 @@ class MessageChatActivity : AppCompatActivity() {
                     sendMessageEditText.text.toString(),
                     MessageType.TEXT
                 )
+
+                withContext(Dispatchers.Main) {
+                    sendMessageEditText.setText("")
+                    messageChatRecyclerView.smoothScrollToPosition(messageChatRecyclerView.adapter!!.itemCount - 1)
+                }
             }
-            sendMessageEditText.setText("")
         }
         sendImageButton.setOnClickListener {
             val intent = Intent()
@@ -70,16 +80,35 @@ class MessageChatActivity : AppCompatActivity() {
 
         val query =
             firestoreUtils.getMessages(messageID!!).collection("messages")
-                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .orderBy("timestamp", Query.Direction.ASCENDING)
+
         adapter = MessageChatRecyclerViewAdapter(
             this, FirestoreRecyclerOptions.Builder<TextMessage>()
                 .setQuery(query, TextMessage::class.java)
                 .build()
         )
         val layoutManager = LinearLayoutManager(this)
-        layoutManager.reverseLayout = true
+        //layoutManager.reverseLayout = true
+        layoutManager.stackFromEnd = true
         messageChatRecyclerView.layoutManager = layoutManager
         messageChatRecyclerView.adapter = adapter
+
+        adapter.registerAdapterDataObserver(object : AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                val friendlyMessageCount: Int = adapter.itemCount
+                val lastVisiblePosition: Int =
+                    layoutManager.findLastCompletelyVisibleItemPosition()
+
+
+                if (lastVisiblePosition == -1 ||
+                    positionStart >= friendlyMessageCount - 1 &&
+                    lastVisiblePosition == positionStart - 1
+                ) {
+                    messageChatRecyclerView.smoothScrollToPosition(positionStart)
+                }
+            }
+        })
     }
 
     override fun onStart() {

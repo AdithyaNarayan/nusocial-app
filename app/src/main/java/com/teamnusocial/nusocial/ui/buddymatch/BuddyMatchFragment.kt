@@ -247,7 +247,7 @@ class BuddyMatchFragment : Fragment() {
             userRepo.createChatWith(currUser.uid)
             userRepo.sendAdminMessage(
                 userRepo.getMessageID(you, currUser),
-                "Hey! I matched with you through BuddyMatch!"
+                "Matched through BuddyMatch!"
             )
         }
     }

@@ -162,24 +162,34 @@ class UserRepository(private val utils: FirestoreUtils) {
     suspend fun createGroupChatWith(name: String, users: List<String>) =
         utils.createGroupChatWith(name, users)
 
-    suspend fun sendMessage(messageID: String, messageText: String, messageType: MessageType) = coroutineScope {
 
-        getUserAnd(utils.getCurrentUser()!!.uid) {
-            utils.getMessages(messageID).collection("messages")
-                .add(
-                    TextMessage(
-                        messageText,
-                        "",
-                        Timestamp.now(),
-                        it.uid,
-                        it.name,
-
-                        getOtherUserInMessage(messageID, it.uid),
-                        messageType
+    suspend fun sendMessage(messageID: String, messageText: String, messageType: MessageType) =
+        coroutineScope {
+            val str = when (messageType) {
+                MessageType.IMAGE -> "Image"
+                MessageType.FILE -> "File"
+                else -> messageText
+            }
+            //var fileName = if(str == "Image") "" else ""
+            getUserAnd(utils.getCurrentUser()!!.uid) {
+                utils.getMessages(messageID).collection("messages")
+                    .add(
+                        TextMessage(
+                            messageText,
+                            str,
+                            Timestamp.now(),
+                            it.uid,
+                            it.name,
+                            getOtherUserInMessage(messageID, it.uid),
+                            messageType
+                        )
                     )
-                )
+            }
+
+            utils.getMessages(messageID).update("latestMessage", str)
+            utils.getMessages(messageID).update("latestTime", Timestamp.now())
         }
-    }
+
 
     suspend fun makeInvisibleTo(userID: String, messageID: String) = coroutineScope {
         utils.getMessages(messageID).update("invisible", userID)
@@ -219,6 +229,10 @@ class UserRepository(private val utils: FirestoreUtils) {
                     MessageType.SYSTEM
                 )
             )
+
+        utils.getMessages(messageID).update("latestMessage", messageText)
+        utils.getMessages(messageID).update("latestTime", Timestamp.now())
+
     }
 
 }

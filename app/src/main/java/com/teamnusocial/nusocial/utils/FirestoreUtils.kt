@@ -1,5 +1,7 @@
 package com.teamnusocial.nusocial.utils
 
+
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.teamnusocial.nusocial.data.model.MessageConfig
@@ -89,7 +91,9 @@ class FirestoreUtils {
                                         currentUser.result!!["uid"] as String,
                                         currentUser.result!!["name"] as String
                                     )
-                                ), "", "", messageID
+
+                                ), "", "", "", Timestamp.now(), messageID
+
                             )
                         )
                 }
@@ -113,9 +117,13 @@ class FirestoreUtils {
 
     private fun notifyUpdateOfList(name: String, list: List<MyPair>, size: Int) {
         if (list.size == size) {
-            firestoreInstance.collection("messagesChannel").add(MessageConfig(list.toMutableList(), "", name, "")).addOnSuccessListener { ref ->
-                ref.update("id", ref.id)
-            }
+
+            firestoreInstance.collection("messagesChannel")
+                .add(MessageConfig(list.toMutableList(), "", name, "", Timestamp.now(), "")).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        it.result!!.update("id", it.result!!.id)
+                    }
+                }
         }
     }
 }

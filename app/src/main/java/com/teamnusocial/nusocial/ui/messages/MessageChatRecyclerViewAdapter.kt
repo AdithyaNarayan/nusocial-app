@@ -12,9 +12,11 @@ import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.MessageType
 import com.teamnusocial.nusocial.data.model.TextMessage
+import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import com.teamnusocial.nusocial.utils.getTimeAgo
+import jp.wasabeef.picasso.transformations.MaskTransformation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -67,35 +69,54 @@ class MessageChatRecyclerViewAdapter(
         when (model.messageType) {
             MessageType.TEXT -> {
                 holder.messageText.text = model.messageText
-                if (model.sender == FirestoreUtils().getCurrentUser()!!.uid) {
-                    holder.sender.text = context.getString(R.string.you)
-                } else {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        FirestoreUtils().getUserAsDocument(model.sender).get()
-                            .addOnCompleteListener {
-                                holder.sender.text = it.result!!["name"] as String
-                            }
+                CoroutineScope(Dispatchers.IO).launch {
+                    UserRepository(FirestoreUtils()).getUserAnd(model.sender) {
+                        Picasso
+                            .get()
+                            .load(it.profilePicturePath)
+                            .resize(30, 30)
+                            .transform(
+                                MaskTransformation(
+                                    context,
+                                    R.drawable.round_rect_transformation
+                                )
+                            )
+                            .into(holder.sender)
                     }
                 }
                 holder.timestamp.text = getTimeAgo(model.timestamp.seconds)
             }
             MessageType.IMAGE -> {
-                Picasso.get().load(model.messageText)
-                    .into(holder.messageImage)
-                if (model.sender == FirestoreUtils().getCurrentUser()!!.uid) {
-                    holder.sender.text = context.getString(R.string.you)
-                } else {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        FirestoreUtils().getUserAsDocument(model.sender).get()
-                            .addOnCompleteListener {
-                                holder.sender.text = it.result!!["name"] as String
-                            }
+                    Picasso.get().load(model.messageText).resize(240, 180)
+                        .transform(
+                            MaskTransformation(
+                                context,
+                                R.drawable.round_rect_transformation
+                            )
+                        )
+                        .into(holder.messageImage)
+
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    UserRepository(FirestoreUtils()).getUserAnd(model.sender) {
+                        Picasso
+                            .get()
+                            .load(it.profilePicturePath)
+                            .resize(30, 30)
+                            .transform(
+                                MaskTransformation(
+                                    context,
+                                    R.drawable.round_rect_transformation
+                                )
+                            )
+                            .into(holder.sender)
                     }
                 }
+
                 holder.timestamp.text = getTimeAgo(model.timestamp.seconds)
             }
             MessageType.FILE -> {
-                val title = getTitle(model.fileName)
+                val title = getTitle(model.messageText)
                 holder.downloadFileButton.setOnClickListener {
                     val request = DownloadManager.Request(Uri.parse(model.messageText))
 
@@ -109,16 +130,22 @@ class MessageChatRecyclerViewAdapter(
                         )
                 }
                 holder.messageText.text = title
-                if (model.sender == FirestoreUtils().getCurrentUser()!!.uid) {
-                    holder.sender.text = context.getString(R.string.you)
-                } else {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        FirestoreUtils().getUserAsDocument(model.sender).get()
-                            .addOnCompleteListener {
-                                holder.sender.text = it.result!!["name"] as String
-                            }
+                CoroutineScope(Dispatchers.IO).launch {
+                    UserRepository(FirestoreUtils()).getUserAnd(model.sender) {
+                        Picasso
+                            .get()
+                            .load(it.profilePicturePath)
+                            .resize(30, 30)
+                            .transform(
+                                MaskTransformation(
+                                    context,
+                                    R.drawable.round_rect_transformation
+                                )
+                            )
+                            .into(holder.sender)
                     }
                 }
+
                 holder.timestamp.text = getTimeAgo(model.timestamp.seconds)
             }
             MessageType.SYSTEM -> {
@@ -127,7 +154,8 @@ class MessageChatRecyclerViewAdapter(
         }
     }
 
-    private fun getTitle(url: String): String = url
+
+    private fun getTitle(url: String): String = "File name"
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position).messageType) {

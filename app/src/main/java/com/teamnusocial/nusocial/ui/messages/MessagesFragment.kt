@@ -8,17 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.firestore.ktx.toObject
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.MessageConfig
-import com.teamnusocial.nusocial.data.model.User
-import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.android.synthetic.main.fragment_messages.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 class MessagesFragment : Fragment() {
 
@@ -49,7 +48,7 @@ class MessagesFragment : Fragment() {
         CoroutineScope(Dispatchers.Main).launch {
             FirestoreUtils().getUserAsDocument(FirestoreUtils().getCurrentUser()!!.uid).get()
                 .addOnCompleteListener {
-                    CoroutineScope(Dispatchers.Main).launch {
+                    CoroutineScope( Dispatchers.Main).launch {
                         updateMessages(
                             Pair(
                                 it.result!!["uid"] as String,
@@ -89,6 +88,7 @@ class MessagesFragment : Fragment() {
     }
 
     private suspend fun updateMessages(pair: Pair<String, String>) = coroutineScope {
+        list.clear()
         FirestoreUtils().getMessagesOfUser(pair).get()
             .addOnCompleteListener {
                 it.result!!.documents.forEach { document ->
@@ -103,6 +103,7 @@ class MessagesFragment : Fragment() {
                     return@forEach
                 }
                 Log.d("MESSAGES", list.toString())
+                list.sortWith(Comparator { obj1, obj2 -> obj2.latestTime.compareTo(obj1.latestTime) })
                 updateRecyclerView(list)
             }
     }

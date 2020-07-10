@@ -6,15 +6,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.teamnusocial.nusocial.R
+import soup.neumorphism.NeumorphFloatingActionButton
 
 
 class MessageHolder(itemView: View, viewType: Int) : RecyclerView.ViewHolder(itemView) {
 
-    lateinit var sender: TextView
+    lateinit var sender: ImageView
     lateinit var timestamp: TextView
     lateinit var messageText: TextView
     lateinit var messageImage: ImageView
-    lateinit var downloadFileButton: Button
+    lateinit var downloadFileButton: NeumorphFloatingActionButton
 
     companion object {
         const val MESSAGE_IN_TEXT_VIEW_TYPE = 1

@@ -16,4 +16,5 @@ data class TextMessage(
 ) {
     constructor() : this("","File Name", Timestamp(0, 0), "", "", "", MessageType.TEXT)
 
+
 }
