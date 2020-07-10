@@ -169,6 +169,7 @@ class UserRepository(private val utils: FirestoreUtils) {
                 .add(
                     TextMessage(
                         messageText,
+                        "",
                         Timestamp.now(),
                         it.uid,
                         it.name,
@@ -207,6 +208,7 @@ class UserRepository(private val utils: FirestoreUtils) {
             .add(
                 TextMessage(
                     messageText,
+                    "",
                     Timestamp.now(),
                     utils.getCurrentUser()!!.uid,
                     "",

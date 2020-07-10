@@ -89,7 +89,7 @@ class FirestoreUtils {
                                         currentUser.result!!["uid"] as String,
                                         currentUser.result!!["name"] as String
                                     )
-                                ), "", ""
+                                ), "", "", messageID
                             )
                         )
                 }
@@ -113,7 +113,9 @@ class FirestoreUtils {
 
     private fun notifyUpdateOfList(name: String, list: List<MyPair>, size: Int) {
         if (list.size == size) {
-            firestoreInstance.collection("messagesChannel").add(MessageConfig(list.toMutableList(), "", name))
+            firestoreInstance.collection("messagesChannel").add(MessageConfig(list.toMutableList(), "", name, "")).addOnSuccessListener { ref ->
+                ref.update("id", ref.id)
+            }
         }
     }
 }

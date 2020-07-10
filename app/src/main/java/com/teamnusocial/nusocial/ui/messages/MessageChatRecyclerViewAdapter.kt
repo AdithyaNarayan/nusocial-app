@@ -95,7 +95,7 @@ class MessageChatRecyclerViewAdapter(
                 holder.timestamp.text = getTimeAgo(model.timestamp.seconds)
             }
             MessageType.FILE -> {
-                val title = getTitle(model.messageText)
+                val title = getTitle(model.fileName)
                 holder.downloadFileButton.setOnClickListener {
                     val request = DownloadManager.Request(Uri.parse(model.messageText))
 
@@ -127,7 +127,7 @@ class MessageChatRecyclerViewAdapter(
         }
     }
 
-    private fun getTitle(url: String): String = "File name"
+    private fun getTitle(url: String): String = url
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position).messageType) {

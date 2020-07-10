@@ -6,6 +6,7 @@ enum class MessageType {
 }
 data class TextMessage(
     val messageText: String,
+    val fileName: String,
     val timestamp: Timestamp,
     val sender: String,
     val senderName: String,
@@ -13,6 +14,6 @@ data class TextMessage(
     val receiver: String,
     val messageType: MessageType
 ) {
-    constructor() : this("", Timestamp(0, 0), "", "", "", MessageType.TEXT)
+    constructor() : this("","File Name", Timestamp(0, 0), "", "", "", MessageType.TEXT)
 
 }
