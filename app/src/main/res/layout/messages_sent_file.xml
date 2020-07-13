@@ -16,7 +16,7 @@
         android:layout_marginEnd="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:neumorph_shapeType="flat">
+        app:neumorph_shapeType="pressed">
 
         <ImageView
             android:id="@+id/messageSender"

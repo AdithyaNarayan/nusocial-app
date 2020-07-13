@@ -1,30 +1,30 @@
 package com.teamnusocial.nusocial.ui.buddymatch
 
-import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
+import com.teamnusocial.nusocial.data.model.User
 
-class Adapter(private val urls: ArrayList<String>) : RecyclerView.Adapter<Adapter.ImageHolder>() {
-    class ImageHolder(val layoutView: ConstraintLayout): RecyclerView.ViewHolder(layoutView)
+class BuddyMatchAdapter(private val data: List<User>, private val currUser: User) :
+    RecyclerView.Adapter<BuddyMatchViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder {
-        val layoutView = LayoutInflater.from(parent.context).inflate(R.layout.buddymatch_img, parent, false) as ConstraintLayout
-        return ImageHolder(layoutView)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BuddyMatchViewHolder {
+        val itemView = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_buddymatch, parent, false)
+        return BuddyMatchViewHolder(parent.context, itemView)
     }
-    override fun onBindViewHolder(holder: ImageHolder, position: Int) {
-        Picasso.get().load(urls[position]).into(holder.layoutView.findViewById(R.id.buddy_img) as ImageView)
+
+    override fun onBindViewHolder(holder: BuddyMatchViewHolder, position: Int) {
+        if (position == 0) {
+            holder.mainView.setPadding(172, 0, 0, 0)
+        }
+        if (position == data.lastIndex) {
+            holder.mainView.setPadding(0, 0, 172, 0)
+        }
+        holder.bindUser(data[position], currUser)
     }
 
-    override fun getItemCount() = urls.size
+    override fun getItemCount() = data.size
 
 }

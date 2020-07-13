@@ -13,6 +13,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import soup.neumorphism.NeumorphCardView
+import soup.neumorphism.ShapeType
 
 class GroupChatSelectorActivity : AppCompatActivity() {
     val data = mutableListOf<User>()
@@ -35,7 +37,9 @@ class GroupChatSelectorActivity : AppCompatActivity() {
         createChatButton.setOnClickListener {
             val groupName = groupNameEditText.text.toString()
             CoroutineScope(Dispatchers.IO).launch {
-                repository.createGroupChatWith(groupName, getSelectedList())            }
+                repository.createGroupChatWith(groupName, getSelectedList())
+            }
+            this.onBackPressed()
         }
     }
 
@@ -52,7 +56,7 @@ class GroupChatSelectorActivity : AppCompatActivity() {
         val list = mutableListOf(FirestoreUtils().getCurrentUser()!!.uid)
         (0 until data.size).forEach {
             if (userSelectorRecyclerView.layoutManager!!.findViewByPosition(it)!!
-                    .findViewById<CheckBox>(R.id.userSelectorCheckBox).isChecked
+                    .findViewById<NeumorphCardView>(R.id.userCardCheckable).getShapeType() == ShapeType.PRESSED
             ) {
                 list.add(data[it].uid)
             }

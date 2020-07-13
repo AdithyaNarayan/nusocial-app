@@ -99,26 +99,27 @@ class FirestoreUtils {
 
     }
 
-    suspend fun createGroupChatWith(name: String, users: List<String>) = coroutineScope {
+    suspend fun createGroupChatWith(name: String, users: List<String>, onComplete: (String) -> Unit) = coroutineScope {
 
         val list = mutableListOf<MyPair>()
 
         users.forEach { userID ->
             getUserAsDocument(userID).get().addOnSuccessListener {
                 list.add(MyPair(userID, it["name"] as String))
-                notifyUpdateOfList(name, list, users.size)
+                notifyUpdateOfList(name, list, users.size, onComplete)
             }
         }
 
     }
 
-    private fun notifyUpdateOfList(name: String, list: List<MyPair>, size: Int) {
+    private fun notifyUpdateOfList(name: String, list: List<MyPair>, size: Int, onComplete: (String) -> Unit) {
         if (list.size == size) {
             firestoreInstance.collection("messagesChannel")
                 .add(MessageConfig(list.toMutableList(), "", name, "", Timestamp.now(), "")).addOnCompleteListener {
                     if (it.isSuccessful) {
                         it.result!!.update("id", it.result!!.id)
                     }
+                    onComplete(it.result!!.id)
                 }
         }
     }
