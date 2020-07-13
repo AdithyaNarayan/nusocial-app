@@ -1,6 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="350dp"
+    android:clipChildren="false"
+    android:id="@+id/buddymatchParent"
+    android:layout_height="650dp"
+    android:layout_gravity="center">
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/buddymatchCard"
+        android:layout_width="match_parent"
+        android:layout_height="550dp"
+        android:layout_marginBottom="12dp"
+        android:backgroundTint="#EBECF0"
+        android:elevation="8dp"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        app:cardCornerRadius="36dp"
+        app:cardElevation="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/buddymatchImageWrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#EBECF0"
+                android:elevation="12dp"
+                app:cardCornerRadius="36dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints">
+
+                <ImageView
+                    android:id="@+id/buddymatchImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/matched_modules_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Matched modules"
+                android:textColor="#606968"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/curr_year_buddymatch" />
+
+            <TextView
+                android:id="@+id/curr_year_buddymatch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="NA"
+                android:textColor="#606968"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/major_buddymatch" />
+
+            <TextView
+                android:id="@+id/major_buddymatch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="No major"
+                android:textColor="#5F6968"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/name_buddymatch" />
+
+            <TextView
+                android:id="@+id/name_buddymatch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|top"
+                android:fontFamily="@font/bold"
+                android:maxWidth="300dp"
+                android:paddingTop="10dp"
+                android:text="@string/blank"
+                android:textColor="#636687"
+                android:textSize="30sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buddymatchImageWrapper" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/matched_modules_buddymatch"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:scrollbars="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/matched_modules_title" />
+
+            <soup.neumorphism.NeumorphButton
+                android:id="@+id/match_button"
+                style="@style/Widget.Neumorph.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/match"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:neumorph_backgroundColor="#E7E8ED"
+                app:neumorph_shadowColorLight="#F7F8FC"
+                tools:layout_editor_absoluteY="500dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

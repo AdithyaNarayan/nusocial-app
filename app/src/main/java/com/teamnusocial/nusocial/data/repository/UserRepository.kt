@@ -167,7 +167,9 @@ class UserRepository(private val utils: FirestoreUtils) {
 
 
     suspend fun createGroupChatWith(name: String, users: List<String>) =
-        utils.createGroupChatWith(name, users)
+        utils.createGroupChatWith(name, users) {
+            sendAdminMessage(it, "Group Created")
+        }
 
 
     suspend fun sendMessage(messageID: String, messageText: String, messageType: MessageType) =

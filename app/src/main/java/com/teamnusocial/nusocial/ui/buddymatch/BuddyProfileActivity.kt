@@ -18,9 +18,9 @@ class BuddyProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_buddy_profile)
 
         /**top bar**/
-        val toolBar: Toolbar = findViewById(R.id.toolbarMoreInfo)
+        /*val toolBar: Toolbar = findViewById(R.id.toolbarMoreInfo)
         setSupportActionBar(toolBar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)*/
         /**fetch data**/
         val userImg = intent.getStringExtra("USER_IMG")
         val userName = intent.getStringExtra("USER_NAME")

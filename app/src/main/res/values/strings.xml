@@ -38,5 +38,6 @@
     <string name="group_name">Group Name</string>
 
     <string name="blank">--blank--</string>
+    <string name="match">Match</string>
 
 </resources>

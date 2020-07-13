@@ -31,6 +31,7 @@
             style="@style/Widget.Neumorph.Button"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:padding="5dp"
             android:src="@drawable/ic_baseline_arrow_back__black_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

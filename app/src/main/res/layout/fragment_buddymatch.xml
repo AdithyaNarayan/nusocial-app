@@ -11,8 +11,7 @@
    >
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/match_swipe"
+<!--<<<<<<< HEAD
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -20,5 +19,18 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+=======-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/match_swipe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:clipToPadding="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-->>>>>>> 468e138ba6f94aff7abd2891aef6d7b926b728c8-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

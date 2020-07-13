@@ -9,8 +9,8 @@ import kotlinx.coroutines.coroutineScope
 
 class BuddyMatchViewModel : ViewModel() {
     var matchedUsers: MutableLiveData<MutableList<User>> = MutableLiveData(mutableListOf())
+    var images: MutableList<String> = mutableListOf()
     var you: MutableLiveData<User> = MutableLiveData(User())
-
     fun updateMatchedUsers(list: MutableList<User>) {
         matchedUsers.value = list.toMutableList()
         if (list.size > 0) {

@@ -43,9 +43,11 @@ class EditPostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_post)
 
-        setSupportActionBar(toolbar_edit_post)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
+        //setSupportActionBar(toolbar_edit_post)
+        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        back_button.setOnClickListener {
+            finish()
+        }
         postData = intent.getParcelableExtra("POST_DATA")
         owner = intent.getParcelableExtra("OWNER_DATA")
         you = intent.getParcelableExtra("USER_DATA")
@@ -188,15 +190,5 @@ class EditPostActivity : AppCompatActivity() {
                     Log.d("TEST_IMG_HERE", "HOW THE FUCK")
                 }
             }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 }
