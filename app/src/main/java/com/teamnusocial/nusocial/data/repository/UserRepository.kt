@@ -34,6 +34,13 @@ class UserRepository(private val utils: FirestoreUtils) {
         }.await()
         userList
     }
+    suspend fun getListOfUsers(listOfIDs: MutableList<String>)  = coroutineScope {
+        var listOfUsers = mutableListOf<User>()
+        utils.getAllUsers().whereIn("uid", listOfIDs).get().addOnSuccessListener { querySnapshot ->
+            querySnapshot.forEach({user -> listOfUsers.add(user.toObject(User::class.java)!!)} )
+        }.await()
+        listOfUsers
+    }
 
     suspend fun updateCurrentLocation(location: Location, cluster: String) = coroutineScope {
         utils

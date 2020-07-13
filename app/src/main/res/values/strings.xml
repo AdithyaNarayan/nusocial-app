@@ -15,7 +15,7 @@
     <string name="login_with_nusnet">Login with NUSNET</string>
     <string name="cancel">Cancel</string>
     <string name="title_activity_test">MainActivity</string>
-    <string name="title_buddymatch">BuddyMatch</string>
+    <string name="title_buddymatch">Matching</string>
     <string name="title_broadcast">Broadcast</string>
     <string name="title_community">Community</string>
     <string name="title_messages">Messages</string>

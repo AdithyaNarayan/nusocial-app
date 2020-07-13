@@ -2,6 +2,7 @@ package com.teamnusocial.nusocial.ui.community
 
 import android.content.Context
 import android.content.Intent
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -118,6 +119,7 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
 
         /**owner handling**/
         postOwnerName.text = owner.name
+        postOwnerName.movementMethod = ScrollingMovementMethod()
         Picasso.get().load(owner.profilePicturePath)
             .into(avatar)
         avatar.setOnClickListener {

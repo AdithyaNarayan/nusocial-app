@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
+        <!--<androidx.appcompat.widget.Toolbar
             android:id="@+id/tool_single_community"
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
@@ -24,14 +24,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:theme="@style/ToolBarStyle"
-            app:titleTextColor="@color/black" />
+            app:titleTextColor="@color/black" />-->
+
+        <soup.neumorphism.NeumorphImageButton
+            android:id="@+id/back_button"
+            style="@style/Widget.Neumorph.Button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_baseline_arrow_back__black_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.teamnusocial.nusocial.ui.you.CustomSpinner
             android:id="@+id/single_comm_dropdown"
             style="@style/Widget.AppCompat.Spinner"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginEnd="12dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/ic_general_dropdown"
             android:dropDownWidth="200dp"
             android:dropDownVerticalOffset="?attr/dropdownListPreferredItemHeight"
@@ -39,23 +48,9 @@
             android:popupBackground="@color/orange"
             android:popupElevation="3dp"
             android:stateListAnimator="@drawable/spinner_sla"
-            app:layout_constraintBottom_toBottomOf="@+id/tool_single_community"
-            app:layout_constraintEnd_toEndOf="@+id/tool_single_community"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/comm_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/orange"
-            android:padding="10dp"
-            android:text="--Name of Community--"
-            android:textColor="@color/black"
-            android:textSize="25dp"
-            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/community_cover_pic"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/community_cover_pic" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/all_posts_single_comm"
@@ -71,13 +66,10 @@
             layout="@layout/post_create"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/comm_name" />
+            app:layout_constraintTop_toBottomOf="@+id/community_cover_pic" />
 
         <ImageView
             android:id="@+id/community_cover_pic"
@@ -85,9 +77,31 @@
             android:layout_height="250dp"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tool_single_community" />
+            app:layout_constraintTop_toBottomOf="@+id/back_button" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/image_shadow"
+            app:layout_constraintBottom_toTopOf="@+id/create_new_post"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/comm_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="--Blank--"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toBottomOf="@+id/view2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/view2" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/loading_cover"

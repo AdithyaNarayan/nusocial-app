@@ -76,10 +76,10 @@ class SingleCommunityActivity : AppCompatActivity() {
         viewModel.you = intent.getParcelableExtra("USER_DATA")!!
 
         /**top bar**/
-        val toolBar: Toolbar = findViewById(R.id.tool_single_community)
+       /* val toolBar: Toolbar = findViewById(R.id.tool_single_community)
         toolBar.title = currCommData.name
         setSupportActionBar(toolBar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)*/
 
         val query =
             FirebaseFirestore.getInstance().collection("communities").document(currCommData.id).collection("posts").orderBy("timeStamp", Query.Direction.DESCENDING)
@@ -98,6 +98,9 @@ class SingleCommunityActivity : AppCompatActivity() {
         }
         //Log.d("TEST_PIC", currCommData.coverImageUrl)
         comm_name.text = currCommData.name
+        back_button.setOnClickListener {
+            finish()
+        }
         setUpDropDown()
         setUpCreateNewPost()
         var layoutManager = LinearLayoutManager(this)
@@ -191,7 +194,7 @@ class SingleCommunityActivity : AppCompatActivity() {
     }
     fun setUpTypeOptions() {
         val listOfType = arrayOf("Question","Sharing","Discussion","Poll","Announcement")
-        val arrayAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listOfType)
+        val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listOfType)
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         post_type_dropdown.adapter = arrayAdapter
 
@@ -374,8 +377,6 @@ class SingleCommunityActivity : AppCompatActivity() {
                 currCommData = utils.getCommunityAsObject(currCommData.id)
                 viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
                 withContext(Dispatchers.Main) {
-                    val toolBar: Toolbar = findViewById(R.id.tool_single_community)
-                    toolBar.title = currCommData.name
                     updateUI()
                     spin_kit.visibility = View.GONE
                     loading_cover.visibility = View.GONE
@@ -410,15 +411,6 @@ class SingleCommunityActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         if (this::allPostAdapter.isInitialized) allPostAdapter.stopListening()
-    }
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     fun addKeyboardToggleListener(onKeyboardToggleAction: (shown: Boolean) -> Unit): KeyboardToggleListener? {

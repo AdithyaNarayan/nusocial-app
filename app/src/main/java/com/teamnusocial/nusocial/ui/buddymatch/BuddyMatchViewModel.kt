@@ -8,9 +8,6 @@ import com.teamnusocial.nusocial.data.model.User
 import kotlinx.coroutines.coroutineScope
 
 class BuddyMatchViewModel : ViewModel() {
-
-    val images: ArrayList<String> = arrayListOf()
-
     var matchedUsers: MutableLiveData<MutableList<User>> = MutableLiveData(mutableListOf())
     var you: MutableLiveData<User> = MutableLiveData(User())
 

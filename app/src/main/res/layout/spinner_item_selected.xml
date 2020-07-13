@@ -6,4 +6,5 @@
     android:layout_height="?attr/dropdownListPreferredItemHeight"
     android:background="@drawable/abc_spinner_mtrl_am_alpha"
     android:ellipsize="marquee"
+    android:textAlignment="center"
     android:singleLine="true" />

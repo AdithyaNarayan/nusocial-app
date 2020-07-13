@@ -62,13 +62,12 @@ class MessagesRecyclerViewAdapter(
             Picasso
                 .get()
                 .load(url)
-                .resize(56, 56)
-                .transform(
+                /*.transform(
                     MaskTransformation(
                         context,
                         R.drawable.round_rect_transformation
                     )
-                )
+                )*/
                 .into(holder.profilePictureImageView)
         } else {
             CoroutineScope(Dispatchers.IO).launch {
