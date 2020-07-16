@@ -1,12 +1,9 @@
 package com.teamnusocial.nusocial.ui.you
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
@@ -20,9 +17,16 @@ import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.buddymatch.MaskTransformation
 import com.teamnusocial.nusocial.ui.buddymatch.ModulesAdapter
-import com.teamnusocial.nusocial.ui.community.SingleCommunityActivity
 import com.teamnusocial.nusocial.utils.FirestoreUtils
+import kotlinx.android.synthetic.main.activity_other_user.*
 import kotlinx.android.synthetic.main.fragment_you.*
+import kotlinx.android.synthetic.main.fragment_you.communities_in
+import kotlinx.android.synthetic.main.fragment_you.course_you
+import kotlinx.android.synthetic.main.fragment_you.modules_taking
+import kotlinx.android.synthetic.main.fragment_you.number_of_buddies_you
+import kotlinx.android.synthetic.main.fragment_you.year_you
+import kotlinx.android.synthetic.main.fragment_you.you_image
+import kotlinx.android.synthetic.main.fragment_you.you_name
 import kotlinx.coroutines.launch
 
 class OtherUserActivity : AppCompatActivity() {
@@ -34,11 +38,9 @@ class OtherUserActivity : AppCompatActivity() {
         /**fetch data**/
         viewModel = ViewModelProvider(this).get(YouViewModel::class.java)
         val userID = intent.getStringExtra("USER_ID")
-        /**set up toolbar**/
-        val toolBar: Toolbar = findViewById(R.id.toolbar_other_user)
-        toolBar.title = "User"
-        setSupportActionBar(toolBar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        back_button_other_user.setOnClickListener {
+            finish()
+        }
         /**loading components**/
         val spin_kit_you = findViewById<SpinKitView>(R.id.spin_kit)!!
         val bg_cover = findViewById<CardView>(R.id.loading_cover)!!
@@ -68,9 +70,9 @@ class OtherUserActivity : AppCompatActivity() {
         Picasso
             .get()
             .load(viewModel.you.profilePicturePath)
-            .centerCrop()
-            .transform(MaskTransformation(this, R.drawable.more_info_img_frame))
-            .fit()
+            //.centerCrop()
+            //.transform(MaskTransformation(this, R.drawable.more_info_img_frame))
+            //.fit()
             .into(you_image)
         you_name.text = viewModel.you.name
         course_you.text = viewModel.you.courseOfStudy
@@ -91,21 +93,8 @@ class OtherUserActivity : AppCompatActivity() {
         modules_taking.adapter = modulesAdapter
 
         /**All other communities**/
-        var communityAdapter = CommunityItemAdapter(viewModel.otherCommunities, this)
-        communityAdapter.setClickListener(object : CommunityItemAdapter.ItemClickListener {
-            override fun onItemClick(view: View?, position: Int) {
-            }
-        })
+        var communityAdapter = CommunityItemAdapter(viewModel.otherCommunities, this, User())
         communities_in.adapter = communityAdapter
         /****/
-    }
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 }

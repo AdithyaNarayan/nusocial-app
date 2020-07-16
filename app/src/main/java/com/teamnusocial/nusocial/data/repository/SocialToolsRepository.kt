@@ -5,6 +5,7 @@ import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.storage.FirebaseStorage
 import com.teamnusocial.nusocial.data.model.*
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.coroutines.CoroutineScope
@@ -193,8 +194,16 @@ class SocialToolsRepository(val utils: FirestoreUtils) {
                 Log.d("DELETE_COMMENT", "FAILED")
             }
     }
-
-    suspend fun deletePost(commID: String, postID: String) = coroutineScope {
+    fun deleteFilesOfPost(postID: String, images: MutableList<String>, files: MutableList<String>) {
+        for(image in images) {
+            FirebaseStorage.getInstance().getReference("post_images/${image}").delete()
+        }
+        for(file in files) {
+            FirebaseStorage.getInstance().getReference("post_files/${postID}/${file}").delete()
+        }
+    }
+    suspend fun deletePost(commID: String, postID: String, images: MutableList<String>, files: MutableList<String>) = coroutineScope {
+        deleteFilesOfPost(postID,images, files)
         utils.getAllPosts(commID).document(postID).delete()
             .addOnSuccessListener {
                 Log.d("DELETE_POST", "SUCCESS")

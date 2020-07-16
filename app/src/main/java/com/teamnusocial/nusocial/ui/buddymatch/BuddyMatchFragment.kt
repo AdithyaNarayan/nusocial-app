@@ -4,6 +4,7 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -235,18 +236,25 @@ class BuddyMatchFragment : Fragment() {
         if (filteredAllUsers.size == 0) {
             buddyMatchViewModel.images.add("https://i7.pngflow.com/pngimage/455/105/png-anonymity-computer-icons-anonymous-user-anonymous-purple-violet-logo-smiley-clipart.png")
         }
-
-        val adapter = Adapter(filteredAllUsers, you, requireContext())
-        swipeView.adapter = adapter
-        if(filteredAllUsers.size > 0) {
-            Handler().postDelayed({
-                val card =
-                    swipeView.findViewHolderForAdapterPosition(0)?.itemView?.findViewById<CardView>(
-                        R.id.card_wrapper
-                    )!!
-                card.animate().setDuration(300).scaleX(0.95F).scaleY(0.95F)
-                    .setInterpolator(AccelerateInterpolator()).start()
-            }, 1000)
+        try {
+            val adapter = Adapter(filteredAllUsers, you, requireContext())
+            swipeView.adapter = adapter
+            if (filteredAllUsers.size > 0) {
+                Handler().postDelayed({
+                    try {
+                        val card =
+                            swipeView.findViewHolderForAdapterPosition(0)?.itemView?.findViewById<CardView>(
+                                R.id.card_wrapper
+                            )!!
+                        card.animate().setDuration(300).scaleX(0.95F).scaleY(0.95F)
+                            .setInterpolator(AccelerateInterpolator()).start()
+                    } catch (e: Exception) {
+                        Log.d("ERROR", e.message.toString())
+                    }
+                }, 1000)
+            }
+        } catch (e: Exception) {
+            Log.d("ERROR", e.message.toString())
         }
 //        swipeView.setPadding(120, 0, 120, 0)
 

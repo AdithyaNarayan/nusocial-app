@@ -20,7 +20,7 @@ internal class OffsetHelperHorizontal(private val mBottomOffset: Int) : Recycler
             outRect.set(mBottomOffset, 0, 0, 0)
         }
         else {
-            outRect.set(0, 0, 0, 0)
+            outRect.set(mBottomOffset, 0, 0, 0)
         }
     }
 

@@ -15,24 +15,24 @@ class CustomSpinner : androidx.appcompat.widget.AppCompatSpinner {
         attrs: AttributeSet?,
         defStyleAttr: Int,
         mode: Int
-    ) : super(context, attrs, defStyleAttr, mode) {
+    ) : super(context!!, attrs, defStyleAttr, mode) {
     }
 
     constructor(
         context: Context?,
         attrs: AttributeSet?,
         defStyleAttr: Int
-    ) : super(context, attrs, defStyleAttr) {
+    ) : super(context!!, attrs, defStyleAttr) {
     }
 
     constructor(context: Context?, attrs: AttributeSet?) : super(
-        context,
+        context!!,
         attrs
     ) {
     }
 
-    constructor(context: Context?, mode: Int) : super(context, mode) {}
-    constructor(context: Context?) : super(context) {}
+    constructor(context: Context?, mode: Int) : super(context!!, mode) {}
+    constructor(context: Context?) : super(context!!) {}
 
     interface OnSpinnerEventsListener {
         fun onSpinnerOpened()

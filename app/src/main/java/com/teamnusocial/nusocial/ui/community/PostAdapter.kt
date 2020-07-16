@@ -3,6 +3,7 @@ package com.teamnusocial.nusocial.ui.community
 import android.content.Context
 import android.content.Intent
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
@@ -58,6 +60,7 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
         val postOwnerName = holder.layoutView.findViewById<TextView>(R.id.post_owner_name)
         val avatar = holder.layoutView.findViewById<CircleImageView>(R.id.profile_image)
         val imageSlider = holder.layoutView.findViewById<RecyclerView>(R.id.old_images_slider)
+        val fileSlider = holder.layoutView.findViewById<RecyclerView>(R.id.new_images_slider)
         val dropdown_options = holder.layoutView.findViewById<CustomSpinner>(R.id.post_options)
         val comment_button = holder.layoutView.findViewById<Button>(R.id.comment_button)
         val like_button = holder.layoutView.findViewById<CheckBox>(R.id.like_button)
@@ -80,7 +83,7 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
             type_of_post.text = "Question"
         }
 
-        /**set up image slider**/
+        /**set up image and file slider**/
         val postImageAdapter =
             PostImageAdapter(currPost.imageList)
         val childLayoutManager = LinearLayoutManager(
@@ -90,6 +93,13 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
             adapter = postImageAdapter
             setRecycledViewPool(viewPool)
         }
+        val postFileAdapter =
+            PostFileEditAdapter(currPost.videoList.map{item -> item.toUri()}.toMutableList(),false,false, currPost.id,context_)
+        val childLayoutManager_forFiles = LinearLayoutManager(
+            context_, RecyclerView.HORIZONTAL, false)
+        fileSlider.layoutManager = childLayoutManager_forFiles
+        fileSlider.adapter = postFileAdapter
+
         like_button.isChecked = model.userLikeList.contains(you.uid)
         //Log.d("TEST_ID", "here is ${you.uid} ans ${like_button.isChecked}")
 
@@ -142,7 +152,7 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
                 ): View {
                     var res = super.getDropDownView(position, convertView, parent) as TextView
                     if (position == 0) {
-                        res.setBackgroundResource(R.drawable.centre_background)
+                        res.setBackgroundResource(R.drawable.centre_background_rect)
                     }
                     return res
                 }
@@ -194,8 +204,10 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
                             dropdown_options.setSelection(0)
                         }
                         "Delete" -> {
+                            var images = model.imageList.map { image -> extractImageName(image) }
+                            var files = model.videoList.map { file -> extractFileName(file) }
                             CoroutineScope(Dispatchers.IO).launch {
-                                utils.deletePost(commID, model.id)
+                                utils.deletePost(commID, model.id, images.toMutableList(), files.toMutableList())
                             }
                         }
                         else -> {
@@ -205,6 +217,33 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
 
             }
         } else dropdown_options.visibility = View.GONE
+    }
+    fun extractImageName(imagePath: String): String {
+        var startIndex = 0
+        var endIndex = 0
+        for(index in 0 until imagePath.length) {
+            if(imagePath[index] == '%') startIndex = index + 3
+            else if(imagePath[index] == '?') {
+                endIndex = index
+                break
+            }
+        }
+        return imagePath.substring(startIndex, endIndex)
+    }
+    fun extractFileName(url: String): String {
+        var start_index = 0
+        var end_index = 0
+        var count = 0
+        for (i in 0 until url.length) {
+            if (url[i] == '%') {
+                if (count == 0) count++;
+                else if (count == 1) start_index = i + 3;
+            } else if (url[i] == '?') {
+                end_index = i;
+                break;
+            }
+        }
+        return url.substring(start_index, end_index)
     }
     fun navigateToYouPage(userID: String) {
         val intent = Intent(context, OtherUserActivity::class.java)

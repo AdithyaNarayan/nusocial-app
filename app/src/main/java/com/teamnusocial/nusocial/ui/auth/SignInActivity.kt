@@ -6,9 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.EditText
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.github.ybq.android.spinkit.SpinKitView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.teamnusocial.nusocial.HomeActivity
@@ -91,8 +94,12 @@ class SignInActivity : AppCompatActivity(), KodeinAware {
         }
 
         viewModel = ViewModelProvider(this, factory).get(AuthViewModel::class.java)
+        val spin_kit = findViewById<SpinKitView>(R.id.spin_kit)!!
+        val bg_cover = findViewById<CardView>(R.id.loading_cover)!!
 
         continueSignInButton.setOnClickListener { _ ->
+            spin_kit.visibility = View.VISIBLE
+            bg_cover.visibility = View.VISIBLE
             val email = emailSignInEditText.text.toString()
             val password = passwordSignInEditText.text.toString()
 
@@ -106,6 +113,8 @@ class SignInActivity : AppCompatActivity(), KodeinAware {
                     .show()
             } else {
                 viewModel.signInUser(email, password).addOnCompleteListener {
+                    spin_kit.visibility = View.GONE
+                    bg_cover.visibility = View.GONE
                     if (it.isSuccessful) {
                         // move to next activity
                         Log.d("AUTH", "Sign In User Success")

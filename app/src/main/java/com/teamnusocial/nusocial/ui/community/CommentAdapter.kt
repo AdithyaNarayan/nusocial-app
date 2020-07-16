@@ -76,7 +76,7 @@ class CommentAdapter(val context_: Context, options: FirestoreRecyclerOptions<Co
                 ): View {
                     var res =  super.getDropDownView(position, convertView, parent) as TextView
                     if(position == 0) {
-                        res.setBackgroundResource(R.drawable.centre_background)
+                        res.setBackgroundResource(R.drawable.centre_background_rect)
                     }
                     return res
                 }

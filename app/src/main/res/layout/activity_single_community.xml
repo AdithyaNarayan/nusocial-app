@@ -27,7 +27,7 @@
             app:titleTextColor="@color/black" />-->
 
         <soup.neumorphism.NeumorphImageButton
-            android:id="@+id/back_button"
+            android:id="@+id/back_button_single_comm"
             style="@style/Widget.Neumorph.Button"
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -46,7 +46,6 @@
             android:dropDownWidth="200dp"
             android:dropDownVerticalOffset="?attr/dropdownListPreferredItemHeight"
             android:paddingEnd="14dp"
-            android:popupBackground="@color/orange"
             android:popupElevation="3dp"
             android:stateListAnimator="@drawable/spinner_sla"
             app:layout_constraintBottom_toTopOf="@+id/community_cover_pic"
@@ -80,7 +79,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/back_button" />
+            app:layout_constraintTop_toBottomOf="@+id/back_button_single_comm" />
 
         <View
             android:id="@+id/view2"

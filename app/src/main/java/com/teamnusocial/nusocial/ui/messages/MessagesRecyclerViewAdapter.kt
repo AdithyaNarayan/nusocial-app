@@ -75,13 +75,13 @@ class MessagesRecyclerViewAdapter(
                     Picasso
                         .get()
                         .load(it.profilePicturePath)
-                        .resize(56, 56)
-                        .transform(
+                       // .resize(56, 56)
+                       /* .transform(
                             MaskTransformation(
                                 context,
                                 R.drawable.round_rect_transformation
                             )
-                        )
+                        )*/
                         .into(holder.profilePictureImageView)
                 }
             }

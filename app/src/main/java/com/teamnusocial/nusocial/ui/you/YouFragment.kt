@@ -2,11 +2,9 @@ package com.teamnusocial.nusocial.ui.you
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.InputType
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -21,8 +19,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.ybq.android.spinkit.SpinKitView
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
@@ -32,7 +30,6 @@ import com.teamnusocial.nusocial.data.model.Module
 import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.auth.SignInActivity
-import com.teamnusocial.nusocial.ui.buddymatch.MaskTransformation
 import com.teamnusocial.nusocial.ui.buddymatch.ModulesAdapter
 import com.teamnusocial.nusocial.ui.community.SingleCommunityActivity
 import com.teamnusocial.nusocial.utils.CustomTextViewDialog
@@ -66,8 +63,12 @@ class YouFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        modules_taking.layoutManager = GridLayoutManager(context, 4)
-        communities_in.layoutManager = GridLayoutManager(context, 1)
+        var linearLayoutManager_for_modules = LinearLayoutManager(context)
+        linearLayoutManager_for_modules.orientation = LinearLayoutManager.HORIZONTAL
+        var linearLayoutManager_for_communities = LinearLayoutManager(context)
+        linearLayoutManager_for_communities.orientation = LinearLayoutManager.HORIZONTAL
+        modules_taking.layoutManager = linearLayoutManager_for_modules
+        communities_in.layoutManager = linearLayoutManager_for_communities
         updateInfo()
     }
 
@@ -149,13 +150,13 @@ class YouFragment : Fragment() {
         else year_you.text = "Year ${viewModel.you.yearOfStudy}"
 
         number_of_buddies_you.text = "${viewModel.you.buddies.size} buddies"
-        you_image.setOnClickListener {
+        you_image_wrapper.setOnClickListener {
             val photoPickerIntent = Intent(Intent.ACTION_PICK)
             photoPickerIntent.type = "image/*"
             startActivityForResult(photoPickerIntent, 1)
         }
 
-        val updateInfoButton = update_info_button
+        //val updateInfoButton = update_info_button
         var m_Text = ""
         setUpDropDown()
 
@@ -213,11 +214,6 @@ class YouFragment : Fragment() {
             }
             dialog.show()
         }
-        updateInfoButton.setOnClickListener {
-            var intent = Intent(context, UpdateInfoActivity::class.java)
-            intent.putExtra("USER_DATA", viewModel.you)
-            startActivity(intent)
-        }
 
         create_new_community.setOnClickListener {
             val intent = Intent(context, CreateNewCommunityActivity::class.java)
@@ -228,9 +224,9 @@ class YouFragment : Fragment() {
         Picasso
             .get()
             .load(viewModel.you.profilePicturePath)
-            .centerCrop()
-            .transform(MaskTransformation(requireContext(), R.drawable.more_info_img_frame))
-            .fit()
+            //.centerCrop()
+            //.transform(MaskTransformation(requireContext(), R.drawable.more_info_img_frame))
+            //.fit()
             .into(you_image)
 
 
@@ -261,16 +257,17 @@ class YouFragment : Fragment() {
         modules_taking.adapter = modulesAdapter
 
         /**All other communities**/
-        var communityAdapter = CommunityItemAdapter(viewModel.otherCommunities, requireContext())
-        communityAdapter.setClickListener(object : CommunityItemAdapter.ItemClickListener {
+        var communityAdapter = CommunityItemAdapter(viewModel.otherCommunities, requireContext(), viewModel.you)
+       /* communityAdapter.setClickListener(object : CommunityItemAdapter.ItemClickListener {
             override fun onItemClick(view: View?, position: Int) {
                 val intent = Intent(requireContext(), SingleCommunityActivity::class.java)
                 //intent.putExtra("COMM_TIME", getTimeToDelete(viewModel.otherCommunities[position].id))
+                Log.d("TEST_COMM", "yes here")
                 intent.putExtra("COMMUNITY_DATA", viewModel.otherCommunities[position])
                 intent.putExtra("USER_DATA", viewModel.you)
                 startActivity(intent)
             }
-        })
+        })*/
         communities_in.adapter = communityAdapter
         /****/
     }
@@ -328,7 +325,7 @@ class YouFragment : Fragment() {
         }
     }
     fun setUpDropDown() {
-        val listOfActions = arrayOf("Choose an action","Log out", "Show ID")
+        val listOfActions = arrayOf("Choose an action","Log out", "Show ID", "Update Info")
         val arrayAdapter = object: ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, listOfActions) {
             override fun getDropDownView(
                 position: Int,
@@ -336,9 +333,9 @@ class YouFragment : Fragment() {
                 parent: ViewGroup
             ): View {
                 var res =  super.getDropDownView(position, convertView, parent) as TextView
-                res.setTextColor(resources.getColor(R.color.black, resources.newTheme()))
+                //res.setTextColor(resources.getColor(R.color.black, resources.newTheme()))
                 if(position == 0) {
-                    res.setBackgroundResource(R.drawable.centre_background)
+                    res.setBackgroundResource(R.drawable.centre_background_rect)
                 }
                 return res
             }
@@ -374,8 +371,15 @@ class YouFragment : Fragment() {
                         startActivity(intent)
                     }
                     "Show ID" -> {
+                        general_dropdown.setSelection(0)
                         val textViewDialog = CustomTextViewDialog(requireContext(), viewModel.you.uid, "Your ID")
                         textViewDialog.show()
+                    }
+                    "Update Info" -> {
+                        general_dropdown.setSelection(0)
+                        var intent = Intent(context, UpdateInfoActivity::class.java)
+                        intent.putExtra("USER_DATA", viewModel.you)
+                        startActivity(intent)
                     }
                     else -> {
 

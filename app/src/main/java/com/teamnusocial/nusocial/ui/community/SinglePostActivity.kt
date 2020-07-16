@@ -50,21 +50,14 @@ class SinglePostActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_post)
-        /**top bar**/
-        val toolBar: Toolbar = findViewById(R.id.tool_single_post)
-        toolBar.title = "Post"
-        setSupportActionBar(toolBar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        /**change bg**/
-        main_post.setBackgroundResource(R.drawable.post_bg_rect)
-        var marginParams = main_post.layoutParams as ViewGroup.MarginLayoutParams
-        marginParams.marginStart = 0
-        marginParams.marginEnd = 0
         /**set up view model**/
         viewModel = ViewModelProvider(this).get(SinglePostViewModel::class.java)
         currPost = intent.getParcelableExtra<Post>("POST_DATA")
         viewModel.you = intent.getParcelableExtra<User>("USER_DATA")
+
+        back_button.setOnClickListener {
+            finish()
+        }
         val query =
             FirebaseFirestore.getInstance().collection("communities").document(currPost.communityID)
                 .collection("posts")
@@ -77,16 +70,6 @@ class SinglePostActivity : AppCompatActivity() {
         viewModel.owner = intent.getParcelableExtra("OWNER_DATA")
         setUpPostFunctions(currPost)
 
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
     fun setUpPostFunctions(currPost: Post) {
         /**basic stat**/
@@ -148,7 +131,7 @@ class SinglePostActivity : AppCompatActivity() {
             ): View {
                 var res =  super.getDropDownView(position, convertView, parent) as TextView
                 if(position == 0) {
-                    res.setBackgroundResource(R.drawable.centre_background)
+                    res.setBackgroundResource(R.drawable.centre_background_rect)
                 }
                 return res
             }
@@ -187,8 +170,10 @@ class SinglePostActivity : AppCompatActivity() {
                         post_options.setSelection(0)
                     }
                     "Delete" -> {
+                        var images = currPost.imageList.map { image -> extractImageName(image) }
+                        var files = currPost.videoList.map { file -> extractFileName(file) }
                         CoroutineScope(Dispatchers.IO).launch {
-                            utils.deletePost(currPost.communityID, currPost.id)
+                            utils.deletePost(currPost.communityID, currPost.id,images.toMutableList(), files.toMutableList())
                             finish()
                         }
                     }
@@ -223,7 +208,33 @@ class SinglePostActivity : AppCompatActivity() {
             context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
     }
-
+    fun extractImageName(imagePath: String): String {
+        var startIndex = 0
+        var endIndex = 0
+        for(index in 0 until imagePath.length) {
+            if(imagePath[index] == '%') startIndex = index + 3
+            else if(imagePath[index] == '?') {
+                endIndex = index
+                break
+            }
+        }
+        return imagePath.substring(startIndex, endIndex)
+    }
+    fun extractFileName(url: String): String {
+        var start_index = 0
+        var end_index = 0
+        var count = 0
+        for (i in 0 until url.length) {
+            if (url[i] == '%') {
+                if (count == 0) count++;
+                else if (count == 1) start_index = i + 3;
+            } else if (url[i] == '?') {
+                end_index = i;
+                break;
+            }
+        }
+        return url.substring(start_index, end_index)
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == 0 && resultCode == Activity.RESULT_OK) {

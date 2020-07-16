@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
+import com.gpfreetech.neumorphism.Neumorphism
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Community
 import com.teamnusocial.nusocial.data.model.Module
@@ -26,13 +27,10 @@ class CreateNewCommunityActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_new_community)
 
-        val toolBar: Toolbar = findViewById(R.id.toolbarCreateNewComm)
-        toolBar.title = "Create new community"
-        setSupportActionBar(toolBar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         you = intent.getParcelableExtra("USER_DATA")!!
-
+        back_button_create.setOnClickListener {
+            finish()
+        }
         create_button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 utils.addCommunity(Community("", change_name_comm.text.toString(),
@@ -48,14 +46,5 @@ class CreateNewCommunityActivity : AppCompatActivity() {
             }
         }
 
-    }
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 }

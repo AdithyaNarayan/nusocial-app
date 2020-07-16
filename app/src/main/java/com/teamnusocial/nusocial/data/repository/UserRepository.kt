@@ -34,8 +34,28 @@ class UserRepository(private val utils: FirestoreUtils) {
         }.await()
         userList
     }
+    suspend fun getAllUsersToAdd(listOfCurrMembers: MutableList<String>) = coroutineScope {
+        val userList = listOf<User>().toMutableList()
+        val currUser = getCurrentUserAsUser()
+        utils.getAllUsers().get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                it.result!!.documents.forEach { user ->
+
+                    if (!listOfCurrMembers.contains(user.id)) {
+                        val userItem = user.toObject(User::class.java)!!
+                        userItem.uid = user.id
+                        userList.add(userItem)
+                    }
+                }
+            } else {
+                Log.d("USER", it.exception!!.message.toString())
+            }
+        }.await()
+        userList
+    }
     suspend fun getListOfUsers(listOfIDs: MutableList<String>)  = coroutineScope {
         var listOfUsers = mutableListOf<User>()
+        if(listOfIDs.size == 0) return@coroutineScope listOfUsers
         utils.getAllUsers().whereIn("uid", listOfIDs).get().addOnSuccessListener { querySnapshot ->
             querySnapshot.forEach({user -> listOfUsers.add(user.toObject(User::class.java)!!)} )
         }.await()

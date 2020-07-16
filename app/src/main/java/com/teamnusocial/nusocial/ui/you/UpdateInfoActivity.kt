@@ -41,11 +41,9 @@ class UpdateInfoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_update_info)
-        /**top bar**/
-        val toolBar: Toolbar = findViewById(R.id.toolbarUpdateInfo)
-        toolBar.title = "Update personal info"
-        setSupportActionBar(toolBar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        back_button.setOnClickListener {
+            finish()
+        }
         user = intent.getParcelableExtra("USER_DATA")
         modules_taking_edit.layoutManager = GridLayoutManager(this, 4)
         updateUI()

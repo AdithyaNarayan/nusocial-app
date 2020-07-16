@@ -4,11 +4,12 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.util.Log
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
@@ -18,16 +19,12 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.github.ybq.android.spinkit.SpinKitView
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -41,20 +38,22 @@ import com.teamnusocial.nusocial.data.model.Post
 import com.teamnusocial.nusocial.data.model.PostType
 import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
 import com.teamnusocial.nusocial.data.repository.UserRepository
-import com.teamnusocial.nusocial.ui.auth.SignInActivity
 import com.teamnusocial.nusocial.ui.you.CustomSpinner
 import com.teamnusocial.nusocial.utils.CustomTextViewDialog
-import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import com.teamnusocial.nusocial.utils.KeyboardToggleListener
 import kotlinx.android.synthetic.main.activity_single_community.*
-import kotlinx.android.synthetic.main.activity_update_info.*
-import kotlinx.android.synthetic.main.fragment_you.*
 import kotlinx.android.synthetic.main.post_create.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class SingleCommunityActivity : AppCompatActivity() {
+    companion object {
+        private const val PICK_FILE_REQUEST = 72
+    }
     private lateinit var currCommData: Community
     //private lateinit var commJoinTime: Timestamp
     var imageEncoded: String = ""
@@ -65,6 +64,8 @@ class SingleCommunityActivity : AppCompatActivity() {
     private val userRepo = UserRepository(FirestoreUtils())
     private lateinit var allPostAdapter: FirestoreRecyclerAdapter<Post, PostAdapter.PostHolder>
     private var typeOfNewPost = PostType.Question
+    private var file: Uri? = null
+    private var listOfFiles: MutableList<Uri> = mutableListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_community)
@@ -98,7 +99,7 @@ class SingleCommunityActivity : AppCompatActivity() {
         }
         //Log.d("TEST_PIC", currCommData.coverImageUrl)
         comm_name.text = currCommData.name
-        back_button.setOnClickListener {
+        back_button_single_comm.setOnClickListener {
             finish()
         }
         setUpDropDown()
@@ -123,9 +124,9 @@ class SingleCommunityActivity : AppCompatActivity() {
                 parent: ViewGroup
             ): View {
                 var res =  super.getDropDownView(position, convertView, parent) as TextView
-                res.setTextColor(resources.getColor(R.color.black, resources.newTheme()))
+                //res.setTextColor(resources.getColor(R.color.black, resources.newTheme()))
                 if(position == 0) {
-                    res.setBackgroundResource(R.drawable.centre_background)
+                    res.setBackgroundResource(R.drawable.centre_background_rect)
                 }
                 return res
             }
@@ -179,11 +180,13 @@ class SingleCommunityActivity : AppCompatActivity() {
                         single_comm_dropdown.setSelection(0)
                     }
                     "Advanced" -> {
+                        single_comm_dropdown.setSelection(0)
                         val intent = Intent(this@SingleCommunityActivity, EditCommunityActivity::class.java)
                         //intent.putExtra("COMM_TIME", commJoinTime)
                         intent.putExtra("COMM_DATA", currCommData)
                         intent.putExtra("USER_DATA", viewModel.you)
                         startActivityForResult(intent, 2)
+
                     }
                     else -> {
 
@@ -240,8 +243,8 @@ class SingleCommunityActivity : AppCompatActivity() {
         layoutManager_for_images.orientation = LinearLayoutManager.HORIZONTAL
         layoutManager_for_videos.orientation = LinearLayoutManager.HORIZONTAL
 
-        old_images_slider.layoutManager = layoutManager_for_images
-        new_images_slider.layoutManager = layoutManager_for_videos
+        old_images_slider_create.layoutManager = layoutManager_for_images
+        new_images_slider_create.layoutManager = layoutManager_for_videos
 
         add_image_button.setOnClickListener {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -252,7 +255,17 @@ class SingleCommunityActivity : AppCompatActivity() {
         }
 
         add_videos_button.setOnClickListener {
-
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 100)
+            } else {
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                intent.type = "*/*"
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                startActivityForResult(
+                    Intent.createChooser(intent, "Select File"),
+                    SingleCommunityActivity.PICK_FILE_REQUEST
+                )
+            }
         }
 
         publish_post_button.setOnClickListener {
@@ -268,17 +281,32 @@ class SingleCommunityActivity : AppCompatActivity() {
                         pushImagesToFirebase(imagesEncodedList[index].toUri(), index, postID, currCommData.id)
                     }
                 }
+                if(file != null) {
+                    pushFilesToFirebase(file!!, postID, currCommData.id)
+                } else if(listOfFiles.size > 0) {
+                    for(index in 0 until listOfFiles.size) {
+                        pushFilesToFirebase(listOfFiles[index], postID, currCommData.id)
+                    }
+                }
                 viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
                 //viewModel.allSingleCommPost = utils.getAllPostsOfCommunity(currCommData.id)
                 withContext(Dispatchers.Main) {
                     all_posts_single_comm.smoothScrollToPosition(0)
                     imageEncoded = ""
-                    imagesEncodedList = mutableListOf()
+                    imagesEncodedList.clear()
+                    if(old_images_slider_create.adapter != null)
+                        old_images_slider_create.adapter!!.notifyDataSetChanged()
+
+                    file = null
+                    listOfFiles.clear()
+                    if(new_images_slider_create.adapter != null)
+                        new_images_slider_create.adapter!!.notifyDataSetChanged()
+
                 }
             }
             post_text_content_input.setText("")
             post_text_content_input.clearFocus()
-            old_images_slider.adapter = PostImageEditAdapter(mutableListOf(), true, "--blank--")
+            //old_images_slider.adapter = PostImageEditAdapter(mutableListOf(), true, "--blank--")
             //video_slider.adapter
         }
     }
@@ -338,9 +366,10 @@ class SingleCommunityActivity : AppCompatActivity() {
                 Log.d("IMAGE_UPLOAD", "data is null")
             }
             if(imagesEncodedList.size > 0) {
-                old_images_slider.adapter = PostImageEditAdapter(imagesEncodedList, true, "--blank--")
+                old_images_slider_create.adapter = PostImageEditAdapter(imagesEncodedList, true, "--blank--")
             } else if(!imageEncoded.equals("")) {
-                old_images_slider.adapter = PostImageEditAdapter(mutableListOf(imageEncoded), true, "--blank--")
+                imagesEncodedList.add(imageEncoded)
+                old_images_slider_create.adapter = PostImageEditAdapter(imagesEncodedList, true, "--blank--")
             } else {
                 Log.d("ERROR", "NO IMAGES PICKED")
             }
@@ -382,6 +411,31 @@ class SingleCommunityActivity : AppCompatActivity() {
                     loading_cover.visibility = View.GONE
                 }
             }
+        } else  if (requestCode == SingleCommunityActivity.PICK_FILE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
+            var files = mutableListOf<Uri>()
+            if(data != null) {
+                val clipData = data.clipData
+                if(clipData != null) {
+                    for (index in 0 until clipData.itemCount) {
+                        val fileUri = clipData.getItemAt(index).uri
+                        files.add(fileUri)
+                    }
+                    listOfFiles = files
+                } else {
+                    val fileUri = data.data!!
+                    file = fileUri
+                }
+            } else {
+                Log.d("FILE_UPLOAD", "data is null")
+            }
+            if(listOfFiles.size > 0) {
+                new_images_slider_create.adapter = PostFileEditAdapter(listOfFiles, true, false,"--blank--", this)
+            } else if(file != null) {
+                listOfFiles.add(file!!)
+                new_images_slider_create.adapter = PostFileEditAdapter(listOfFiles, true, false,"--blank--", this)
+            } else {
+                Log.d("ERROR", "NO FILES PICKED")
+            }
         }
     }
 
@@ -399,6 +453,43 @@ class SingleCommunityActivity : AppCompatActivity() {
                         FirebaseFirestore.getInstance().collection("communities").document(commID).collection("posts")
                             .document(postID)
                             .update("imageList", FieldValue.arrayUnion(url.result.toString()))
+                    }
+                }
+            }
+    }
+    fun getFileName(uri: Uri): String? {
+        var result: String? = null
+        if (uri.getScheme().equals("content")) {
+            val cursor: Cursor = getContentResolver().query(uri, null, null, null, null)!!
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                }
+            } finally {
+                cursor.close()
+            }
+        }
+        if (result == null) {
+            result = uri.getPath()
+            val cut = result!!.lastIndexOf('/')
+            if (cut != -1) {
+                result = result!!.substring(cut + 1)
+            }
+        }
+        return result
+    }
+    fun pushFilesToFirebase(filePath: Uri, postID: String, commID: String) {
+        val selectedFile = filePath
+        val storage = FirebaseStorage.getInstance()
+        val filePath =
+            storage.getReference("/post_files/${postID}/" + getFileName(filePath))
+        filePath.putFile(selectedFile)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    filePath.downloadUrl.addOnCompleteListener { url ->
+                        FirebaseFirestore.getInstance().collection("communities").document(commID).collection("posts")
+                            .document(postID)
+                            .update("videoList", FieldValue.arrayUnion(url.result.toString()))
                     }
                 }
             }

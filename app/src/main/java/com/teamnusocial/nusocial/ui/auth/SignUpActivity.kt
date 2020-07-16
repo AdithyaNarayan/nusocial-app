@@ -4,10 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.github.ybq.android.spinkit.SpinKitView
 import com.google.android.material.snackbar.Snackbar
 import com.teamnusocial.nusocial.HomeActivity
 import com.teamnusocial.nusocial.R
@@ -69,9 +72,9 @@ class SignUpActivity : AppCompatActivity(), KodeinAware {
                 passwordSignUpEditText.setBackgroundResource(R.drawable.rounded_edit_text)
             }
         })
-
+        val spin_kit = findViewById<SpinKitView>(R.id.spin_kit)!!
+        val bg_cover = findViewById<CardView>(R.id.loading_cover)!!
         continueSignUpButton.setOnClickListener { _ ->
-
             if (!(viewModel.isValidPassword.value!! && viewModel.isValidEmail.value!!)) {
                 Snackbar
                     .make(
@@ -81,10 +84,14 @@ class SignUpActivity : AppCompatActivity(), KodeinAware {
                     )
                     .show()
             } else {
+                spin_kit.visibility = View.VISIBLE
+                bg_cover.visibility = View.VISIBLE
                 val email = emailSignUpEditText.text.toString()
                 val password = passwordSignUpEditText.text.toString()
 
                 viewModel.createUser(email, password).addOnCompleteListener {
+                    spin_kit.visibility = View.GONE
+                    bg_cover.visibility = View.GONE
                     if (it.isSuccessful) {
                         // setup user and move to next activity
                         Log.d("AUTH", "Create User Success")
