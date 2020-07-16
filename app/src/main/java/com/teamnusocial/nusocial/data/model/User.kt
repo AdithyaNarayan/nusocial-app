@@ -17,12 +17,12 @@ enum class Gender {
 @Parcelize
 data class User(
     public var uid: String,
-    public val name: String,
+    public var name: String,
     public val gender: Gender,
     public val profilePicturePath: String,
     public val modules: MutableList<Module>,
     public val yearOfStudy: Int,
-    public val courseOfStudy: String,
+    public var courseOfStudy: String,
     public val location: LocationLatLng,
     public val buddies: List<String>, // store uid of buddies
     public val about: String,
