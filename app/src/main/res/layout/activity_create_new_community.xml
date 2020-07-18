@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:id="@+id/create_comm_page"
+    tools:context=".ui.you.CreateNewCommunityActivity">
+
+    <TextView
+        android:id="@+id/notes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="You can upload cover image for your community by clicking on the default image"
+        android:textColor="@color/blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.045"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_button" />
+
+    <EditText
+        android:id="@+id/about_input_comm"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="12dp"
+        android:autofillHints=""
+        android:elevation="8dp"
+        android:fontFamily="@font/light"
+        android:hint="name"
+        android:background="@drawable/centre_background"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="12dp"
+        android:textColor="@color/black"
+        android:textColorHint="#74768f"
+        android:windowSoftInputMode="adjustResize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/About"
+        app:layout_constraintTop_toBottomOf="@+id/change_name_comm" />
+
+    <!--<androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarCreateNewComm"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:title="More Info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:theme="@style/ToolBarStyle" />-->
+
+    <TextView
+        android:id="@+id/About"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="48dp"
+        android:text="About"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeNameTitle" />
+
+    <soup.neumorphism.NeumorphImageButton
+        android:id="@+id/back_button_create"
+        style="@style/Widget.Neumorph.Button"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:padding="5dp"
+        android:src="@drawable/ic_baseline_arrow_back__black_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <soup.neumorphism.NeumorphButton
+        android:id="@+id/create_button"
+        style="@style/Widget.Neumorph.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="#FF9800"
+        android:text="Create"
+        android:textColor="@color/blue_transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/about_input_comm" />
+
+    <TextView
+        android:id="@+id/changeNameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="36dp"
+        android:text="Name"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/back_button_create" />
+
+    <EditText
+        android:id="@+id/change_name_comm"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="84dp"
+        android:layout_marginEnd="12dp"
+        android:autofillHints=""
+        android:elevation="8dp"
+        android:fontFamily="@font/light"
+        android:hint="name"
+        android:background="@drawable/centre_background"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="12dp"
+        android:textColor="@color/black"
+        android:textColorHint="#74768f"
+        android:windowSoftInputMode="adjustResize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/changeNameTitle"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

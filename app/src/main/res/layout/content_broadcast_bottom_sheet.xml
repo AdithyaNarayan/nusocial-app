@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/broadcastBottomSheetLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    app:behavior_peekHeight="24dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <ImageView
+        android:id="@+id/broadcastArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/ic_baseline_keyboard_arrow_up_24"
+        android:contentDescription="Up arrow"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/broadcastHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="12dp"
+        android:layout_toEndOf="@+id/broadcastArrow"
+        android:fontFamily="@font/bold"
+        android:text="@string/title_broadcast"
+        android:textColor="@color/black"
+        android:textSize="24dp" />
+
+    <TextView
+        android:id="@+id/broadCastRadiusTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/broadcastMessageTextWrapper"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="21dp"
+        android:text="1km"
+        android:textColor="@color/black" />
+
+    <soup.neumorphism.NeumorphButton
+        android:id="@+id/sendBroadcastButton"
+        style="@style/Widget.Neumorph.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/broadcastHeading"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="-34dp"
+        android:layout_marginEnd="27dp"
+        android:backgroundTint="@color/orange"
+        android:fontFamily="@font/bold"
+        android:shadowColor="@color/orange"
+        android:text="@string/send"
+        android:textColor="@color/black"
+        app:cornerRadius="16dp" />
+
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/broadcastMessageTextWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/broadcastHeading"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="16dp"
+        android:paddingVertical="12dp"
+        android:paddingEnd="30dp"
+        app:neumorph_shapeType="pressed"
+        tools:ignore="RtlSymmetry">
+
+        <EditText
+            android:id="@+id/broadcastMessageText"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:autofillHints=""
+            android:fontFamily="@font/light"
+            android:hint="@string/please_enter_your_broadcast_message_here"
+            android:inputType="textMultiLine"
+            android:lines="8"
+            android:maxLines="10"
+            android:minLines="4"
+            android:padding="8dp"
+            android:paddingHorizontal="12dp"
+            android:textColor="#000000"
+            android:textColorHint="#74768f"
+            android:windowSoftInputMode="adjustResize" />
+    </soup.neumorphism.NeumorphCardView>
+
+    <SeekBar
+        android:id="@+id/broadcastSlider"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/broadcastMessageTextWrapper"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="-52dp"
+        android:layout_marginBottom="24dp"
+        android:layout_toEndOf="@+id/broadCastRadiusTextView"
+        android:max="4"
+        android:progress="1"
+        android:theme="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:thumb="@drawable/ic_baseline_person_pin_circle_24" />
+
+</RelativeLayout>

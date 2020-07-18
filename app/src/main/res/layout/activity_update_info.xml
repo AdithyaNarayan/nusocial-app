@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".ui.you.UpdateInfoActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/update_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <soup.neumorphism.NeumorphImageButton
+            android:id="@+id/back_button"
+            style="@style/Widget.Neumorph.Button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:padding="5dp"
+            android:src="@drawable/ic_baseline_arrow_back__black_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--<androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarUpdateInfo"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            android:title="More Info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:theme="@style/ToolBarStyle" />-->
+
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/aboutInput_wrapper"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:paddingVertical="12dp"
+            android:paddingEnd="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/About"
+            app:layout_constraintTop_toBottomOf="@+id/change_year_dropdown"
+            app:neumorph_shapeType="pressed"
+            tools:ignore="RtlSymmetry">
+
+            <EditText
+                android:id="@+id/about_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/light"
+                android:hint="---Blank---"
+                android:maxWidth="288dp"
+                android:lines="8"
+                android:gravity="top|left"
+                android:maxLines="10"
+                android:maxHeight="300dp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="8dp"
+                android:scrollbars="vertical"
+                android:textColor="@color/black"
+                android:textColorHint="#74768f" />
+        </soup.neumorphism.NeumorphCardView>
+
+        <TextView
+            android:id="@+id/About"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="124dp"
+            android:text="About"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/changeYearOfStudyTitle" />
+
+        <soup.neumorphism.NeumorphButton
+            style="@style/Widget.Neumorph.Button"
+            android:id="@+id/update_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/blue_transparent"
+            android:text="Update"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.509"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/modules_taking_edit" />
+
+        <TextView
+            android:id="@+id/changeNameTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="40dp"
+            android:text="Name"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/back_button" />
+
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/changeName_wrapper"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="88dp"
+            android:paddingVertical="12dp"
+            android:paddingEnd="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/changeNameTitle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:neumorph_shapeType="pressed"
+            tools:ignore="RtlSymmetry">
+
+            <EditText
+                android:id="@+id/changeName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:fontFamily="@font/light"
+                android:hint="name"
+                android:inputType="textEmailAddress"
+                android:padding="10dp"
+                android:paddingHorizontal="12dp"
+                android:textColor="@color/black"
+                android:textColorHint="#74768f"
+                android:windowSoftInputMode="adjustResize" />
+        </soup.neumorphism.NeumorphCardView>
+
+        <TextView
+            android:id="@+id/changeCourseTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="56dp"
+            android:text="Course"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/changeNameTitle" />
+
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/changeCourse_wrapper"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:paddingVertical="12dp"
+            android:paddingEnd="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/changeCourseTitle"
+            app:layout_constraintTop_toBottomOf="@+id/changeName_wrapper"
+            app:neumorph_shapeType="pressed"
+            tools:ignore="RtlSymmetry">
+
+            <EditText
+                android:id="@+id/changeCourse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:fontFamily="@font/light"
+                android:hint="course of study"
+                android:inputType="textEmailAddress"
+                android:padding="10dp"
+                android:paddingHorizontal="12dp"
+                android:textColor="@color/black"
+                android:textColorHint="#74768f"
+                android:windowSoftInputMode="adjustResize" />
+        </soup.neumorphism.NeumorphCardView>
+
+        <TextView
+            android:id="@+id/changeYearOfStudyTitle"
+            android:layout_width="141dp"
+            android:layout_height="31dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="48dp"
+            android:text="Year of study"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/changeCourseTitle" />
+
+        <TextView
+            android:id="@+id/modules_taking_title_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:padding="5dp"
+            android:text="Choose module to remove"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.09"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/aboutInput_wrapper" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/modules_taking_edit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:padding="5dp"
+            android:scrollbars="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.492"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/modules_taking_title_edit" />
+
+        <com.teamnusocial.nusocial.ui.you.CustomSpinner
+            android:id="@+id/change_year_dropdown"
+            style="@style/Widget.AppCompat.Spinner"
+            android:layout_width="0dp"
+            android:layout_height="?attr/dropdownListPreferredItemHeight"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="28dp"
+            android:background="@drawable/centre_background"
+            android:dropDownWidth="200dp"
+            android:dropDownVerticalOffset="?attr/dropdownListPreferredItemHeight"
+            android:paddingLeft="8dp"
+            android:popupBackground="@color/orange"
+            android:popupElevation="3dp"
+            android:stateListAnimator="@drawable/spinner_sla"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/changeYearOfStudyTitle"
+            app:layout_constraintTop_toBottomOf="@+id/changeCourse_wrapper" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
+
