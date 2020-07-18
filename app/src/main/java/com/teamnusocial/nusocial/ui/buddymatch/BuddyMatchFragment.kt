@@ -294,6 +294,5 @@ class BuddyMatchFragment : Fragment() {
                 "Matched through BuddyMatch!"
             )
         }
-//>>>>>>> 468e138ba6f94aff7abd2891aef6d7b926b728c8
     }
 }

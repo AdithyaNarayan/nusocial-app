@@ -129,7 +129,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/bottom_post_bar"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="84dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -139,6 +139,7 @@
                     android:id="@+id/like_button"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:drawableTint="@color/black"
                     android:layout_marginEnd="24dp"
                     android:background="@drawable/like_icon"
                     android:button="@null"
@@ -146,8 +147,7 @@
                     android:stateListAnimator="@animator/scale"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.538" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/comment_button"
@@ -158,8 +158,7 @@
                     android:stateListAnimator="@animator/scale"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/like_stat"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.466" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/comment_stat"
@@ -183,26 +182,24 @@
                     app:layout_constraintEnd_toStartOf="@+id/like_button"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <soup.neumorphism.NeumorphButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/parent_comm_button"
-                    style="@style/Widget.Neumorph.Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
+                    android:layout_width="160dp"
+                    android:layout_height="140dp"
                     android:maxWidth="150dp"
+                    android:translationX="-24dp"
+                    android:translationY="0dp"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="10dp"
                     android:text="N/A"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:textSize="10dp"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:neumorph_backgroundColor="@color/blue_transparent"
-                    app:neumorph_shadowColorDark="#707f8182"
-                    app:neumorph_shadowElevation="3dp"
-                    app:neumorph_strokeColor="@color/blue" />
-
+                    app:backgroundTint="@null"
+                    android:background="@drawable/btnglowpurple" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </soup.neumorphism.NeumorphCardView>

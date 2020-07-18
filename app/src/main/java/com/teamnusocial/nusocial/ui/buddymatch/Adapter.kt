@@ -22,6 +22,7 @@ import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.you.OtherUserActivity
 import com.teamnusocial.nusocial.utils.FirestoreUtils
+import jp.wasabeef.picasso.transformations.MaskTransformation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -46,7 +47,12 @@ class Adapter(private val matches: MutableList<User>, val you: User, val context
         val wrapper = holder.layoutView.findViewById<ConstraintLayout>(R.id.match_item_wrapper)
         val common_friends_title = holder.layoutView.findViewById<TextView>(R.id.common_friends_title)
         val curr_match = matches[position]
-        Picasso.get().load(curr_match.profilePicturePath).into(avatar)
+        Picasso.get().load(curr_match.profilePicturePath).transform(
+            MaskTransformation(
+            context,
+            R.drawable.buddymatch_image_transformation
+        )
+        ).resize(300, 290).centerCrop().into(avatar)
         name.text = curr_match.name
         course.text = curr_match.courseOfStudy
         year.text = if(curr_match.yearOfStudy < 5) "Year " + curr_match.yearOfStudy.toString() else "Graduate"
