@@ -184,22 +184,21 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/parent_comm_button"
-                    android:layout_width="160dp"
-                    android:layout_height="140dp"
-                    android:maxWidth="150dp"
-                    android:translationX="-24dp"
-                    android:translationY="0dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="4dp"
+                    android:backgroundTint="@color/blue"
+                    android:maxWidth="200dp"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="10dp"
                     android:text="N/A"
                     android:textColor="@color/white"
-                    android:textSize="10dp"
-                    android:visibility="gone"
+                    android:textSize="8dp"
+                    android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:backgroundTint="@null"
-                    android:background="@drawable/btnglowpurple" />
+                    app:layout_constraintVertical_bias="0.494" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </soup.neumorphism.NeumorphCardView>

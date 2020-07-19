@@ -30,10 +30,13 @@ class BuddyProfileActivity : AppCompatActivity() {
             .get()
             .load(userImg)
             .centerCrop()
-            .transform(MaskTransformation(this, R.drawable.more_info_img_frame))
+            //.transform(MaskTransformation(this, R.drawable.more_info_img_frame))
             .fit()
             .into(more_info_image)
 
+        back_button_buddy_profile.setOnClickListener {
+            finish()
+        }
         about_info_more_info.movementMethod = ScrollingMovementMethod()
         about_info_more_info.text = userAbout
         name_more_info.text = userName
@@ -43,14 +46,4 @@ class BuddyProfileActivity : AppCompatActivity() {
 
     }
 
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 }

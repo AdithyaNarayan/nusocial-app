@@ -5,5 +5,5 @@
     <dimen name="newsMoreTextSize">12sp</dimen>
     <dimen name="form_app_bar_height">250dp</dimen>
     <dimen name="offset_image">50dp</dimen>
-
+    <dimen name="offset_vertical_newsfeed">180dp</dimen>
 </resources>

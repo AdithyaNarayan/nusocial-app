@@ -85,6 +85,7 @@ class SignInActivity : AppCompatActivity(), KodeinAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
+        // Move to main activity if already signed in
 
         // make the sign up button out of focus
         signUpButton.alpha = 0.20f
@@ -96,7 +97,11 @@ class SignInActivity : AppCompatActivity(), KodeinAware {
         viewModel = ViewModelProvider(this, factory).get(AuthViewModel::class.java)
         val spin_kit = findViewById<SpinKitView>(R.id.spin_kit)!!
         val bg_cover = findViewById<CardView>(R.id.loading_cover)!!
-
+        viewModel.isSignedIn().observe(this, Observer {
+            if (it) {
+                startActivity(Intent(this@SignInActivity, HomeActivity::class.java))
+            }
+        })
         continueSignInButton.setOnClickListener { _ ->
             spin_kit.visibility = View.VISIBLE
             bg_cover.visibility = View.VISIBLE

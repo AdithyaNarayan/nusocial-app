@@ -55,6 +55,7 @@ class LumiNUSActivity : AppCompatActivity() {
                 Log.d("AUTH", url.substring(url.indexOf("?code=") + 6))
                 val code = url.substring(url.indexOf("?code=") + 6)
                 val repository = AuthUserRepository(FirebaseAuthUtils())
+                luminusWebView.loadUrl("https://nusocial-bridge-api.herokuapp.com/loading")
                 CoroutineScope(Dispatchers.IO).launch {
                     val accessToken = repository.getAccessToken(code)
                     val user = repository.getUserFromToken(accessToken)

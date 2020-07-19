@@ -72,7 +72,8 @@ class CommunityFragment : Fragment() {
         val layoutManager = LinearLayoutManager(context)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         personal_posts.layoutManager = layoutManager
-        personal_posts.addItemDecoration(OffsetHelperVertical())
+        val offset = resources.getDimension(R.dimen.offset_vertical_newsfeed)
+        personal_posts.addItemDecoration(OffsetHelperVertical(offset.toInt()))
         personal_posts.adapter = postAdapter
         addKeyboardToggleListener { shown ->
             if(!shown) {

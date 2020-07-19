@@ -9,6 +9,7 @@ import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.ybq.android.spinkit.SpinKitView
 import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.R
@@ -81,8 +82,12 @@ class OtherUserActivity : AppCompatActivity() {
         number_of_buddies_you.text = "${viewModel.you.buddies.size} buddies"
 
         /**set up recycler views**/
-        modules_taking.layoutManager = GridLayoutManager(this, 4)
-        communities_in.layoutManager = GridLayoutManager(this, 1)
+        val layoutManager_for_mods = LinearLayoutManager(this)
+        val layoutManager_for_comms = LinearLayoutManager(this)
+        layoutManager_for_comms.orientation = LinearLayoutManager.HORIZONTAL
+        layoutManager_for_mods.orientation = LinearLayoutManager.HORIZONTAL
+        modules_taking.layoutManager = layoutManager_for_mods
+        communities_in.layoutManager = layoutManager_for_comms
 
         var modulesAdapter = ModulesAdapter(viewModel.you.modules, this)
         modulesAdapter.setClickListener(object : ModulesAdapter.ItemClickListener {

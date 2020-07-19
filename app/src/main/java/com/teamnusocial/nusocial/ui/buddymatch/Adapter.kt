@@ -51,8 +51,7 @@ class Adapter(private val matches: MutableList<User>, val you: User, val context
             MaskTransformation(
             context,
             R.drawable.buddymatch_image_transformation
-        )
-        ).resize(300, 290).centerCrop().into(avatar)
+        )).fit().into(avatar)
         name.text = curr_match.name
         course.text = curr_match.courseOfStudy
         year.text = if(curr_match.yearOfStudy < 5) "Year " + curr_match.yearOfStudy.toString() else "Graduate"

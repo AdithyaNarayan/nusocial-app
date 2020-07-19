@@ -7,12 +7,16 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <supports-screens
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:anyDensity="true" />
 
     <application
         android:name=".DependencyInjectionApplication"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
@@ -46,8 +50,8 @@
 
         <activity android:name=".HomeActivity" />
         <activity android:name=".ui.auth.SignUpActivity" />
-        <activity android:name=".ui.auth.SignInActivity" />
-        <activity android:name=".ui.auth.SplashActivity">
+
+        <activity android:name=".ui.auth.SignInActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
