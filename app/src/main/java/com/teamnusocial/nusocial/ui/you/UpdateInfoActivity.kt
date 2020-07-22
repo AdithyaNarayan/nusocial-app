@@ -45,7 +45,9 @@ class UpdateInfoActivity : AppCompatActivity() {
             finish()
         }
         user = intent.getParcelableExtra("USER_DATA")
-        modules_taking_edit.layoutManager = GridLayoutManager(this, 4)
+        val linearLayoutManager = LinearLayoutManager(this)
+        linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
+        modules_taking_edit.layoutManager = linearLayoutManager
         updateUI()
     }
     fun updateUI() {

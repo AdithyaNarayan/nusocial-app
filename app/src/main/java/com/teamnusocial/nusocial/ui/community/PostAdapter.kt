@@ -3,7 +3,6 @@ package com.teamnusocial.nusocial.ui.community
 import android.content.Context
 import android.content.Intent
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
 import android.widget.*
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.cardview.widget.CardView
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,14 +31,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import soup.neumorphism.NeumorphCardView
 
 
 class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>, val you: User, val commID: String, val listOfAdminsID: MutableList<String>): FirestoreRecyclerAdapter<Post, PostAdapter.PostHolder>(options) {
     private val viewPool = RecyclerView.RecycledViewPool()
     private val utils = SocialToolsRepository(FirestoreUtils())
-    class PostHolder(val layoutView: ConstraintLayout): RecyclerView.ViewHolder(layoutView)
+    class PostHolder(val layoutView: NeumorphCardView): RecyclerView.ViewHolder(layoutView)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostHolder {
-        val layoutView = LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false) as ConstraintLayout
+        val layoutView = LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false) as NeumorphCardView
         return PostHolder(
             layoutView
         )
@@ -91,14 +91,17 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
         imageSlider.apply {
             layoutManager = childLayoutManager
             adapter = postImageAdapter
-            setRecycledViewPool(viewPool)
+            //setRecycledViewPool(viewPool)
         }
         val postFileAdapter =
             PostFileEditAdapter(currPost.videoList.map{item -> item.toUri()}.toMutableList(),false,false, currPost.id,context_)
         val childLayoutManager_forFiles = LinearLayoutManager(
             context_, RecyclerView.HORIZONTAL, false)
-        fileSlider.layoutManager = childLayoutManager_forFiles
-        fileSlider.adapter = postFileAdapter
+        fileSlider.apply {
+            layoutManager = childLayoutManager_forFiles
+            adapter = postFileAdapter
+            //setRecycledViewPool(viewPool)
+        }
 
         like_button.isChecked = model.userLikeList.contains(you.uid)
         //Log.d("TEST_ID", "here is ${you.uid} ans ${like_button.isChecked}")
@@ -133,16 +136,16 @@ class PostAdapter(val context: Context, options: FirestoreRecyclerOptions<Post>,
         Picasso.get().load(owner.profilePicturePath)
             .into(avatar)
         avatar.setOnClickListener {
-            navigateToYouPage(owner.uid)
+            navigateToYouPage(currPost.ownerUid)
         }
         postOwnerName.setOnClickListener {
-            navigateToYouPage(owner.uid)
+            navigateToYouPage(currPost.ownerUid)
         }
 
 
         /**set up dropdown**/
         var allOptions = arrayListOf<String>("Choose an action","Edit","Delete")
-        if(you.uid.equals(owner.uid) || listOfAdminsID.contains(you.uid)) {
+        if(you.uid.equals(currPost.ownerUid) || listOfAdminsID.contains(you.uid)) {
             val arrayAdapter = object :
                 ArrayAdapter<String>(context_, android.R.layout.simple_spinner_item, allOptions) {
                 override fun getDropDownView(

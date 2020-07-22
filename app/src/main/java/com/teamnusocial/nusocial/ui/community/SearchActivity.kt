@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Post
+import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.buddymatch.OffsetHelperVertical
 import com.teamnusocial.nusocial.utils.FirestoreUtils
@@ -75,12 +76,24 @@ class SearchActivity : AppCompatActivity() {
             }
         }
     }
+    fun getUserTable(data : MutableList<Post>) : HashMap<String, User> {
+        var result = HashMap<String, User>()
+        for(post in data) {
+            if(!result.containsKey(post.ownerUid)) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val user = UserRepository(FirestoreUtils()).getUser(post.ownerUid)
+                    result.put(post.ownerUid, user)
+                }
+            }
+        }
+        return result
+    }
 
     private suspend fun updatePostsUI() = coroutineScope {
         UserRepository(FirestoreUtils()).getUserAnd(FirestoreUtils().getCurrentUser()!!.uid) {
             Log.d("SEARCH", data.toString())
             val postAdapter =
-                PostNewsFeedAdapter(this@SearchActivity, it, data)
+                PostNewsFeedAdapter(this@SearchActivity, it, data, getUserTable(data))
             postsRecyclerView.adapter = postAdapter
             val layoutManager = LinearLayoutManager(this@SearchActivity)
             layoutManager.orientation = LinearLayoutManager.VERTICAL

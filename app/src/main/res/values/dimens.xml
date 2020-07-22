@@ -6,4 +6,5 @@
     <dimen name="form_app_bar_height">250dp</dimen>
     <dimen name="offset_image">50dp</dimen>
     <dimen name="offset_vertical_newsfeed">180dp</dimen>
+    <dimen name="peek_height">24dp</dimen>
 </resources>

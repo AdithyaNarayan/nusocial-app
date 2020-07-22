@@ -2,6 +2,7 @@ package com.teamnusocial.nusocial.ui.community
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
@@ -10,14 +11,13 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
@@ -39,7 +39,6 @@ import com.teamnusocial.nusocial.data.model.PostType
 import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.you.CustomSpinner
-import com.teamnusocial.nusocial.utils.CustomTextViewDialog
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import com.teamnusocial.nusocial.utils.KeyboardToggleListener
 import kotlinx.android.synthetic.main.activity_single_community.*
@@ -91,7 +90,7 @@ class SingleCommunityActivity : AppCompatActivity() {
 
     }
     fun updateUI() {
-        Picasso.get().load(currCommData.coverImageUrl).into(community_cover_pic)
+        Picasso.get().load(currCommData.coverImageUrl).fit().centerCrop().error(R.drawable.nus).into(community_cover_pic)
         community_cover_pic.setOnClickListener {
             val photoPicker = Intent(Intent.ACTION_PICK)
             photoPicker.type = "image/*"
@@ -107,6 +106,8 @@ class SingleCommunityActivity : AppCompatActivity() {
         var layoutManager = LinearLayoutManager(this)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         all_posts_single_comm.layoutManager = layoutManager
+        all_posts_single_comm.isNestedScrollingEnabled = false
+        //allPostAdapter.setHasStableIds(true)
         all_posts_single_comm.adapter = allPostAdapter
     }
     fun setUpDropDown() {
@@ -172,11 +173,12 @@ class SingleCommunityActivity : AppCompatActivity() {
                         }
                     }
                     "About" -> {
-                        val about_dialog = CustomTextViewDialog(this@SingleCommunityActivity, currCommData.about, "About this community")
-                        if(about_dialog.window != null) {
-                            about_dialog.window!!.attributes.windowAnimations = R.style.dialog_animation_fade
-                        }
-                        about_dialog.show()
+                        val builder: AlertDialog.Builder = AlertDialog.Builder(this@SingleCommunityActivity)
+                        val dialog_view = this@SingleCommunityActivity.layoutInflater.inflate(R.layout.custom_text_view_dialog, null)
+                        builder.setView(dialog_view)
+                        dialog_view.findViewById<TextView>(R.id.about_comm_content).text = currCommData.about
+                        val dialog = builder.create()
+                        dialog.show()
                         single_comm_dropdown.setSelection(0)
                     }
                     "Advanced" -> {
@@ -233,7 +235,7 @@ class SingleCommunityActivity : AppCompatActivity() {
         post_owner_name.text = viewModel.you.name
         setUpTypeOptions()
         addKeyboardToggleListener { shown ->
-            if(!shown) {
+            if (!shown) {
                 post_text_content_input.clearFocus()
             }
         }
@@ -247,16 +249,32 @@ class SingleCommunityActivity : AppCompatActivity() {
         new_images_slider_create.layoutManager = layoutManager_for_videos
 
         add_image_button.setOnClickListener {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 100)
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    100
+                )
             } else {
                 addMultipleImages()
             }
         }
 
         add_videos_button.setOnClickListener {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 100)
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    100
+                )
             } else {
                 val intent = Intent(Intent.ACTION_GET_CONTENT)
                 intent.type = "*/*"
@@ -269,45 +287,69 @@ class SingleCommunityActivity : AppCompatActivity() {
         }
 
         publish_post_button.setOnClickListener {
-            var postID = ""
-            CoroutineScope(Dispatchers.IO).launch {
-                postID = utils.addPost(Post("",currCommData.id,viewModel.you.uid, post_text_content_input.text.toString(),
-                    mutableListOf(), mutableListOf(), Timestamp.now(), mutableListOf(), currCommData.name, typeOfNewPost), currCommData.id)
+            try {
+                var postID = ""
+                CoroutineScope(Dispatchers.IO).launch {
+                    postID = utils.addPost(
+                        Post(
+                            "",
+                            currCommData.id,
+                            viewModel.you.uid,
+                            post_text_content_input.text.toString(),
+                            mutableListOf(),
+                            mutableListOf(),
+                            Timestamp.now(),
+                            mutableListOf(),
+                            currCommData.name,
+                            typeOfNewPost
+                        ), currCommData.id
+                    )
 
-                if(!imageEncoded.equals("")) {
-                    pushImagesToFirebase(imageEncoded.toUri(), 0, postID, currCommData.id)
-                } else if(imagesEncodedList.size > 0) {
-                    for(index in 0 until imagesEncodedList.size) {
-                        pushImagesToFirebase(imagesEncodedList[index].toUri(), index, postID, currCommData.id)
+                    if (!imageEncoded.equals("")) {
+                        pushImagesToFirebase(imageEncoded.toUri(), 0, postID, currCommData.id)
+                    } else if (imagesEncodedList.size > 0) {
+                        for (index in 0 until imagesEncodedList.size) {
+                            pushImagesToFirebase(
+                                imagesEncodedList[index].toUri(),
+                                index,
+                                postID,
+                                currCommData.id
+                            )
+                        }
+                    }
+                    if (file != null) {
+                        pushFilesToFirebase(file!!, postID, currCommData.id)
+                    } else if (listOfFiles.size > 0) {
+                        for (index in 0 until listOfFiles.size) {
+                            pushFilesToFirebase(listOfFiles[index], postID, currCommData.id)
+                        }
+                    }
+                    viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
+                    //viewModel.allSingleCommPost = utils.getAllPostsOfCommunity(currCommData.id)
+                    withContext(Dispatchers.Main) {
+                        all_posts_single_comm.smoothScrollToPosition(0)
+                        imageEncoded = ""
+                        imagesEncodedList.clear()
+                        if (old_images_slider_create.adapter != null)
+                            old_images_slider_create.adapter!!.notifyDataSetChanged()
+
+                        file = null
+                        listOfFiles.clear()
+                        if (new_images_slider_create.adapter != null)
+                            new_images_slider_create.adapter!!.notifyDataSetChanged()
+
                     }
                 }
-                if(file != null) {
-                    pushFilesToFirebase(file!!, postID, currCommData.id)
-                } else if(listOfFiles.size > 0) {
-                    for(index in 0 until listOfFiles.size) {
-                        pushFilesToFirebase(listOfFiles[index], postID, currCommData.id)
-                    }
-                }
-                viewModel.you = UserRepository(FirestoreUtils()).getCurrentUserAsUser()
-                //viewModel.allSingleCommPost = utils.getAllPostsOfCommunity(currCommData.id)
-                withContext(Dispatchers.Main) {
-                    all_posts_single_comm.smoothScrollToPosition(0)
-                    imageEncoded = ""
-                    imagesEncodedList.clear()
-                    if(old_images_slider_create.adapter != null)
-                        old_images_slider_create.adapter!!.notifyDataSetChanged()
-
-                    file = null
-                    listOfFiles.clear()
-                    if(new_images_slider_create.adapter != null)
-                        new_images_slider_create.adapter!!.notifyDataSetChanged()
-
-                }
+                post_text_content_input.setText("")
+                post_text_content_input.clearFocus()
+                //old_images_slider.adapter = PostImageEditAdapter(mutableListOf(), true, "--blank--")
+                //video_slider.adapter
+            } catch (e: Exception) {
+                var toast = Toast.makeText(this, "Error trying to upload files", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 0)
+                toast.show()
+                Log.d("ERROR_PUBLISH", e.message.toString())
             }
-            post_text_content_input.setText("")
-            post_text_content_input.clearFocus()
-            //old_images_slider.adapter = PostImageEditAdapter(mutableListOf(), true, "--blank--")
-            //video_slider.adapter
         }
     }
 

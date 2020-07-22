@@ -5,8 +5,8 @@
     android:id="@+id/broadcastBottomSheetLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    app:behavior_peekHeight="24dp"
+    android:background="@drawable/background"
+    app:behavior_peekHeight="@dimen/peek_height"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <ImageView
@@ -52,8 +52,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/broadcastHeading"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="-34dp"
-        android:layout_marginEnd="27dp"
+        android:layout_marginTop="-45dp"
+        android:layout_marginEnd="25dp"
         android:backgroundTint="@color/orange"
         android:fontFamily="@font/bold"
         android:shadowColor="@color/orange"
@@ -67,7 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/broadcastHeading"
         android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="28dp"
         android:paddingVertical="12dp"
         android:paddingEnd="30dp"
         app:neumorph_shapeType="pressed"
@@ -79,15 +79,16 @@
             android:layout_height="160dp"
             android:autofillHints=""
             android:fontFamily="@font/light"
+            android:gravity="top|left"
             android:hint="@string/please_enter_your_broadcast_message_here"
             android:inputType="textMultiLine"
             android:lines="8"
             android:maxLines="10"
             android:minLines="4"
-            android:padding="8dp"
             android:paddingHorizontal="12dp"
-            android:textColor="#000000"
-            android:textColorHint="#74768f"
+            android:paddingVertical="12dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
             android:windowSoftInputMode="adjustResize" />
     </soup.neumorphism.NeumorphCardView>
 

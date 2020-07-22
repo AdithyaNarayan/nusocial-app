@@ -27,7 +27,7 @@ class PostImageEditAdapter(var allImage: MutableList<String>, val isCreate: Bool
 
     override fun onBindViewHolder(holder: ImageHolder, position: Int) {
         val imageView = holder.imageView.findViewById(R.id.post_image__edit_item) as ImageView
-        if(imageView != null) Picasso.get().load(allImage[position]).into(imageView)
+        if(imageView != null) Picasso.get().load(allImage[position]).fit().centerCrop().into(imageView)
         holder.imageView.findViewById<Button>(R.id.remove_image).setOnClickListener {
             removeAt(position)
         }

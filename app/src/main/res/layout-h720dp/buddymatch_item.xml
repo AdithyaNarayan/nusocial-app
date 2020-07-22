@@ -10,7 +10,7 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_wrapper"
         android:layout_width="300dp"
-        android:layout_height="610dp"
+        android:layout_height="580dp"
         android:backgroundTint="@color/white"
         android:outlineAmbientShadowColor="@color/colorAccent"
         android:outlineSpotShadowColor="@color/colorAccent"
@@ -29,9 +29,9 @@
 
             <ImageView
                 android:id="@+id/buddy_img"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="290dp"
-                android:layout_gravity="center"
+                android:elevation="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -104,8 +104,8 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/matched_modules_buddymatch"
-                    android:layout_width="270dp"
-                    android:layout_height="56dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="4dp"
                     android:padding="5dp"
@@ -147,8 +147,8 @@
                     android:text="About"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:translationX="-60dp"
-                    android:translationY="-130dp"
+                    android:translationX="-15dp"
+                    android:translationY="-80dp"
                     app:backgroundTint="@null"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="parent" />
@@ -163,8 +163,8 @@
                     android:text="@string/match"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:translationX="54dp"
-                    android:translationY="-130dp"
+                    android:translationX="10dp"
+                    android:translationY="-80dp"
                     app:backgroundTint="@null"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="parent" />

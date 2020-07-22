@@ -24,7 +24,7 @@
 
         </fragment>
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <include layout="@layout/content_broadcast_bottom_sheet"
-        />
+
+    <include layout="@layout/content_broadcast_bottom_sheet" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

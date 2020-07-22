@@ -18,7 +18,6 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.ybq.android.spinkit.SpinKitView
 import com.google.firebase.firestore.FirebaseFirestore
@@ -32,7 +31,6 @@ import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.auth.SignInActivity
 import com.teamnusocial.nusocial.ui.buddymatch.ModulesAdapter
 import com.teamnusocial.nusocial.ui.community.SingleCommunityActivity
-import com.teamnusocial.nusocial.utils.CustomTextViewDialog
 import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.android.synthetic.main.fragment_you.*
@@ -169,9 +167,6 @@ class YouFragment : Fragment() {
             val button_confirm = dialog_view.findViewById<Button>(R.id.confirm_edit_comment_button)
             val button_cancel = dialog_view.findViewById<Button>(R.id.cancel_edit_comment_button)
             val dialog = builder.create()
-            if(dialog.window != null) {
-                dialog.window!!.attributes.windowAnimations = R.style.dialog_animation_fade
-            }
             button_confirm.setOnClickListener {
                 m_Text = input.text.toString()
                 var result = m_Text.split(",")
@@ -325,7 +320,7 @@ class YouFragment : Fragment() {
         }
     }
     fun setUpDropDown() {
-        val listOfActions = arrayOf("Choose an action","Log out", "Show ID", "Update Info")
+        val listOfActions = arrayOf("Choose an action","Log out", "Update Info")
         val arrayAdapter = object: ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, listOfActions) {
             override fun getDropDownView(
                 position: Int,
@@ -369,11 +364,6 @@ class YouFragment : Fragment() {
                         FirebaseAuthUtils().logOut()
                         var intent = Intent(context, SignInActivity::class.java)
                         startActivity(intent)
-                    }
-                    "Show ID" -> {
-                        general_dropdown.setSelection(0)
-                        val textViewDialog = CustomTextViewDialog(requireContext(), viewModel.you.uid, "Your ID")
-                        textViewDialog.show()
                     }
                     "Update Info" -> {
                         general_dropdown.setSelection(0)

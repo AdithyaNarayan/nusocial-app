@@ -48,7 +48,7 @@
                 android:maxWidth="250dp"
                 android:maxHeight="100dp"
                 android:text="--Blank--"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/user_item_profile_pic"

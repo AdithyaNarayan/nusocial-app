@@ -6,18 +6,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.ybq.android.spinkit.SpinKitView
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.MessageConfig
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import kotlinx.android.synthetic.main.fragment_messages.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class MessagesFragment : Fragment() {
 
@@ -45,6 +44,10 @@ class MessagesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val spin_kit = activity?.findViewById<SpinKitView>(R.id.spin_kit)!!
+        val bg_cover = activity?.findViewById<CardView>(R.id.loading_cover)!!
+        spin_kit.visibility = View.VISIBLE
+        bg_cover.visibility = View.VISIBLE
         CoroutineScope(Dispatchers.Main).launch {
             FirestoreUtils().getUserAsDocument(FirestoreUtils().getCurrentUser()!!.uid).get()
                 .addOnCompleteListener {
@@ -55,7 +58,10 @@ class MessagesFragment : Fragment() {
                                 it.result!!["name"] as String
                             )
                         )
-
+                        withContext(Dispatchers.Main) {
+                            spin_kit.visibility = View.GONE
+                            bg_cover.visibility = View.GONE
+                        }
                     }
                 }
         }

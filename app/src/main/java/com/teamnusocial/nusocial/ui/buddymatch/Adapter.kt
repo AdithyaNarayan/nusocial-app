@@ -44,10 +44,10 @@ class Adapter(private val matches: MutableList<User>, val you: User, val context
         val common_friends = holder.layoutView.findViewById<RecyclerView>(R.id.common_friends_buddymatch)
         val more_info_buddymatch = holder.layoutView.findViewById<Button>(R.id.more_info_buddymatch)
         val buddy_match_button = holder.layoutView.findViewById<Button>(R.id.match_button)
-        val wrapper = holder.layoutView.findViewById<ConstraintLayout>(R.id.match_item_wrapper)
+        //val wrapper = holder.layoutView.findViewById<ConstraintLayout>(R.id.match_item_wrapper)
         val common_friends_title = holder.layoutView.findViewById<TextView>(R.id.common_friends_title)
         val curr_match = matches[position]
-        Picasso.get().load(curr_match.profilePicturePath).transform(
+        Picasso.get().load(curr_match.profilePicturePath).centerCrop().transform(
             MaskTransformation(
             context,
             R.drawable.buddymatch_image_transformation

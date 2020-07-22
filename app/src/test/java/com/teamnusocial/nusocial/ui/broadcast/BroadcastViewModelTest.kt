@@ -59,13 +59,16 @@ class BroadcastViewModelTest : TestCase() {
                 "test",
                 Gender.MALE,
                 "",
-                listOf(),
+                mutableListOf(),
                 3,
                 "",
                 LocationLatLng(1.0, 1.0, ""),
                 listOf("test1"),
                 "",
                 Timestamp.now(),
+                mutableListOf(),
+                mutableListOf(),
+                mutableListOf(),
                 mutableListOf()
             )
         )

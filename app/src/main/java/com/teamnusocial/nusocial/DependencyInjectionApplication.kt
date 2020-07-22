@@ -5,6 +5,7 @@ import com.teamnusocial.nusocial.data.repository.AuthUserRepository
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.auth.AuthViewModelFactory
 import com.teamnusocial.nusocial.ui.broadcast.BroadcastViewModelFactory
+import com.teamnusocial.nusocial.ui.broadcast.BuddyMatchViewModelFactory
 import com.teamnusocial.nusocial.utils.FirebaseAuthUtils
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import org.kodein.di.Kodein
@@ -28,6 +29,11 @@ class DependencyInjectionApplication : Application(), KodeinAware {
         bind() from singleton { FirestoreUtils() }
         bind() from singleton { UserRepository(instance()) }
         bind() from provider { BroadcastViewModelFactory(instance()) }
+
+        // buddymatch dependency tree
+        //bind() from singleton { FirestoreUtils() }
+        //bind() from singleton { UserRepository(instance()) }
+        bind() from provider { BuddyMatchViewModelFactory(instance()) }
 
     }
 }

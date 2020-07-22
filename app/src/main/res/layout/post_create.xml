@@ -46,7 +46,7 @@
                 android:background="@drawable/spinner_bg"
                 android:dropDownWidth="200dp"
                 android:paddingRight="14dp"
-                android:popupBackground="@color/blue_transparent"
+                android:popupBackground="@color/purple_trans"
                 android:popupElevation="3dp"
                 android:stateListAnimator="@drawable/spinner_sla"
                 app:layout_constraintEnd_toEndOf="parent"

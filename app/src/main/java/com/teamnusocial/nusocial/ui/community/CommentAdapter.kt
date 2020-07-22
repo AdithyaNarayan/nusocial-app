@@ -1,6 +1,7 @@
 package com.teamnusocial.nusocial.ui.community
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.view.Gravity
@@ -23,7 +24,6 @@ import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
 import com.teamnusocial.nusocial.ui.you.CustomSpinner
 import com.teamnusocial.nusocial.ui.you.OtherUserActivity
-import com.teamnusocial.nusocial.utils.CustomTextInputDialog
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import com.teamnusocial.nusocial.utils.getTimeAgo
 import kotlinx.coroutines.CoroutineScope
@@ -119,8 +119,31 @@ class CommentAdapter(val context_: Context, options: FirestoreRecyclerOptions<Co
                 ) {
                     when (allOptions.get(position)) {
                         "Edit" -> {
-                           val inputDialog = CustomTextInputDialog(context_, model.textContent, model.id, model.parentPostID, parentPost.communityID)
-                            inputDialog.show()
+                            val builder: AlertDialog.Builder = AlertDialog.Builder(context_)
+                            val dialog_view = context_.layoutInflater.inflate(R.layout.custom_dialog, null)
+                            builder.setView(dialog_view)
+                            dialog_view.findViewById<TextView>(R.id.dialog_title).text = "Edit comment"
+                            val input = dialog_view.findViewById<EditText>(R.id.edit_comment_input)
+                            val button_confirm = dialog_view.findViewById<Button>(R.id.confirm_edit_comment_button)
+                            val button_cancel = dialog_view.findViewById<Button>(R.id.cancel_edit_comment_button)
+                            val dialog = builder.create()
+                            button_confirm.setOnClickListener {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    SocialToolsRepository(FirestoreUtils()).editComment(
+                                        input.text.toString(),
+                                        model.id,
+                                        model.parentPostID,
+                                        model.parentCommunityID
+                                    )
+                                    withContext(Dispatchers.Main) {
+                                        dialog.dismiss()
+                                    }
+                                }
+                            }
+                            button_cancel.setOnClickListener {
+                                dialog.dismiss()
+                            }
+                            dialog.show()
                             dropdown_options.setSelection(0)
                         }
                         "Delete" -> {

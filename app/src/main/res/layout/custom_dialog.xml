@@ -4,12 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="357dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/post_bg"
+        android:background="@drawable/background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,50 +21,52 @@
             android:id="@+id/dialog_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
             android:layout_marginTop="16dp"
             android:text="--blank--"
             android:textColor="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.061"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/cancel_edit_comment_button"
-            android:layout_width="78dp"
-            android:layout_height="37dp"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/orange"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:background="@drawable/btnglowpurple"
             android:text="Cancel"
             android:textSize="8dp"
             app:layout_constraintEnd_toStartOf="@+id/confirm_edit_comment_button"
-            app:layout_constraintHorizontal_bias="0.945"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_comment_input" />
+            app:layout_constraintTop_toBottomOf="@+id/edit_comment_input_wrapper" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/confirm_edit_comment_button"
-            android:layout_width="78dp"
-            android:layout_height="37dp"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/blue"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:background="@drawable/button_glow_pink"
             android:text="OK"
             android:textSize="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.931"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_comment_input" />
+            app:layout_constraintTop_toBottomOf="@+id/edit_comment_input_wrapper" />
 
-        <EditText
-            android:id="@+id/edit_comment_input"
-            android:layout_width="320dp"
-            android:layout_height="52dp"
-            android:textColor="@color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/edit_comment_input_wrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.486"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/dialog_title"
+            app:neumorph_shapeType="pressed">
+
+            <EditText
+                android:id="@+id/edit_comment_input"
+                android:layout_width="320dp"
+                android:layout_height="52dp"
+                android:padding="12dp"
+                android:textColor="@color/black" />
+        </soup.neumorphism.NeumorphCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,24 +1,30 @@
 package com.teamnusocial.nusocial.ui.buddymatch
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.squareup.picasso.Picasso
 import com.teamnusocial.nusocial.data.model.User
+import com.teamnusocial.nusocial.data.repository.UserRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 
-class BuddyMatchViewModel : ViewModel() {
+class BuddyMatchViewModel(val repo: UserRepository) : ViewModel() {
     var matchedUsers: MutableLiveData<MutableList<User>> = MutableLiveData(mutableListOf())
     var images: MutableList<String> = mutableListOf()
     var you: MutableLiveData<User> = MutableLiveData(User())
-    fun updateMatchedUsers(list: MutableList<User>) {
-        matchedUsers.value = list.toMutableList()
-        if (list.size > 0) {
-            matchedUsers.notifyListener()
+    suspend fun updateMatchedUsers() = coroutineScope {
+        val list = repo.getUsers().toMutableList()
+        withContext(Dispatchers.Main) {
+            if (list.size > 0) {
+                matchedUsers.value = list
+                matchedUsers.notifyListener()
+            }
         }
     }
-    fun updateYou(user: User) {
-        you.value = user
+    suspend fun updateYou() = coroutineScope {
+        withContext(Dispatchers.Main) {
+            you.value = repo.getCurrentUserAsUser()
+        }
     }
 }
 

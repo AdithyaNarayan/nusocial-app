@@ -20,6 +20,7 @@ import com.google.firebase.firestore.Query
 import com.gpfreetech.neumorphism.Neumorphism
 import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Post
+import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
 import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.buddymatch.OffsetHelperHorizontal
@@ -27,7 +28,10 @@ import com.teamnusocial.nusocial.ui.buddymatch.OffsetHelperVertical
 import com.teamnusocial.nusocial.utils.FirestoreUtils
 import com.teamnusocial.nusocial.utils.KeyboardToggleListener
 import kotlinx.android.synthetic.main.fragment_community.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CommunityFragment : Fragment() {
     private lateinit var viewModel: CommunityViewModel
@@ -54,8 +58,6 @@ class CommunityFragment : Fragment() {
                 viewModel.allPosts.addAll(utils.getPostsOfCommunity(commID))
             }
             updateUI()
-            spin_kit.visibility = View.GONE
-            bg_cover.visibility = View.GONE
         }
 
         search_button.setOnClickListener {
@@ -66,18 +68,36 @@ class CommunityFragment : Fragment() {
     }
 
     private fun updateUI() {
-        val allPosts = viewModel.allPosts.sortedBy { it.timeStamp }.reversed()
-        val postAdapter =
-            PostNewsFeedAdapter(requireContext(), viewModel.you, allPosts.toMutableList())
+        val allPosts = viewModel.allPosts.sortedWith(PostComparator).toMutableList()
         val layoutManager = LinearLayoutManager(context)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         personal_posts.layoutManager = layoutManager
-        val offset = resources.getDimension(R.dimen.offset_vertical_newsfeed)
-        personal_posts.addItemDecoration(OffsetHelperVertical(offset.toInt()))
-        personal_posts.adapter = postAdapter
+        var userTable = HashMap<String, User>()
+        val spin_kit = activity?.findViewById<SpinKitView>(R.id.spin_kit)!!
+        val bg_cover = activity?.findViewById<CardView>(R.id.loading_cover)!!
+        CoroutineScope(Dispatchers.IO).launch {
+            for(post in allPosts) {
+                if(!userTable.containsKey(post.ownerUid)) {
+                    val owner = UserRepository(FirestoreUtils()).getUser(post.ownerUid)
+                    userTable.put(post.ownerUid, owner)
+                }
+            }
+            withContext(Dispatchers.Main) {
+                val postAdapter =
+                    PostNewsFeedAdapter(requireContext(), viewModel.you, allPosts, userTable)
+                val offset = resources.getDimension(R.dimen.offset_vertical_newsfeed)
+                personal_posts.addItemDecoration(OffsetHelperVertical(offset.toInt()))
+                personal_posts.adapter = postAdapter
+                personal_posts.isNestedScrollingEnabled = false
+                spin_kit.visibility = View.GONE
+                bg_cover.visibility = View.GONE
+            }
+        }
         addKeyboardToggleListener { shown ->
             if(!shown) {
-                search_term.clearFocus()
+                if(search_term != null) {
+                    search_term.clearFocus()
+                }
             }
         }
     }

@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape android:shape="rectangle"/>
-    </item>
-    <item
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle" >
+    <gradient
+        android:angle="0"
+        android:startColor="#6a11cb"
+        android:endColor="#2575fc"
+        android:type="linear"
+        />
+    <padding
+        android:left="0dp"
+        android:top="0dp"
+        android:right="0dp"
         android:bottom="0dp"
-        android:left="-100dp"
-        android:right="-100dp"
-        android:top="-80dp">
-        <shape android:shape="oval">
-            <solid android:color="@color/colorPrimary" />
-        </shape>
-    </item>
-</layer-list>
+        />
+    <size
+        android:width="270dp"
+        android:height="60dp"
+        />
+</shape>

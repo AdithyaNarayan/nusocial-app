@@ -1,6 +1,7 @@
 package com.teamnusocial.nusocial.ui.broadcast
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,9 +15,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.RelativeLayout
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -41,6 +44,7 @@ import kotlinx.android.synthetic.main.fragment_broadcast.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -53,7 +57,7 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
     private val factory by instance<BroadcastViewModelFactory>()
     private lateinit var broadcastViewModel: BroadcastViewModel
 
-    private lateinit var sheetBehavior: BottomSheetBehavior<RelativeLayout>
+    lateinit var sheetBehavior: BottomSheetBehavior<RelativeLayout>
 
     private lateinit var googleMap: GoogleMap
     private lateinit var marker: Marker
@@ -152,13 +156,16 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
 
         broadcastRootView.setOnClickListener {
             if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+                broadcastMessageText.clearFocus()
                 sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             } else sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED
         }
         broadcastArrow.setOnClickListener {
             if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
                 sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            } else sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED
+            } else if(sheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
+                sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
         }
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -206,6 +213,11 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
         })
 
         sendBroadcastButton.setOnClickListener {
+            val view = activity?.currentFocus
+            view?.let { v ->
+                val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(v.windowToken, 0)
+            }
             CoroutineScope(Dispatchers.IO).launch {
                 Log.d(
                     "BROADCAST",
@@ -234,6 +246,11 @@ class BroadcastFragment : Fragment(), KodeinAware, OnMapReadyCallback {
                         )
                             .show()
                     }
+                }
+                withContext(Dispatchers.Main) {
+                    broadcastMessageText.setText("")
+                    broadcastMessageText.clearFocus()
+                    sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                 }
             }
         }

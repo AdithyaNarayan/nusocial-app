@@ -9,7 +9,6 @@ import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
 import android.widget.*
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +17,6 @@ import com.teamnusocial.nusocial.R
 import com.teamnusocial.nusocial.data.model.Post
 import com.teamnusocial.nusocial.data.model.User
 import com.teamnusocial.nusocial.data.repository.SocialToolsRepository
-import com.teamnusocial.nusocial.data.repository.UserRepository
 import com.teamnusocial.nusocial.ui.you.CustomSpinner
 import com.teamnusocial.nusocial.ui.you.OtherUserActivity
 import com.teamnusocial.nusocial.utils.FirestoreUtils
@@ -28,25 +26,22 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import soup.neumorphism.NeumorphCardView
 
-class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: MutableList<Post>): RecyclerView.Adapter<PostNewsFeedAdapter.PostHolder>() {
+class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: MutableList<Post>, val userTable: HashMap<String, User>): RecyclerView.Adapter<PostNewsFeedAdapter.PostHolder>() {
     private val viewPool = RecyclerView.RecycledViewPool()
     private val utils = SocialToolsRepository(FirestoreUtils())
-    class PostHolder(val layoutView: ConstraintLayout): RecyclerView.ViewHolder(layoutView)
+    class PostHolder(val layoutView: NeumorphCardView): RecyclerView.ViewHolder(layoutView)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostHolder {
-        val layoutView = LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false) as ConstraintLayout
+        val layoutView = LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false) as NeumorphCardView
         return PostHolder(
             layoutView
         )
     }
 
     override fun onBindViewHolder(holder: PostHolder, position: Int) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val owner = UserRepository(FirestoreUtils()).getUser(allPosts[position].ownerUid)
-            withContext(Dispatchers.Main) {
-                updatePostFunctions(owner, holder, position, allPosts[position], position)
-            }
-        }
+            val owner = userTable.get(allPosts[position].ownerUid)!!
+            updatePostFunctions(owner, holder, position, allPosts[position], position)
     }
     fun updatePostFunctions(owner: User, holder: PostHolder, position: Int, model: Post, model_position: Int) {
         val context_ = context
@@ -106,7 +101,7 @@ class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: Mut
         imageSlider.apply {
             layoutManager = childLayoutManager
             adapter = postImageAdapter
-            setRecycledViewPool(viewPool)
+            //setRecycledViewPool(viewPool)
         }
         val postFileAdapter =
             PostFileEditAdapter(currPost.videoList.map{item -> item.toUri()}.toMutableList(),false,false, currPost.id,context_)
@@ -115,7 +110,7 @@ class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: Mut
         fileSlider.apply {
             layoutManager = childLayoutManager_forFiles
             adapter = postFileAdapter
-            setRecycledViewPool(viewPool)
+            //setRecycledViewPool(viewPool)
         }
         like_button.isChecked = model.userLikeList.contains(you.uid)
         //Log.d("TEST_ID", "here is ${you.uid} ans ${like_button.isChecked}")
@@ -158,7 +153,7 @@ class PostNewsFeedAdapter(val context: Context, val you: User, val allPosts: Mut
 
         /**set up dropdown**/
         var allOptions = arrayListOf<String>("Choose an action","Edit","Delete")
-        if(you.uid.equals(owner.uid)) {
+        if(you.uid.equals(model.ownerUid)) {
             val arrayAdapter = object :
                 ArrayAdapter<String>(context_, android.R.layout.simple_spinner_item, allOptions) {
                 override fun getDropDownView(

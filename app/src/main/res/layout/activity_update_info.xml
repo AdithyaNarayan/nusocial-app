@@ -80,13 +80,13 @@
             app:layout_constraintTop_toBottomOf="@+id/changeYearOfStudyTitle" />
 
         <soup.neumorphism.NeumorphButton
-            style="@style/Widget.Neumorph.Button"
             android:id="@+id/update_button"
+            style="@style/Widget.Neumorph.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:textColor="@color/blue_transparent"
             android:text="Update"
+            android:textColor="@color/purple"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.509"
             app:layout_constraintStart_toStartOf="parent"

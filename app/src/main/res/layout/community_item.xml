@@ -35,7 +35,7 @@
               android:stateListAnimator="@animator/scale"
               android:text="--Blank--"
               android:textAlignment="center"
-              android:textColor="@color/blue"
+              android:textColor="@color/black"
               android:textSize="17sp"
               app:layout_constraintBottom_toBottomOf="parent"
               app:layout_constraintEnd_toEndOf="parent"

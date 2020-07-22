@@ -128,7 +128,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="12dp"
                 android:text="Add users"
-                android:textColor="@color/blue"
+                android:textColor="@color/black"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -162,7 +162,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="12dp"
                 android:text="Remove users"
-                android:textColor="@color/blue"
+                android:textColor="@color/black"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/admins_to_add" />
@@ -174,7 +174,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="14dp"
                 android:text="Add admins"
-                android:textColor="@color/blue"
+                android:textColor="@color/black"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/users_to_add" />
@@ -189,7 +189,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/users_to_remove"
-                app:neumorph_backgroundColor="@color/blue_transparent" />
+                app:neumorph_backgroundColor="@color/purple" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </soup.neumorphism.NeumorphCardView>
@@ -274,7 +274,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="116dp"
                 android:text="About"
-                android:textColor="@color/blue"
+                android:textColor="@color/black"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/changeNameTitle" />
@@ -286,7 +286,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="18dp"
                 android:text="Name"
-                android:textColor="@color/blue"
+                android:textColor="@color/black"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -327,7 +327,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/about_input_wrapper"
-                app:neumorph_backgroundColor="@color/blue_transparent" />
+                app:neumorph_backgroundColor="@color/purple_trans" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </soup.neumorphism.NeumorphCardView>

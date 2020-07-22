@@ -68,11 +68,12 @@ class LumiNUSActivity : AppCompatActivity() {
                             if (it.isSuccessful) {
                                 val docRef = FirebaseFirestore.getInstance().collection("users")
                                     .document(userID)
+
                                 docRef.get().addOnCompleteListener {snapshot ->
                                     if (snapshot.isSuccessful) {
-                                        if (snapshot.result!!["id"] == null) {
+                                        /*if (snapshot.result!!["id"] == null) {
                                             docRef.set(user)
-                                        }
+                                        }*/
                                     } else {
                                         docRef.set(user)
                                     }
