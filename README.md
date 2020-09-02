@@ -100,44 +100,10 @@
 
     Implementation: Each user is assigned a compatibility score with respect to other users. The score is based on matched modules, major and year of study. We also analyze users’ buddy list to determine their preferences and give additional scores to users who match those preferences. After calculating the score, we rank all the users, put them into partitions of 10 and shuffle them in order to prevent degrading quality of matches.
 
-  The function that analyzes current list of buddies:
-
-
-    
-
-<p id="gdcalert2" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image2.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert3">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image2.png "image_tooltip")
-
-
-  The function that ranks users, partitions and shuffles them :
-
-
-    
-
-<p id="gdcalert3" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image3.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert4">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image3.png "image_tooltip")
-
-
-
     **Location-based Broadcast:** Students can send out a broadcast which will reach all users of the app within a specified radius from the sending user. This way, you can socialize with those nearby and find out who they are. This feature is more useful in halls and RCs and can also be used as an alert system. Other potential extensions include a real-time location tracker which notifies the user when another user has passed you in real life. We have also taken privacy into consideration and made this an opt-in feature.
 
 
-    Implementation: We use k-nearest neighbours classifier to classify the users into location clusters and identify which cluster a specific user belongs to. Then we query only the users in the assigned cluster and not all the users for optimization. The user can then send all those users nearby a broadcast.
-
-
-     The function that puts users to clusters:
-
-
-    
-
-<p id="gdcalert4" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image4.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert5">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image4.png "image_tooltip")
+    Implementation: We use k-nearest neighbours classifier to classify the users into location clusters and identify which cluster a specific user belongs to. Then we query only the users in the assigned cluster and not all the users for optimization. The user can then send all those users nearby a broadcast
 
 
 
@@ -150,93 +116,13 @@
     **Web-based Administrator Portal:** The professors and other module administrators (admins) will be able to monitor the statistics of each community and post announcements and other features directly from the web as they will have many messages and other requests and the scale of a mobile app will not fit their purpose or utility.
 
 
-    Messaging: 
-
-<p id="gdcalert5" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image5.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert6">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image5.png "image_tooltip")
-
-
-
-    Messaging channels are divided into individual and group chat. File/Image/Text messages can be sent here.
-
-
-    Make announcements:
-
-
-    
-
-<p id="gdcalert6" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image6.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert7">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image6.png "image_tooltip")
-
-
-
-    Admins can see all posts in the Community page. They can also see all members and create announcements here (uploading image/files is also available)
-
-
-     Statistics:
-
-
-    
-
-<p id="gdcalert7" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image7.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert8">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image7.png "image_tooltip")
-
-
-
-    In Dashboard, admins can see overall statistics of their communities and take notes.
-
-
 # **UI/UX Designs**
 
 The overall UI design for the android app is a combination of Neumorphism and flat designs. Neumorphism is a new UI so it is rarely seen on mobile apps. However, we adopted it since we wanted to make our app unique and evoke curiosity in users towards the unique-looking app. As using Neumorphism alone might make the app look ‘heavy’, we also used normal flat components for a balanced UX.
 
 Apart from Neumorphism and flat designs, some of the app’s buttons follow the Synthwave design which we think would be a nice touch to distinguish the buttons from other components.
 
-Gradient colors were also used for some items to highlight them.
-
-Neumorphism design: 
-
-
-
-<p id="gdcalert8" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image8.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert9">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image8.png "image_tooltip")
-
-
-<p id="gdcalert9" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image9.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert10">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image9.png "image_tooltip")
-
-
-<p id="gdcalert10" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image10.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert11">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image10.png "image_tooltip")
-
-
-A Synthwave button and how it looks on the UI: 
-
-
-
-<p id="gdcalert11" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image11.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert12">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image11.png "image_tooltip")
-
-
-<p id="gdcalert12" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image12.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert13">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image12.png "image_tooltip")
-
+Gradient colors were also used for some items to highlight them
 
 **Competitor Analysis**
 
@@ -280,12 +166,6 @@ Most of the code in the app is run asynchronously so as to increase the speed of
 # 
     The UI management and responsive tasks are managed by the Activity class of the View. The data processing has been moved into a ViewModel class. Using a ViewModel class makes sure that View has only a single responsibility and the data related to a class survives lifecycle changes and doesn't have to be called again (this prevents it from being lazy) from the database. Since View is dependent on ViewModel, we use LiveData (an observable variable) in View so that the View can decide what happens when the data changes and it also prevents cyclic dependency as the view states what should happen and not the ViewModel. Repository class is used to manage the different backend APIs and serves as the single source of truth in case we need to decide from which API to get the data from. We have different Util classes to serve as a wrapper class to interface with the different APIs. We also plan to use dependency injection to make sure that each class is only dependent on its immediate dependency and not all the classes below it.
 
-
-
-<p id="gdcalert13" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image13.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert14">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image13.png "image_tooltip")
 
 
 **Software Engineering Practices**
@@ -538,15 +418,7 @@ Our API calls and UI building takes place fully asynchronously. We managed to ac
 
 Apart from creating our own Bridge API, we also use the API for enhancing the security of our authentication systems. We mint our own OAuth2 JSON Web Tokens for users logins. Each user is assigned a unique token on every sign in, which has the user ID (usually NUSNET ID) embedded in it. Hence, we don’t store any of the user’s login passwords. 
 
-**UML Flow Diagram**
 
-
-
-<p id="gdcalert15" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image15.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert16">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image15.png "image_tooltip")
- \
 **Product Prototype**
 
 Main ap’s [MVP ](https://drive.google.com/file/d/1-kyqT-T4XP501JHiTm6yxbjZozecLtSQ/view?usp=sharing)as of 26 July, 2020
@@ -568,204 +440,6 @@ Admin web’s [link](https://nusocial-admin.herokuapp.com/login) as of 26 July, 
 5. LumiNUS and NUSMods API
 6. Git and GitHub
 7. Adobe XD
-
-
-# **TIMELINE**
-
-
-<table>
-  <tr>
-   <td>Time
-   </td>
-   <td>Description
-   </td>
-   <td>Assignee
-   </td>
-  </tr>
-  <tr>
-   <td>10 May 
-   </td>
-   <td>Planning 
-   </td>
-   <td>Both
-   </td>
-  </tr>
-  <tr>
-   <td>11 May – 15 May
-   </td>
-   <td>Prototyping using Adobe XD
-   </td>
-   <td>Both
-   </td>
-  </tr>
-  <tr>
-   <td>16 May 
-   </td>
-   <td>Requesting permission to use API from NUS
-   </td>
-   <td>Orbitee 2
-   </td>
-  </tr>
-  <tr>
-   <td>17 May – 20 May
-   </td>
-   <td>Planning the Admin web’s front-end structure
-<p>
-Planning the software engineering architecture of the app
-   </td>
-   <td>Orbitee 1
-<p>
-Orbitee 2
-   </td>
-  </tr>
-  <tr>
-   <td>21 May – 28 May 
-   </td>
-   <td>Implementing the admin web’s front-end
-<p>
-Implementing the authentication infrastructure using Firebase
-   </td>
-   <td>Orbitee 1
-<p>
-Orbitee 2
-   </td>
-  </tr>
-  <tr>
-   <td>29 May – 1 June
-   </td>
-   <td>Working on milestone 1
-   </td>
-   <td>Both
-   </td>
-  </tr>
-  <tr>
-   <td>2 June – 5 June
-   </td>
-   <td>BuddyMatch: Frontend UI Design
-<p>
-Location-based Broadcast: Developed the real-time background service to fetch users location
-   </td>
-   <td>Orbitee 1
-<p>
-Orbitee 2
-   </td>
-  </tr>
-  <tr>
-   <td>6 June - 9 June
-   </td>
-   <td>BuddyMatch: Rank-based algorithm design
-<p>
-Location-based Broadcast: k-nearest neighbour classifier algorithm
-   </td>
-   <td>Orbitee 1
-<p>
-Orbitee 2
-   </td>
-  </tr>
-  <tr>
-   <td>10 June - 12 June
-   </td>
-   <td>BuddyMatch: Testing using dummy data
-<p>
-Location-based Broadcast: Testing using dummy data
-<p>
-Messaging: setup basic real-time messaging feature to compliment BuddyMatch and Broadcast features
-   </td>
-   <td>Orbitee 1
-<p>
-Orbitee 2
-   </td>
-  </tr>
-  <tr>
-   <td>13 June – 16 June
-   </td>
-   <td>Polish the user interface and ironed out bugs.
-<p>
-Unit testing of completed features
-   </td>
-   <td>Orbitee 1
-<p>
-Orbitee 2
-   </td>
-  </tr>
-  <tr>
-   <td>17 June - 20 June
-   </td>
-   <td>Community features: Designed models and data structure for posts
-   </td>
-   <td>Both
-   </td>
-  </tr>
-  <tr>
-   <td>21 June - 24 June
-   </td>
-   <td>Community features: Finalised UI 
-<p>
-Community features: Finish algorithm for posting and commenting
-   </td>
-   <td>Both
-   </td>
-  </tr>
-  <tr>
-   <td>24 June - 27 June
-   </td>
-   <td>Firebase Cloud Messaging for notifications for Community/Messages
-   </td>
-   <td>Both
-   </td>
-  </tr>
-  <tr>
-   <td>28 June – 4 July
-   </td>
-   <td>Finalising App UI and ironing out bugs
-   </td>
-   <td>Both
-   </td>
-  </tr>
-  <tr>
-   <td>5 July – 12 July
-   </td>
-   <td>Integrating web statistics with backend
-<p>
-Integrating web community with backend
-   </td>
-   <td>Orbitee 1
-<p>
-Orbitee 2
-   </td>
-  </tr>
-  <tr>
-   <td>13 July - 17 July
-   </td>
-   <td>Integrating web messaging with backend
-<p>
-Complete Unit testing and integration testing.
-   </td>
-   <td>Orbitee 1
-<p>
-Orbitee 2
-   </td>
-  </tr>
-  <tr>
-   <td>18 July – 22 July
-   </td>
-   <td>UI testing using Espresso
-   </td>
-   <td>Both
-   </td>
-  </tr>
-  <tr>
-   <td>20 July - 30 July
-   </td>
-   <td>Rollout beta build for testing
-<p>
-Testing and refinement phase using user feedback
-   </td>
-   <td>Both
-   </td>
-  </tr>
-</table>
-
 
 **Qualifications**
 
