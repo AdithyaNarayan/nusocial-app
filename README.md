@@ -26,10 +26,9 @@
 
 
 
-<blockquote class="imgur-embed-pub" lang="en" data-id="a/misCpOB" data-context="false" ><a href="//imgur.com/a/misCpOB"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
 
 
-![alt_text](images/image1.png "image_tooltip")
+![poster](https://imgur.com/a/misCpOB "image_tooltip")
 
 
 
