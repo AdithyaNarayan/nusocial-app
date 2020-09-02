@@ -26,7 +26,7 @@
 
 
 
-<p id="gdcalert1" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image1.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert2">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/misCpOB" data-context="false" ><a href="//imgur.com/a/misCpOB"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
 
 
 ![alt_text](images/image1.png "image_tooltip")
@@ -814,7 +814,7 @@ Testing and refinement phase using user feedback
 
         •   Academic Achievements
 
-– 	Achieved a CAP of 5.00 in Semester 1
+            – 	Achieved a CAP of 5.00 in Semester 1
 
 
     **Teamwork**
