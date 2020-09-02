@@ -28,7 +28,7 @@
 
 
 
-![poster](https://imgur.com/a/misCpOB "image_tooltip")
+![poster](https://imgur.com/a/misCpOB)
 
 
 
