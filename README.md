@@ -1,7 +1,3 @@
-# 
-    **Milestone 3 README**
-
-
 # **INDEX**
 
 
@@ -12,53 +8,30 @@
 # **PROJECT OVERVIEW**
 
 
-# **Team Name**
-
-
-    NUSocial
-
-
-# 
-    **Proposed Level of Achievement**
-
-
-    Artemis
-
-
-
-
+# Team Name
+NUSocial
+# Proposed Level of Achievement
+Artemis
 
 ![poster](https://i.imgur.com/Y91Jxrc.png)
 
+# Motivation
+
+After studying in NUS for nearly a year, we found out that a platform where students can monitor their schedule, group projects and study plans is of great importance. NUS currently has LumiNUS and NUSMods but there should be a better platform which combines both and offers a wider range of services to students. Moreover, the sharing of study materials is made difficult with just these 2 platforms. NUSocial is therefore created for the sake of students who desire an all-in-one app to work hard and play hard.
 
 
-# 
-    **Motivation**
+# Project Scope
+Sentence Version: A platform for social and academic lives of university students.
 
-
-    After studying in NUS for nearly a year, we found out that a platform where students can monitor their schedule, group projects and study plans is of great importance. NUS currently has LumiNUS and NUSMods but there should be a better platform which combines both and offers a wider range of services to students. Moreover, the sharing of study materials is made difficult with just these 2 platforms. NUSocial is therefore created for the sake of students who desire an all-in-one app to work hard and play hard.
-
-
-# 
-    **Project Scope**
-
-
-    Sentence Version: A platform for social and academic lives of university students.
-
-
-    NUSocial will bring about a greater sense of belonging to NUS students by enhancing the social and academic life of students in NUS. It facilitates the forging of useful connections among students and helps build a stronger student community. Students will be able to share useful notes and tips and interact with all others in a particular module. Especially in times like these, it would be very useful and serve as a ’virtual classroom’. Students would also be able to find like-minded individuals to study with.
+NUSocial will bring about a greater sense of belonging to NUS students by enhancing the social and academic life of students in NUS. It facilitates the forging of useful connections among students and helps build a stronger student community. Students will be able to share useful notes and tips and interact with all others in a particular module. Especially in times like these, it would be very useful and serve as a ’virtual classroom’. Students would also be able to find like-minded individuals to study with.
 
 
 # **Target User Demographic**
+User A is a freshman student at NUS, aged 17-21. They have just finished schooling and are excited to start their new university lives. Hence, they want to socialize and make friends so that they can make the most of their university lives from an academic and social perspective.
 
 
-    User A is a freshman student at NUS, aged 17-21. They have just finished schooling and are excited to start their new university lives. Hence, they want to socialize and make friends so that they can make the most of their university lives from an academic and social perspective.
-
-
-    **Vision**
-
-
-    We need an active user base for a social network to be sustainable. The app will be rolled out on the google play store. We will start the outreach plan by sending an email to NUS Students and Staff about our app.  Feedback will be collected and the app will be continuously updated with the feedback taken into consideration. As the social network grows, many individuals with malicious intent will try to take advantage of the platform. They may try to spread fake news or carry out fraud. We will closely monitor such behaviour and immediately intervene. After successful deployment in NUS, we plan to extend this app to work with some other universities as well. If the app is highly successful, we would cater to iOS and Web users.
+# Vision
+We need an active user base for a social network to be sustainable. The app will be rolled out on the google play store. We will start the outreach plan by sending an email to NUS Students and Staff about our app.  Feedback will be collected and the app will be continuously updated with the feedback taken into consideration. As the social network grows, many individuals with malicious intent will try to take advantage of the platform. They may try to spread fake news or carry out fraud. We will closely monitor such behaviour and immediately intervene. After successful deployment in NUS, we plan to extend this app to work with some other universities as well. If the app is highly successful, we would cater to iOS and Web users.
 
 
 # **User Stories**
@@ -90,30 +63,17 @@
 
 
 # **Features**
+The app serves as a platform for students to interact with each other.
 
+**BuddyMatch:** Students having similar timetables and similar modules can find each other easily and form study groups. 
+Implementation: Each user is assigned a compatibility score with respect to other users. The score is based on matched modules, major and year of study. We also analyze users’ buddy list to determine their preferences and give additional scores to users who match those preferences. After calculating the score, we rank all the users, put them into partitions of 10 and shuffle them in order to prevent degrading quality of matches.
 
-    The app serves as a platform for students to interact with each other.
+**Location-based Broadcast:** Students can send out a broadcast which will reach all users of the app within a specified radius from the sending user. This way, you can socialize with those nearby and find out who they are. This feature is more useful in halls and RCs and can also be used as an alert system. Other potential extensions include a real-time location tracker which notifies the user when another user has passed you in real life. We have also taken privacy into consideration and made this an opt-in feature.
+Implementation: We use k-nearest neighbours classifier to classify the users into location clusters and identify which cluster a specific user belongs to. Then we query only the users in the assigned cluster and not all the users for optimization. The user can then send all those users nearby a broadcast
 
+**Communities:** All students taking a particular module will be a part of a module community. They will be able to post questions, answer some other questions, share notes and create chat rooms for group projects. Other communities for CCAs and Interest Groups can be formed too! Communities’ admins have advanced options including updating basic information about the community ( name, about) and members management( remove/ add users, add admins). The web-based admin portal below can also be used for more extensive admin functions.
 
-    **BuddyMatch:** Students having similar timetables and similar modules can find each other easily and form study groups. 
-
-
-    Implementation: Each user is assigned a compatibility score with respect to other users. The score is based on matched modules, major and year of study. We also analyze users’ buddy list to determine their preferences and give additional scores to users who match those preferences. After calculating the score, we rank all the users, put them into partitions of 10 and shuffle them in order to prevent degrading quality of matches.
-
-    **Location-based Broadcast:** Students can send out a broadcast which will reach all users of the app within a specified radius from the sending user. This way, you can socialize with those nearby and find out who they are. This feature is more useful in halls and RCs and can also be used as an alert system. Other potential extensions include a real-time location tracker which notifies the user when another user has passed you in real life. We have also taken privacy into consideration and made this an opt-in feature.
-
-
-    Implementation: We use k-nearest neighbours classifier to classify the users into location clusters and identify which cluster a specific user belongs to. Then we query only the users in the assigned cluster and not all the users for optimization. The user can then send all those users nearby a broadcast
-
-
-
-    **Communities:** All students taking a particular module will be a part of a module community. They will be able to post questions, answer some other questions, share notes and create chat rooms for group projects. Other communities for CCAs and Interest Groups can be formed too!
-
-
-    Communities’ admins have advanced options including updating basic information about the community ( name, about) and members management( remove/ add users, add admins). The web-based admin portal below can also be used for more extensive admin functions.
-
-
-    **Web-based Administrator Portal:** The professors and other module administrators (admins) will be able to monitor the statistics of each community and post announcements and other features directly from the web as they will have many messages and other requests and the scale of a mobile app will not fit their purpose or utility.
+**Web-based Administrator Portal:** The professors and other module administrators (admins) will be able to monitor the statistics of each community and post announcements and other features directly from the web as they will have many messages and other requests and the scale of a mobile app will not fit their purpose or utility.
 
 
 # **UI/UX Designs**
@@ -157,22 +117,17 @@ Most of the code in the app is run asynchronously so as to increase the speed of
 **SOFTWARE ENGINEERING**
 
 **Software Engineering Architecture**
+The software architecture of the app has been planned to keep scalability and testability in mind.
 
-
-# 
-    The software architecture of the app has been planned to keep scalability and testability in mind.
-
-
-# 
-    The UI management and responsive tasks are managed by the Activity class of the View. The data processing has been moved into a ViewModel class. Using a ViewModel class makes sure that View has only a single responsibility and the data related to a class survives lifecycle changes and doesn't have to be called again (this prevents it from being lazy) from the database. Since View is dependent on ViewModel, we use LiveData (an observable variable) in View so that the View can decide what happens when the data changes and it also prevents cyclic dependency as the view states what should happen and not the ViewModel. Repository class is used to manage the different backend APIs and serves as the single source of truth in case we need to decide from which API to get the data from. We have different Util classes to serve as a wrapper class to interface with the different APIs. We also plan to use dependency injection to make sure that each class is only dependent on its immediate dependency and not all the classes below it.
+The UI management and responsive tasks are managed by the Activity class of the View. The data processing has been moved into a ViewModel class. Using a ViewModel class makes sure that View has only a single responsibility and the data related to a class survives lifecycle changes and doesn't have to be called again (this prevents it from being lazy) from the database. Since View is dependent on ViewModel, we use LiveData (an observable variable) in View so that the View can decide what happens when the data changes and it also prevents cyclic dependency as the view states what should happen and not the ViewModel. Repository class is used to manage the different backend APIs and serves as the single source of truth in case we need to decide from which API to get the data from. We have different Util classes to serve as a wrapper class to interface with the different APIs. We also plan to use dependency injection to make sure that each class is only dependent on its immediate dependency and not all the classes below it.
 
 
 
 **Software Engineering Practices**
 
-**Singleton Pattern: **Most of our ViewModel classes have only one instance so that the data of the UI is consistent even though the View might change.
+**Singleton Pattern:** Most of our ViewModel classes have only one instance so that the data of the UI is consistent even though the View might change.
 
-**Separation of Concerns: **In general design, the Activity class acts as the View and the ViewModel. We have separated them into 2 seperate classes. This also increases testability of code as we use dependency injection.
+**Separation of Concerns:** In general design, the Activity class acts as the View and the ViewModel. We have separated them into 2 seperate classes. This also increases testability of code as we use dependency injection.
 
 **SOLID Principles:** We have adhered to the SOLID Principles generally while creating our Model Classes and while extending classes.
 
@@ -277,17 +232,6 @@ We also used Firebase Test Lab to carry out testings on 200 devices.
    </td>
   </tr>
 </table>
-
-
-Code snippet for getting users for Broadcast:
-
-
-
-<p id="gdcalert14" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image14.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert15">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image14.png "image_tooltip")
-
 
 **UI Testing**
 
@@ -428,10 +372,7 @@ Admin web’s [link](https://nusocial-admin.herokuapp.com/login) as of 26 July, 
 [Prototype built using Adobe XD ](https://xd.adobe.com/view/079376bd-c7a6-46e1-6bb2-5794411d036c-71a2/screen/99863884-52c6-4a4d-9a68-cd2dfffee5e1/Splash-Screen/)as of May 14, 2020
 
 
-# 
-    **Tech Stack**
-
-
+# **Tech Stack**
 
 1. Java, Kotlin, Javascript
 2. Vue.js
@@ -440,57 +381,3 @@ Admin web’s [link](https://nusocial-admin.herokuapp.com/login) as of 26 July, 
 5. LumiNUS and NUSMods API
 6. Git and GitHub
 7. Adobe XD
-
-**Qualifications**
-
-
-    **Adithya Narayan Rangarajan Sreenivasan**
-
-
-        •   Technical Skills: C++, Python, Java, Kotlin, Firebase, OpenCV, JS, CSS, HTML, ROS
-
-
-        •   Projects
-
-
-            – 	Published a social-networking android app to the Google Play Store:[ StarSociety](https://play.google.com/store/apps/details?id=info.adi.starsociety)
-
-
-            – 	Part of the NUS Rover Team. Programmed the motor control mechanism using ROS.
-
-
-        •   Academic Achievements
-
-
-            – 	Received a Letter of Commendation from the Dean of School of Computing in NUS for highly distinguished performance in CS1010E Programming Methodology (top student in a class of 918 students)
-
- 
-
-
-    **Dao Ngoc Hieu**
-
-
-        •   Technical Skills: C++, Python, Java, OpenCV, ReactJS, CSS, HTML, Ruby on Rails, ROS
-
-
-        •   Projects
-
-
-            – 	Worked with the Hornet 5.0 Team (a part of the Bumblebee Organisation). Created a program in C++ and OpenCV to analyze input images and calculate the velocity and direction of the underwater vehicle.
-
-
-            – 	Successfully created a CRUD website using ReactJS for frontend and Ruby on Rails for backend:[ Link](https://daongochieutodo.herokuapp.com/)
-
-
-            – 	Ranked 24 out of 210 in the 2nd round of I’m the Best Coder Hackathon by Shopee: T[eam ’Freshie Frenzy’](https://www.kaggle.com/c/ungrd-rd2-auo/leaderboard)
-
-
-        •   Academic Achievements
-
-            – 	Achieved a CAP of 5.00 in Semester 1
-
-
-    **Teamwork**
-
-
-        •   Developed an Object Detection program, using OpenCV and python, that can detect cars, bikes, and other vehicles. CCTV footage was fed to the program and the detection data was analyzed to plot a heat map using the Google Maps API on python to find traffic congested roads:[ Demo](https://github.com/daongochieu2810/hackRoll2020)
