@@ -1,10 +1,3 @@
-# **INDEX**
-
-
-[TOC]
-
-
-
 # **PROJECT OVERVIEW**
 
 
